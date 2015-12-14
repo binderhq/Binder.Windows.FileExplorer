@@ -32,6 +32,7 @@ namespace Binder.Windows.FileExplorer
 		private static string _sessionToken;
 		public static string ResponseMessage;
 		public static bool isSuccessful;
+		public static string currentSelectedSite;
 
 
 		public static void CreateSession(string username, string password)
@@ -59,6 +60,39 @@ namespace Binder.Windows.FileExplorer
 				ResponseMessage  = "Login unsuccessful. See below for details\r\n\r\n" + err;
 			}
 
+		}
+
+		public static ShortFileInfo[] GetDirectory(string siteID)
+		{
+			string url = catalogUrl + "service.api/region/SiteNavigator/" + siteID + "/Folder/AllFiles?path=%2F&api_key=" + _sessionToken;
+			var response = url.GetAsync().Result;
+			var x = response.Content.ReadAsStringAsync().Result;
+			var y = JsonConvert.DeserializeObject<ShortFileInfo[]>(x);
+			return y;
+		}
+
+		public static void PopulateTreeView(TreeView treeView, string[] paths, char pathSeparator)
+		{
+			TreeNode lastNode = null;
+			string subPathAgg;
+			foreach (string path in paths)
+			{
+				subPathAgg = string.Empty;
+				foreach (string subPath in path.Split(pathSeparator))
+				{
+					subPathAgg += subPath + pathSeparator;
+					TreeNode[] nodes = treeView.Nodes.Find(subPathAgg, true);
+					if (nodes.Length == 0)
+						if (lastNode == null)
+							lastNode = treeView.Nodes.Add(subPathAgg, subPath);
+						else
+							lastNode = lastNode.Nodes.Add(subPathAgg, subPath);
+					else
+						lastNode = nodes[0];
+				}
+				lastNode = null;
+
+			}
 		}
 
 		public static void CloseSession()
@@ -116,6 +150,12 @@ namespace Binder.Windows.FileExplorer
 			public string Username;
 			public string EmailAddress;
 			public string Name;
+		}
+
+		public class ShortFileInfo
+		{
+			public string RemoteFilePath;
+			public int Length;
 		}
 	}
 }
