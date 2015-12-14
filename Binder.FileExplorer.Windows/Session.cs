@@ -33,7 +33,8 @@ namespace Binder.Windows.FileExplorer
 		public static string ResponseMessage;
 		public static bool isSuccessful;
 		public static string currentSelectedSite;
-
+		public static string[] siteNames;
+		public static string[] siteIds;
 
 		public static void CreateSession(string username, string password)
 		{
@@ -48,30 +49,22 @@ namespace Binder.Windows.FileExplorer
 					var x = response.Content.ReadAsStringAsync().Result;
 					var y = JsonConvert.DeserializeObject<CreateSessionResponse>(x);
 					_sessionToken = y.SessionToken;
-					ResponseMessage = "Login successful";
+//					ResponseMessage = "Login successful";
 				}
 				else
 				{
 					throw new ArgumentNullException();
 				}
 			}
-			catch (Exception err)
+			catch (Exception)
 			{
-				ResponseMessage  = "Login unsuccessful. See below for details\r\n\r\n" + err;
+				MessageBox.Show("Invalid username or password", "Login error", MessageBoxButtons.OK);
 			}
 
 		}
 
-		public static ShortFileInfo[] GetDirectory(string siteID)
-		{
-			string url = catalogUrl + "service.api/region/SiteNavigator/" + siteID + "/Folder/AllFiles?path=%2F&api_key=" + _sessionToken;
-			var response = url.GetAsync().Result;
-			var x = response.Content.ReadAsStringAsync().Result;
-			var y = JsonConvert.DeserializeObject<ShortFileInfo[]>(x);
-			return y;
-		}
 
-		public static void PopulateTreeView(TreeView treeView, string[] paths, char pathSeparator)
+		public static void PopulateTreeViewFromServer(TreeView treeView, string[] paths, char pathSeparator)
 		{
 			TreeNode lastNode = null;
 			string subPathAgg;
@@ -92,6 +85,41 @@ namespace Binder.Windows.FileExplorer
 				}
 				lastNode = null;
 
+			}
+		}
+
+		public static void PopulateTreeViewFromLocal(TreeView treeView, string path)
+		{
+			treeView.Nodes.Clear();
+			try
+			{
+				var rootDirectoryInfo = new DirectoryInfo(path);
+				treeView.Nodes.Add(CreateDirectoryNode(rootDirectoryInfo));
+			}
+			catch(UnauthorizedAccessException)
+			{
+				MessageBox.Show("You do not have permission to access to one or more files in the specified directory.","Unauthorised access",MessageBoxButtons.OK);
+			}
+			catch(ArgumentException)
+			{
+				MessageBox.Show("Please specify a valid directory","Directory not found", MessageBoxButtons.OK);
+			}
+		}
+
+		private static TreeNode CreateDirectoryNode(DirectoryInfo directoryInfo)
+		{
+			var directoryNode = new TreeNode(directoryInfo.Name);
+			try
+			{
+				foreach (var directory in directoryInfo.GetDirectories())
+					directoryNode.Nodes.Add(CreateDirectoryNode(directory));
+				foreach (var file in directoryInfo.GetFiles())
+					directoryNode.Nodes.Add(new TreeNode(file.Name));
+				return directoryNode;
+			}
+			catch (DirectoryNotFoundException)
+			{
+				return null;
 			}
 		}
 
@@ -119,6 +147,14 @@ namespace Binder.Windows.FileExplorer
 			return y2;
 		}
 
+		public static ShortFileInfo[] GetDirectory(string siteID)
+		{
+			string url = catalogUrl + "service.api/region/SiteNavigator/" + siteID + "/Folder/AllFiles?path=%2F&api_key=" + _sessionToken;
+			var response = url.GetAsync().Result;
+			var x = response.Content.ReadAsStringAsync().Result;
+			var y = JsonConvert.DeserializeObject<ShortFileInfo[]>(x);
+			return y;
+		}
 
 		public class CurrentRegionUserSitesResponse
 		{
