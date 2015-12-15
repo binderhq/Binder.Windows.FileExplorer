@@ -42,6 +42,7 @@
 			this.sitesList.Name = "sitesList";
 			this.sitesList.Size = new System.Drawing.Size(303, 344);
 			this.sitesList.TabIndex = 0;
+			this.sitesList.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.sitesList_MouseDoubleClick);
 			// 
 			// selectSite
 			// 

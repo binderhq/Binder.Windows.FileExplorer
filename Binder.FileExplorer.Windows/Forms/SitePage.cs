@@ -39,5 +39,10 @@ namespace Binder.Windows.FileExplorer.Forms
 				Cursor.Current = Cursors.Default;
 			}
 		}
+
+		private void sitesList_MouseDoubleClick(object sender, MouseEventArgs e)
+		{
+			selectSite_Click(sender, e);
+		}
 	}
 }

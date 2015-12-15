@@ -6,9 +6,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Net.Http;
+using System.Net;
 using System.Windows.Forms;
 using Newtonsoft.Json;
 using System.IO;
+using System.Web;
 
 namespace Binder.Windows.FileExplorer
 {
@@ -64,7 +66,7 @@ namespace Binder.Windows.FileExplorer
 		}
 
 
-		public static void PopulateTreeViewFromServer(TreeView treeView, string[] paths, char pathSeparator)
+		public static void PopulateTreeViewFromServer(TreeView treeView, string[] paths, char pathSeparator, ContextMenuStrip menu)
 		{
 			TreeNode lastNode = null;
 			string subPathAgg;
@@ -86,9 +88,11 @@ namespace Binder.Windows.FileExplorer
 				lastNode = null;
 
 			}
+			foreach (TreeNode node in treeView.Nodes)
+				AddContextMenu(node, menu);
 		}
 
-		public static void PopulateTreeViewFromLocal(TreeView treeView, string path)
+		public static void PopulateTreeViewFromLocal(TreeView treeView, string path, ContextMenuStrip menu)
 		{
 			treeView.Nodes.Clear();
 			try
@@ -106,21 +110,12 @@ namespace Binder.Windows.FileExplorer
 			}
 		}
 
-		private static TreeNode CreateDirectoryNode(DirectoryInfo directoryInfo)
+
+		private static void AddContextMenu(TreeNode node, ContextMenuStrip menu)
 		{
-			var directoryNode = new TreeNode(directoryInfo.Name);
-			try
-			{
-				foreach (var directory in directoryInfo.GetDirectories())
-					directoryNode.Nodes.Add(CreateDirectoryNode(directory));
-				foreach (var file in directoryInfo.GetFiles())
-					directoryNode.Nodes.Add(new TreeNode(file.Name));
-				return directoryNode;
-			}
-			catch (DirectoryNotFoundException)
-			{
-				return null;
-			}
+			node.ContextMenuStrip = menu;
+			foreach (TreeNode subNode in node.Nodes)
+				AddContextMenu(subNode, menu);
 		}
 
 		public static void CloseSession()
@@ -154,6 +149,39 @@ namespace Binder.Windows.FileExplorer
 			var x = response.Content.ReadAsStringAsync().Result;
 			var y = JsonConvert.DeserializeObject<ShortFileInfo[]>(x);
 			return y;
+		}
+
+		public static void GetFile(string siteId, string path, string filename, string savePath, ProgressBar progressBar, TextBox log)
+		{
+			Uri uri = new Uri(catalogUrl + "service.api/region/SiteNavigator/" + siteId + "/File/Contents?path=" + WebUtility.UrlEncode(path) + "&api_key=" + _sessionToken);
+			WebClient myWebClient = new WebClient();
+			myWebClient.DownloadProgressChanged += (s, e) =>
+			{
+				progressBar.Value = e.ProgressPercentage;
+			};
+			myWebClient.DownloadFileCompleted += (s, e) =>
+			{
+				progressBar.Value = 0;
+				log.Text = "Ready.";
+			};
+			myWebClient.DownloadFileAsync(uri, savePath);
+		}
+		
+		private static TreeNode CreateDirectoryNode(DirectoryInfo directoryInfo)
+		{
+			var directoryNode = new TreeNode(directoryInfo.Name);
+			try
+			{
+				foreach (var directory in directoryInfo.GetDirectories())
+					directoryNode.Nodes.Add(CreateDirectoryNode(directory));
+				foreach (var file in directoryInfo.GetFiles())
+					directoryNode.Nodes.Add(new TreeNode(file.Name));
+				return directoryNode;
+			}
+			catch (DirectoryNotFoundException)
+			{
+				return null;
+			}
 		}
 
 		public class CurrentRegionUserSitesResponse
@@ -193,5 +221,14 @@ namespace Binder.Windows.FileExplorer
 			public string RemoteFilePath;
 			public int Length;
 		}
+
+//		public class FileDownloadResponseModel
+//		{
+//			public string Name;
+//			public string HiggsFileId;
+//			public int Length;
+//			public int StorageZoneId;
+//			public string FileModifiedTimeUtc;
+//		}
 	}
 }

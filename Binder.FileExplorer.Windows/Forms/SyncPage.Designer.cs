@@ -32,17 +32,21 @@
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SyncPage));
 			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
 			this.binderTree = new System.Windows.Forms.TreeView();
+			this.imageList1 = new System.Windows.Forms.ImageList(this.components);
 			this.localTree = new System.Windows.Forms.TreeView();
 			this.label1 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
-			this.backButton = new System.Windows.Forms.Button();
 			this.syncButton = new System.Windows.Forms.Button();
 			this.progressBar1 = new System.Windows.Forms.ProgressBar();
 			this.browseButton = new System.Windows.Forms.Button();
 			this.directoryBox = new System.Windows.Forms.TextBox();
 			this.label3 = new System.Windows.Forms.Label();
-			this.imageList1 = new System.Windows.Forms.ImageList(this.components);
+			this.contextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.downloadMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.saveFile = new System.Windows.Forms.SaveFileDialog();
+			this.miniLog = new System.Windows.Forms.TextBox();
 			this.tableLayoutPanel1.SuspendLayout();
+			this.contextMenu.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// tableLayoutPanel1
@@ -76,6 +80,13 @@
 			this.binderTree.Size = new System.Drawing.Size(481, 485);
 			this.binderTree.TabIndex = 0;
 			// 
+			// imageList1
+			// 
+			this.imageList1.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList1.ImageStream")));
+			this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
+			this.imageList1.Images.SetKeyName(0, "folder.png");
+			this.imageList1.Images.SetKeyName(1, "pTEy9.png");
+			// 
 			// localTree
 			// 
 			this.localTree.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -105,18 +116,6 @@
 			this.label2.Size = new System.Drawing.Size(54, 13);
 			this.label2.TabIndex = 2;
 			this.label2.Text = "Local files";
-			// 
-			// backButton
-			// 
-			this.backButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.backButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.backButton.Location = new System.Drawing.Point(369, 527);
-			this.backButton.Name = "backButton";
-			this.backButton.Size = new System.Drawing.Size(120, 23);
-			this.backButton.TabIndex = 3;
-			this.backButton.Text = "Back";
-			this.backButton.UseVisualStyleBackColor = true;
-			this.backButton.Click += new System.EventHandler(this.backButton_Click);
 			// 
 			// syncButton
 			// 
@@ -165,24 +164,45 @@
 			this.label3.TabIndex = 8;
 			this.label3.Text = "Location";
 			// 
-			// imageList1
+			// contextMenu
 			// 
-			this.imageList1.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList1.ImageStream")));
-			this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
-			this.imageList1.Images.SetKeyName(0, "folder.png");
-			this.imageList1.Images.SetKeyName(1, "pTEy9.png");
+			this.contextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.downloadMenu});
+			this.contextMenu.Name = "contextMenu";
+			this.contextMenu.Size = new System.Drawing.Size(129, 26);
+			// 
+			// downloadMenu
+			// 
+			this.downloadMenu.Name = "downloadMenu";
+			this.downloadMenu.Size = new System.Drawing.Size(128, 22);
+			this.downloadMenu.Text = "Download";
+			this.downloadMenu.Click += new System.EventHandler(this.downloadMenu_Click);
+			// 
+			// saveFile
+			// 
+			this.saveFile.FileName = "test.file";
+			this.saveFile.Filter = "All files|*.*";
+			// 
+			// miniLog
+			// 
+			this.miniLog.Location = new System.Drawing.Point(369, 528);
+			this.miniLog.Name = "miniLog";
+			this.miniLog.ReadOnly = true;
+			this.miniLog.Size = new System.Drawing.Size(120, 20);
+			this.miniLog.TabIndex = 9;
+			this.miniLog.Text = "Ready.";
 			// 
 			// SyncPage
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(984, 561);
+			this.Controls.Add(this.miniLog);
 			this.Controls.Add(this.label3);
 			this.Controls.Add(this.directoryBox);
 			this.Controls.Add(this.browseButton);
 			this.Controls.Add(this.progressBar1);
 			this.Controls.Add(this.syncButton);
-			this.Controls.Add(this.backButton);
 			this.Controls.Add(this.label2);
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.tableLayoutPanel1);
@@ -192,6 +212,7 @@
 			this.Text = "File Synchronisation";
 			this.Load += new System.EventHandler(this.SyncPage_Load);
 			this.tableLayoutPanel1.ResumeLayout(false);
+			this.contextMenu.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -204,13 +225,16 @@
 		private System.Windows.Forms.TreeView localTree;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.Button backButton;
 		private System.Windows.Forms.Button syncButton;
 		private System.Windows.Forms.ProgressBar progressBar1;
 		private System.Windows.Forms.Button browseButton;
 		private System.Windows.Forms.TextBox directoryBox;
 		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.ImageList imageList1;
+		private System.Windows.Forms.ContextMenuStrip contextMenu;
+		private System.Windows.Forms.ToolStripMenuItem downloadMenu;
+		private System.Windows.Forms.SaveFileDialog saveFile;
+		private System.Windows.Forms.TextBox miniLog;
 
 	}
 }
