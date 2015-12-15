@@ -66,10 +66,11 @@ namespace Binder.Windows.FileExplorer
 		}
 
 
-		public static void PopulateTreeViewFromServer(TreeView treeView, string[] paths, char pathSeparator, ContextMenuStrip menu)
+		public static void PopulateTreeViewFromServer(TreeView treeView, ImageList images, string[] paths, char pathSeparator, ContextMenuStrip menu)
 		{
 			TreeNode lastNode = null;
 			string subPathAgg;
+			treeView.ImageList = images;
 			foreach (string path in paths)
 			{
 				subPathAgg = string.Empty;
@@ -89,12 +90,16 @@ namespace Binder.Windows.FileExplorer
 
 			}
 			foreach (TreeNode node in treeView.Nodes)
+			{
 				AddContextMenu(node, menu);
+				NodeImager(node);
+			}
 		}
 
-		public static void PopulateTreeViewFromLocal(TreeView treeView, string path, ContextMenuStrip menu)
+		public static void PopulateTreeViewFromLocal(TreeView treeView, ImageList images, string path, ContextMenuStrip menu)
 		{
 			treeView.Nodes.Clear();
+			treeView.ImageList = images;
 			try
 			{
 				var rootDirectoryInfo = new DirectoryInfo(path);
@@ -108,6 +113,27 @@ namespace Binder.Windows.FileExplorer
 			{
 				MessageBox.Show("Please specify a valid directory","Directory not found", MessageBoxButtons.OK);
 			}
+			foreach (TreeNode node in treeView.Nodes)
+				NodeImager(node);
+		}
+
+		private static void NodeImager(TreeNode node)
+		{
+			if (node.Nodes.Count > 0)
+			{
+				node.ImageIndex = 0;
+				node.SelectedImageIndex = 0;
+			}
+			else
+			{
+				node.ImageIndex = 1;
+				node.SelectedImageIndex = 1;
+			}
+			foreach (TreeNode subNode in node.Nodes)
+			{
+				NodeImager(subNode);
+			}
+
 		}
 
 
@@ -116,6 +142,44 @@ namespace Binder.Windows.FileExplorer
 			node.ContextMenuStrip = menu;
 			foreach (TreeNode subNode in node.Nodes)
 				AddContextMenu(subNode, menu);
+		}
+
+		public static void GetFile(string siteId, string path, string filename, string savePath, ProgressBar progressBar, TextBox log)
+		{
+			Uri uri = new Uri(catalogUrl + "service.api/region/SiteNavigator/" + siteId + "/File/Contents?path=" + WebUtility.UrlEncode(path) + "&api_key=" + _sessionToken);
+			WebClient myWebClient = new WebClient();
+			myWebClient.DownloadProgressChanged += (s, e) =>
+			{
+				progressBar.Value = e.ProgressPercentage;
+				log.Text = e.ProgressPercentage.ToString() + "% complete";
+			};
+			myWebClient.DownloadFileCompleted += (s, e) =>
+			{
+				progressBar.Value = 0;
+				log.Text = "Ready.";
+			};
+			myWebClient.DownloadFileAsync(uri, savePath);
+		}
+
+		public static void GetZipFile(string path, string savePath, ProgressBar progressBar, TextBox log)
+		{
+			var zipId = ZipFileRequest(currentSelectedSite, path).Id;
+			Uri uri = new Uri(catalogUrl + "service.api/region/ZipFileRequests/" + zipId + "/Contents?api_key=" + _sessionToken);
+			WebClient myWebClient = new WebClient();
+			myWebClient.DownloadProgressChanged += (s, e) =>
+			{
+				progressBar.Value = e.ProgressPercentage;
+				log.Text = ZipFileCheck(zipId).Status;
+//				log.Text = e.ProgressPercentage.ToString() + "% complete";
+			};
+			myWebClient.DownloadFileCompleted += (s, e) =>
+			{
+				progressBar.Value = 0;
+				log.Text = "Ready.";
+			};
+//			while(!Equals(ZipFileCheck(zipId).Status, "OK"))
+			myWebClient.DownloadFileAsync(uri, savePath);
+
 		}
 
 		public static void CloseSession()
@@ -150,22 +214,6 @@ namespace Binder.Windows.FileExplorer
 			var y = JsonConvert.DeserializeObject<ShortFileInfo[]>(x);
 			return y;
 		}
-
-		public static void GetFile(string siteId, string path, string filename, string savePath, ProgressBar progressBar, TextBox log)
-		{
-			Uri uri = new Uri(catalogUrl + "service.api/region/SiteNavigator/" + siteId + "/File/Contents?path=" + WebUtility.UrlEncode(path) + "&api_key=" + _sessionToken);
-			WebClient myWebClient = new WebClient();
-			myWebClient.DownloadProgressChanged += (s, e) =>
-			{
-				progressBar.Value = e.ProgressPercentage;
-			};
-			myWebClient.DownloadFileCompleted += (s, e) =>
-			{
-				progressBar.Value = 0;
-				log.Text = "Ready.";
-			};
-			myWebClient.DownloadFileAsync(uri, savePath);
-		}
 		
 		private static TreeNode CreateDirectoryNode(DirectoryInfo directoryInfo)
 		{
@@ -182,6 +230,24 @@ namespace Binder.Windows.FileExplorer
 			{
 				return null;
 			}
+		}
+
+		public static ZipFileRequestModel ZipFileRequest(string siteId, string path)
+		{
+			string url = catalogUrl + "service.api/region/ZipFileRequests?api_key=" + _sessionToken;
+			var response = url.PostJsonAsync( new { SiteIdOrSubdomain = siteId, SourcePath = path }).Result;
+			var x = response.Content.ReadAsStringAsync().Result;
+			var y = JsonConvert.DeserializeObject<ZipFileRequestModel>(x);
+			return y;
+		}
+
+		public static ZipFileRequestModel ZipFileCheck(string zipId)
+		{
+			string url = catalogUrl + "service.api/region/ZipFileRequests/" + zipId + "?api_key=" + _sessionToken;
+			var response = url.GetAsync().Result;
+			var x = response.Content.ReadAsStringAsync().Result;
+			var y = JsonConvert.DeserializeObject<ZipFileRequestModel>(x);
+			return y;
 		}
 
 		public class CurrentRegionUserSitesResponse
@@ -222,13 +288,10 @@ namespace Binder.Windows.FileExplorer
 			public int Length;
 		}
 
-//		public class FileDownloadResponseModel
-//		{
-//			public string Name;
-//			public string HiggsFileId;
-//			public int Length;
-//			public int StorageZoneId;
-//			public string FileModifiedTimeUtc;
-//		}
+		public class ZipFileRequestModel
+		{
+			public string Id;
+			public string Status;
+		} 
 	}
 }

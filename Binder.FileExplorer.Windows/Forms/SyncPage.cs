@@ -20,9 +20,10 @@ namespace Binder.Windows.FileExplorer
 
 		private void SyncPage_Load(object sender, EventArgs e)
 		{
-			string[] filePaths = Session.GetDirectory(Session.currentSelectedSite).Select(x => x.RemoteFilePath).ToArray();
+			var currentDirectory = Session.GetDirectory(Session.currentSelectedSite);
+			string[] filePaths = currentDirectory.Select(x => x.RemoteFilePath).ToArray();
 			this.binderTree.Nodes.Clear();
-			Session.PopulateTreeViewFromServer(binderTree, filePaths, '/', this.contextMenu);
+			Session.PopulateTreeViewFromServer(binderTree, this.imageList1, filePaths, '/', this.contextMenu);
 		}
 
 		private void backButton_Click(object sender, EventArgs e)
@@ -34,27 +35,46 @@ namespace Binder.Windows.FileExplorer
 
 		private void browseButton_Click(object sender, EventArgs e)
 		{
-			Cursor.Current = Cursors.WaitCursor;
-			Session.PopulateTreeViewFromLocal(localTree, this.directoryBox.Text, this.contextMenu);
-			Cursor.Current = Cursors.Default;
+			DialogResult folderToOpen = openFolder.ShowDialog();
+			if(folderToOpen == System.Windows.Forms.DialogResult.OK)
+			{
+				Cursor.Current = Cursors.WaitCursor;
+				this.directoryBox.Text = openFolder.SelectedPath;
+				Session.PopulateTreeViewFromLocal(localTree, this.imageList1, this.directoryBox.Text, this.contextMenu);
+				Cursor.Current = Cursors.Default;
+			}
 		}
 
 		private void downloadMenu_Click(object sender, EventArgs e)
 		{
-			string pathToDownload = this.binderTree.SelectedNode.Name.TrimEnd('/');
+			string pathToDownload = this.binderTree.SelectedNode.Name;
 			string fileToDownload = this.binderTree.SelectedNode.Text;
-//			DialogResult result = MessageBox.Show("Download file " + pathToDownload + "?", "Confirm download", MessageBoxButtons.YesNo);
 
 			saveFile.FileName = fileToDownload;
 			DialogResult downloadTo = saveFile.ShowDialog();
 
 			if(downloadTo == System.Windows.Forms.DialogResult.OK)
 			{
-				this.miniLog.Text = "Downloading...";
-				Session.GetFile(Session.currentSelectedSite, pathToDownload, fileToDownload, saveFile.FileName, this.progressBar1, this.miniLog);
+				if(this.binderTree.SelectedNode.SelectedImageIndex == 1)
+					Session.GetFile(Session.currentSelectedSite, pathToDownload, fileToDownload.TrimEnd('/'), saveFile.FileName, this.progressBar1, this.miniLog);
+				else if (this.binderTree.SelectedNode.SelectedImageIndex == 0)
+					Session.GetZipFile(pathToDownload, saveFile.FileName, this.progressBar1, this.miniLog);
 			}
+		}
 
-//			if(result == System.Windows.Forms.DialogResult.Yes)
+		private void binderTree_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
+		{
+			if (e.Button == MouseButtons.Right) binderTree.SelectedNode = e.Node;
+		}
+
+		private void directoryBox_KeyPress(object sender, KeyPressEventArgs e)
+		{
+			if (e.KeyChar == (char)Keys.Return)
+			{
+				Cursor.Current = Cursors.WaitCursor;
+				Session.PopulateTreeViewFromLocal(localTree, this.imageList1, this.directoryBox.Text, this.contextMenu);
+				Cursor.Current = Cursors.Default;
+			}
 		}
 	}
 }

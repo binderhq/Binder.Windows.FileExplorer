@@ -45,6 +45,7 @@
 			this.downloadMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveFile = new System.Windows.Forms.SaveFileDialog();
 			this.miniLog = new System.Windows.Forms.TextBox();
+			this.openFolder = new System.Windows.Forms.FolderBrowserDialog();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.contextMenu.SuspendLayout();
 			this.SuspendLayout();
@@ -72,13 +73,11 @@
 			// binderTree
 			// 
 			this.binderTree.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.binderTree.ImageIndex = 0;
-			this.binderTree.ImageList = this.imageList1;
 			this.binderTree.Location = new System.Drawing.Point(8, 8);
 			this.binderTree.Name = "binderTree";
-			this.binderTree.SelectedImageIndex = 0;
 			this.binderTree.Size = new System.Drawing.Size(481, 485);
 			this.binderTree.TabIndex = 0;
+			this.binderTree.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.binderTree_NodeMouseClick);
 			// 
 			// imageList1
 			// 
@@ -90,11 +89,8 @@
 			// localTree
 			// 
 			this.localTree.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.localTree.ImageIndex = 0;
-			this.localTree.ImageList = this.imageList1;
 			this.localTree.Location = new System.Drawing.Point(495, 8);
 			this.localTree.Name = "localTree";
-			this.localTree.SelectedImageIndex = 0;
 			this.localTree.Size = new System.Drawing.Size(481, 485);
 			this.localTree.TabIndex = 1;
 			// 
@@ -142,7 +138,7 @@
 			this.browseButton.Name = "browseButton";
 			this.browseButton.Size = new System.Drawing.Size(120, 23);
 			this.browseButton.TabIndex = 6;
-			this.browseButton.Text = "Open local folder";
+			this.browseButton.Text = "Browse";
 			this.browseButton.UseVisualStyleBackColor = true;
 			this.browseButton.Click += new System.EventHandler(this.browseButton_Click);
 			// 
@@ -153,6 +149,7 @@
 			this.directoryBox.Name = "directoryBox";
 			this.directoryBox.Size = new System.Drawing.Size(277, 20);
 			this.directoryBox.TabIndex = 7;
+			this.directoryBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.directoryBox_KeyPress);
 			// 
 			// label3
 			// 
@@ -185,6 +182,7 @@
 			// 
 			// miniLog
 			// 
+			this.miniLog.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.miniLog.Location = new System.Drawing.Point(369, 528);
 			this.miniLog.Name = "miniLog";
 			this.miniLog.ReadOnly = true;
@@ -235,6 +233,7 @@
 		private System.Windows.Forms.ToolStripMenuItem downloadMenu;
 		private System.Windows.Forms.SaveFileDialog saveFile;
 		private System.Windows.Forms.TextBox miniLog;
+		private System.Windows.Forms.FolderBrowserDialog openFolder;
 
 	}
 }
