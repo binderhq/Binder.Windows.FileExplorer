@@ -116,6 +116,37 @@ namespace Binder.Windows.FileExplorer
 				NodeImager(node);
 		}
 
+		public static void PopulateListViewFromLocal(ListView list, DirectoryInfo directory)
+		{
+			list.Items.Clear();
+			ListViewItem.ListViewSubItem[] subItems;
+			ListViewItem item = null;
+
+			foreach (DirectoryInfo dir in directory.GetDirectories())
+			{
+				item = new ListViewItem(dir.Name, 0);
+				subItems = new ListViewItem.ListViewSubItem[]
+                  {new ListViewItem.ListViewSubItem(item, "Folder"), 
+                   new ListViewItem.ListViewSubItem(item, 
+				dir.LastAccessTime.ToShortDateString())};
+				item.SubItems.AddRange(subItems);
+				list.Items.Add(item);
+			}
+			foreach (FileInfo file in directory.GetFiles())
+			{
+				item = new ListViewItem(file.Name, 1);
+				subItems = new ListViewItem.ListViewSubItem[]
+                  { new ListViewItem.ListViewSubItem(item, file.Extension.ToString() + " file"), new ListViewItem.ListViewSubItem(item, file.Length.ToString()), 
+                   new ListViewItem.ListViewSubItem(item, 
+				file.LastAccessTime.ToShortDateString())};
+
+				item.SubItems.AddRange(subItems);
+				list.Items.Add(item);
+			}
+
+			list.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+		}
+
 		private static void NodeImager(TreeNode node)
 		{
 			if (node.Nodes.Count > 0)
@@ -175,7 +206,7 @@ namespace Binder.Windows.FileExplorer
 				progressBar.Value = 0;
 				log.Text = "Ready.";
 			};
-			myWebClient.DownloadFileAsync(uri, savePath);n
+			myWebClient.DownloadFileAsync(uri, savePath);
 		}
 
 		//TODO: Get zip file downloads working properly - THIS DOES NOT WORK AT THE MOMENT

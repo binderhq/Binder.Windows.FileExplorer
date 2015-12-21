@@ -41,7 +41,8 @@ namespace Binder.Windows.FileExplorer
 			{
 				Cursor.Current = Cursors.WaitCursor;
 				this.directoryBox.Text = openFolder.SelectedPath;
-				Session.PopulateTreeViewFromLocal(localTree, this.imageList1, this.directoryBox.Text, this.contextMenu);
+				//Session.PopulateTreeViewFromLocal(localTree, this.imageList1, this.directoryBox.Text, this.contextMenu);
+				Session.PopulateListViewFromLocal(localList, new DirectoryInfo(openFolder.SelectedPath));
 				Cursor.Current = Cursors.Default;
 			}
 		}
@@ -73,9 +74,15 @@ namespace Binder.Windows.FileExplorer
 			if (e.KeyChar == (char)Keys.Return)
 			{
 				Cursor.Current = Cursors.WaitCursor;
-				Session.PopulateTreeViewFromLocal(localTree, this.imageList1, this.directoryBox.Text, this.contextMenu);
+				//Session.PopulateTreeViewFromLocal(localTree, this.imageList1, this.directoryBox.Text, this.contextMenu);
+				Session.PopulateListViewFromLocal(localList, new DirectoryInfo(directoryBox.Text));
 				Cursor.Current = Cursors.Default;
 			}
+		}
+
+		private void localList_MouseDoubleClick(object sender, MouseEventArgs e)
+		{
+			Session.PopulateListViewFromLocal(localList, new DirectoryInfo(openFolder.SelectedPath + "\\" + localList.FocusedItem.Text.ToString()));
 		}
 	}
 }

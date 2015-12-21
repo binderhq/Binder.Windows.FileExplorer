@@ -32,7 +32,11 @@
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SyncPage));
 			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
 			this.binderTree = new System.Windows.Forms.TreeView();
-			this.localTree = new System.Windows.Forms.TreeView();
+			this.localList = new System.Windows.Forms.ListView();
+			this.name = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.type = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.size = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.lastModified = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.imageList1 = new System.Windows.Forms.ImageList(this.components);
 			this.label1 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
@@ -43,10 +47,10 @@
 			this.label3 = new System.Windows.Forms.Label();
 			this.contextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.downloadMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveFile = new System.Windows.Forms.SaveFileDialog();
 			this.miniLog = new System.Windows.Forms.TextBox();
 			this.openFolder = new System.Windows.Forms.FolderBrowserDialog();
-			this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.contextMenu.SuspendLayout();
 			this.SuspendLayout();
@@ -60,7 +64,7 @@
 			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
 			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
 			this.tableLayoutPanel1.Controls.Add(this.binderTree, 0, 0);
-			this.tableLayoutPanel1.Controls.Add(this.localTree, 1, 0);
+			this.tableLayoutPanel1.Controls.Add(this.localList, 1, 0);
 			this.tableLayoutPanel1.GrowStyle = System.Windows.Forms.TableLayoutPanelGrowStyle.FixedSize;
 			this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 20);
 			this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -80,13 +84,38 @@
 			this.binderTree.TabIndex = 0;
 			this.binderTree.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.binderTree_NodeMouseClick);
 			// 
-			// localTree
+			// localList
 			// 
-			this.localTree.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.localTree.Location = new System.Drawing.Point(495, 8);
-			this.localTree.Name = "localTree";
-			this.localTree.Size = new System.Drawing.Size(481, 485);
-			this.localTree.TabIndex = 1;
+			this.localList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.name,
+            this.type,
+            this.size,
+            this.lastModified});
+			this.localList.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.localList.Location = new System.Drawing.Point(495, 8);
+			this.localList.Name = "localList";
+			this.localList.Size = new System.Drawing.Size(481, 485);
+			this.localList.SmallImageList = this.imageList1;
+			this.localList.TabIndex = 1;
+			this.localList.UseCompatibleStateImageBehavior = false;
+			this.localList.View = System.Windows.Forms.View.Details;
+			this.localList.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.localList_MouseDoubleClick);
+			// 
+			// name
+			// 
+			this.name.Text = "Name";
+			// 
+			// type
+			// 
+			this.type.Text = "Type";
+			// 
+			// size
+			// 
+			this.size.Text = "Size";
+			// 
+			// lastModified
+			// 
+			this.lastModified.Text = "Last Modified";
 			// 
 			// imageList1
 			// 
@@ -177,6 +206,12 @@
 			this.downloadMenu.Text = "Download";
 			this.downloadMenu.Click += new System.EventHandler(this.downloadMenu_Click);
 			// 
+			// deleteToolStripMenuItem
+			// 
+			this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
+			this.deleteToolStripMenuItem.Size = new System.Drawing.Size(128, 22);
+			this.deleteToolStripMenuItem.Text = "Delete";
+			// 
 			// saveFile
 			// 
 			this.saveFile.FileName = "test.file";
@@ -191,12 +226,6 @@
 			this.miniLog.Size = new System.Drawing.Size(120, 20);
 			this.miniLog.TabIndex = 9;
 			this.miniLog.Text = "Ready.";
-			// 
-			// deleteToolStripMenuItem
-			// 
-			this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
-			this.deleteToolStripMenuItem.Size = new System.Drawing.Size(128, 22);
-			this.deleteToolStripMenuItem.Text = "Delete";
 			// 
 			// SyncPage
 			// 
@@ -228,7 +257,6 @@
 
 		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
 		private System.Windows.Forms.TreeView binderTree;
-		private System.Windows.Forms.TreeView localTree;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.Button syncButton;
@@ -243,6 +271,11 @@
 		private System.Windows.Forms.TextBox miniLog;
 		private System.Windows.Forms.FolderBrowserDialog openFolder;
 		private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
+		private System.Windows.Forms.ListView localList;
+		private System.Windows.Forms.ColumnHeader name;
+		private System.Windows.Forms.ColumnHeader type;
+		private System.Windows.Forms.ColumnHeader size;
+		private System.Windows.Forms.ColumnHeader lastModified;
 
 	}
 }
