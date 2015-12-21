@@ -48,9 +48,9 @@ namespace Binder.Windows.FileExplorer
 
 		private void signOut_Click(object sender, EventArgs e)
 		{
-			Session.CloseSession();
 			sitep.Close();
 			syncp.Close();
+			Session.CloseSession();
 			this.username.Clear();
 			this.password.Clear();
 			this.signOut.Enabled = false;
@@ -59,16 +59,16 @@ namespace Binder.Windows.FileExplorer
 
 		private void LoginPage_FormClosed(object sender, FormClosedEventArgs e)
 		{
-			Session.CloseSession();
 			sitep.Close();
 			syncp.Close();
+			Session.CloseSession();
 		}
 
 		private void OnApplicationExit(object sender, EventArgs e)
 		{
-			Session.CloseSession();
 			sitep.Close();
 			syncp.Close();
+			Session.CloseSession();
 		}
 	}
 }

@@ -32,8 +32,8 @@
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SyncPage));
 			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
 			this.binderTree = new System.Windows.Forms.TreeView();
-			this.imageList1 = new System.Windows.Forms.ImageList(this.components);
 			this.localTree = new System.Windows.Forms.TreeView();
+			this.imageList1 = new System.Windows.Forms.ImageList(this.components);
 			this.label1 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
 			this.syncButton = new System.Windows.Forms.Button();
@@ -46,6 +46,7 @@
 			this.saveFile = new System.Windows.Forms.SaveFileDialog();
 			this.miniLog = new System.Windows.Forms.TextBox();
 			this.openFolder = new System.Windows.Forms.FolderBrowserDialog();
+			this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.contextMenu.SuspendLayout();
 			this.SuspendLayout();
@@ -79,13 +80,6 @@
 			this.binderTree.TabIndex = 0;
 			this.binderTree.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.binderTree_NodeMouseClick);
 			// 
-			// imageList1
-			// 
-			this.imageList1.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList1.ImageStream")));
-			this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
-			this.imageList1.Images.SetKeyName(0, "folder.png");
-			this.imageList1.Images.SetKeyName(1, "pTEy9.png");
-			// 
 			// localTree
 			// 
 			this.localTree.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -93,6 +87,13 @@
 			this.localTree.Name = "localTree";
 			this.localTree.Size = new System.Drawing.Size(481, 485);
 			this.localTree.TabIndex = 1;
+			// 
+			// imageList1
+			// 
+			this.imageList1.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList1.ImageStream")));
+			this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
+			this.imageList1.Images.SetKeyName(0, "folder.png");
+			this.imageList1.Images.SetKeyName(1, "pTEy9.png");
 			// 
 			// label1
 			// 
@@ -164,9 +165,10 @@
 			// contextMenu
 			// 
 			this.contextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.downloadMenu});
+            this.downloadMenu,
+            this.deleteToolStripMenuItem});
 			this.contextMenu.Name = "contextMenu";
-			this.contextMenu.Size = new System.Drawing.Size(129, 26);
+			this.contextMenu.Size = new System.Drawing.Size(129, 48);
 			// 
 			// downloadMenu
 			// 
@@ -189,6 +191,12 @@
 			this.miniLog.Size = new System.Drawing.Size(120, 20);
 			this.miniLog.TabIndex = 9;
 			this.miniLog.Text = "Ready.";
+			// 
+			// deleteToolStripMenuItem
+			// 
+			this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
+			this.deleteToolStripMenuItem.Size = new System.Drawing.Size(128, 22);
+			this.deleteToolStripMenuItem.Text = "Delete";
 			// 
 			// SyncPage
 			// 
@@ -234,6 +242,7 @@
 		private System.Windows.Forms.SaveFileDialog saveFile;
 		private System.Windows.Forms.TextBox miniLog;
 		private System.Windows.Forms.FolderBrowserDialog openFolder;
+		private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
 
 	}
 }

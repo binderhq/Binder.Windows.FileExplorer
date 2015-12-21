@@ -91,8 +91,7 @@ namespace Binder.Windows.FileExplorer
 			}
 			foreach (TreeNode node in treeView.Nodes)
 			{
-				AddContextMenu(node, menu);
-				NodeImager(node);
+				NodeImager(node, menu);
 			}
 		}
 
@@ -105,10 +104,10 @@ namespace Binder.Windows.FileExplorer
 				var rootDirectoryInfo = new DirectoryInfo(path);
 				treeView.Nodes.Add(CreateDirectoryNode(rootDirectoryInfo));
 			}
-			catch(UnauthorizedAccessException)
-			{
-				MessageBox.Show("You do not have permission to access to one or more files in the specified directory.","Unauthorised access",MessageBoxButtons.OK);
-			}
+//			catch(UnauthorizedAccessException)
+//			{
+//				MessageBox.Show("You do not have permission to access to one or more files in the specified directory.","Unauthorised access",MessageBoxButtons.OK);
+//			}
 			catch(ArgumentException)
 			{
 				MessageBox.Show("Please specify a valid directory","Directory not found", MessageBoxButtons.OK);
@@ -133,9 +132,26 @@ namespace Binder.Windows.FileExplorer
 			{
 				NodeImager(subNode);
 			}
-
 		}
 
+		private static void NodeImager(TreeNode node, ContextMenuStrip menu)
+		{
+			if (node.Nodes.Count > 0)
+			{
+				node.ImageIndex = 0;
+				node.SelectedImageIndex = 0;
+			}
+			else
+			{
+				AddContextMenu(node, menu);
+				node.ImageIndex = 1;
+				node.SelectedImageIndex = 1;
+			}
+			foreach (TreeNode subNode in node.Nodes)
+			{
+				NodeImager(subNode, menu);
+			}
+		}
 
 		private static void AddContextMenu(TreeNode node, ContextMenuStrip menu)
 		{
@@ -146,6 +162,7 @@ namespace Binder.Windows.FileExplorer
 
 		public static void GetFile(string siteId, string path, string filename, string savePath, ProgressBar progressBar, TextBox log)
 		{
+			log.Text = "Preparing...";
 			Uri uri = new Uri(catalogUrl + "service.api/region/SiteNavigator/" + siteId + "/File/Contents?path=" + WebUtility.UrlEncode(path) + "&api_key=" + _sessionToken);
 			WebClient myWebClient = new WebClient();
 			myWebClient.DownloadProgressChanged += (s, e) =>
@@ -158,27 +175,32 @@ namespace Binder.Windows.FileExplorer
 				progressBar.Value = 0;
 				log.Text = "Ready.";
 			};
-			myWebClient.DownloadFileAsync(uri, savePath);
+			myWebClient.DownloadFileAsync(uri, savePath);n
 		}
 
+		//TODO: Get zip file downloads working properly - THIS DOES NOT WORK AT THE MOMENT
 		public static void GetZipFile(string path, string savePath, ProgressBar progressBar, TextBox log)
 		{
+			log.Text = "Preparing...";
 			var zipId = ZipFileRequest(currentSelectedSite, path).Id;
 			Uri uri = new Uri(catalogUrl + "service.api/region/ZipFileRequests/" + zipId + "/Contents?api_key=" + _sessionToken);
+			Uri uri2 = new Uri(catalogUrl + "service.api/region/ZipFileRequests/" + zipId + "?api_key=" + _sessionToken);
 			WebClient myWebClient = new WebClient();
-			myWebClient.DownloadProgressChanged += (s, e) =>
+			bool isReady = false;
+
+			myWebClient.OpenReadAsync(uri2);
+
+			while(!isReady && !myWebClient.IsBusy)
 			{
-				progressBar.Value = e.ProgressPercentage;
-				log.Text = ZipFileCheck(zipId).Status;
-//				log.Text = e.ProgressPercentage.ToString() + "% complete";
-			};
-			myWebClient.DownloadFileCompleted += (s, e) =>
+				isReady = ZipBuildComplete(zipId, savePath, log, progressBar);
+			}
+			if(isReady)
 			{
-				progressBar.Value = 0;
+				log.Text = "Downloading...";
+				myWebClient.DownloadFileAsync(uri, savePath);
 				log.Text = "Ready.";
-			};
-//			while(!Equals(ZipFileCheck(zipId).Status, "OK"))
-			myWebClient.DownloadFileAsync(uri, savePath);
+				progressBar.Value = 0;
+			}
 
 		}
 
@@ -186,8 +208,30 @@ namespace Binder.Windows.FileExplorer
 		{
 			string url = catalogUrl + "service.api/authentication/Sessions/" + _sessionToken + "?api_key=" + _sessionToken;
 			_sessionToken = null;
+			isSuccessful = false;
 		}
 
+		private static bool ZipBuildComplete(string zipId, string savePath, TextBox log, ProgressBar progressBar)
+		{
+			int percentComplete = ZipFileCheck(zipId).ProgressPercent;
+			if (percentComplete == 100)
+			{
+				log.Text = "Zip creation complete.";
+				return true;
+			}
+			else if (percentComplete > 0)
+			{
+				progressBar.Value = percentComplete;
+				log.Text = percentComplete.ToString() + "% built";
+				return false;
+			}
+			else
+			{
+				log.Text = "Zip file creation " + ZipFileCheck(zipId).Status;
+				return false;
+			}
+		}
+		
 		public static CurrentUserInfo CurrentUser()
 		{
 			string url = catalogUrl + "service.api/authentication/CurrentUser?api_key=" + _sessionToken;
@@ -291,6 +335,8 @@ namespace Binder.Windows.FileExplorer
 		public class ZipFileRequestModel
 		{
 			public string Id;
+			public int ProgressPercent;
+			public string OutputFilename;
 			public string Status;
 		} 
 	}

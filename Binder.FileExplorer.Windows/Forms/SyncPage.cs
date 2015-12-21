@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -55,10 +56,10 @@ namespace Binder.Windows.FileExplorer
 
 			if(downloadTo == System.Windows.Forms.DialogResult.OK)
 			{
-				if(this.binderTree.SelectedNode.SelectedImageIndex == 1)
+//				if(this.binderTree.SelectedNode.ImageIndex == 1)
 					Session.GetFile(Session.currentSelectedSite, pathToDownload, fileToDownload.TrimEnd('/'), saveFile.FileName, this.progressBar1, this.miniLog);
-				else if (this.binderTree.SelectedNode.SelectedImageIndex == 0)
-					Session.GetZipFile(pathToDownload, saveFile.FileName, this.progressBar1, this.miniLog);
+//				else if (this.binderTree.SelectedNode.ImageIndex == 0)
+//					Session.GetZipFile(pathToDownload, saveFile.FileName, this.progressBar1, this.miniLog);
 			}
 		}
 
