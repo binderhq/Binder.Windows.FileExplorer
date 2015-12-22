@@ -31,11 +31,9 @@
 			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SyncPage));
 			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-			this.binderTree = new System.Windows.Forms.TreeView();
 			this.localList = new System.Windows.Forms.ListView();
 			this.name = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.type = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.size = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.lastModified = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.imageList1 = new System.Windows.Forms.ImageList(this.components);
 			this.label1 = new System.Windows.Forms.Label();
@@ -51,6 +49,9 @@
 			this.saveFile = new System.Windows.Forms.SaveFileDialog();
 			this.miniLog = new System.Windows.Forms.TextBox();
 			this.openFolder = new System.Windows.Forms.FolderBrowserDialog();
+			this.button1 = new System.Windows.Forms.Button();
+			this.size = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.binderTree = new System.Windows.Forms.TreeView();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.contextMenu.SuspendLayout();
 			this.SuspendLayout();
@@ -63,26 +64,18 @@
 			this.tableLayoutPanel1.ColumnCount = 2;
 			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
 			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-			this.tableLayoutPanel1.Controls.Add(this.binderTree, 0, 0);
-			this.tableLayoutPanel1.Controls.Add(this.localList, 1, 0);
+			this.tableLayoutPanel1.Controls.Add(this.localList, 1, 1);
+			this.tableLayoutPanel1.Controls.Add(this.button1, 1, 0);
+			this.tableLayoutPanel1.Controls.Add(this.binderTree, 0, 1);
 			this.tableLayoutPanel1.GrowStyle = System.Windows.Forms.TableLayoutPanelGrowStyle.FixedSize;
 			this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 20);
 			this.tableLayoutPanel1.Name = "tableLayoutPanel1";
 			this.tableLayoutPanel1.Padding = new System.Windows.Forms.Padding(5);
-			this.tableLayoutPanel1.RowCount = 1;
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-			this.tableLayoutPanel1.Size = new System.Drawing.Size(984, 501);
+			this.tableLayoutPanel1.RowCount = 2;
+			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
+			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.tableLayoutPanel1.Size = new System.Drawing.Size(999, 501);
 			this.tableLayoutPanel1.TabIndex = 0;
-			// 
-			// binderTree
-			// 
-			this.binderTree.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.binderTree.Location = new System.Drawing.Point(8, 8);
-			this.binderTree.Name = "binderTree";
-			this.binderTree.Size = new System.Drawing.Size(481, 485);
-			this.binderTree.TabIndex = 0;
-			this.binderTree.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.binderTree_NodeMouseClick);
 			// 
 			// localList
 			// 
@@ -92,9 +85,9 @@
             this.size,
             this.lastModified});
 			this.localList.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.localList.Location = new System.Drawing.Point(495, 8);
+			this.localList.Location = new System.Drawing.Point(502, 38);
 			this.localList.Name = "localList";
-			this.localList.Size = new System.Drawing.Size(481, 485);
+			this.localList.Size = new System.Drawing.Size(489, 455);
 			this.localList.SmallImageList = this.imageList1;
 			this.localList.TabIndex = 1;
 			this.localList.UseCompatibleStateImageBehavior = false;
@@ -104,18 +97,16 @@
 			// name
 			// 
 			this.name.Text = "Name";
+			this.name.Width = 238;
 			// 
 			// type
 			// 
 			this.type.Text = "Type";
 			// 
-			// size
-			// 
-			this.size.Text = "Size";
-			// 
 			// lastModified
 			// 
 			this.lastModified.Text = "Last Modified";
+			this.lastModified.Width = 83;
 			// 
 			// imageList1
 			// 
@@ -137,7 +128,7 @@
 			// 
 			this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(918, 9);
+			this.label2.Location = new System.Drawing.Point(933, 9);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(54, 13);
 			this.label2.TabIndex = 2;
@@ -164,7 +155,7 @@
 			// browseButton
 			// 
 			this.browseButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.browseButton.Location = new System.Drawing.Point(852, 526);
+			this.browseButton.Location = new System.Drawing.Point(867, 526);
 			this.browseButton.Name = "browseButton";
 			this.browseButton.Size = new System.Drawing.Size(120, 23);
 			this.browseButton.TabIndex = 6;
@@ -175,7 +166,7 @@
 			// directoryBox
 			// 
 			this.directoryBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.directoryBox.Location = new System.Drawing.Point(569, 528);
+			this.directoryBox.Location = new System.Drawing.Point(584, 528);
 			this.directoryBox.Name = "directoryBox";
 			this.directoryBox.Size = new System.Drawing.Size(277, 20);
 			this.directoryBox.TabIndex = 7;
@@ -185,7 +176,7 @@
 			// 
 			this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(515, 531);
+			this.label3.Location = new System.Drawing.Point(530, 531);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(48, 13);
 			this.label3.TabIndex = 8;
@@ -227,11 +218,35 @@
 			this.miniLog.TabIndex = 9;
 			this.miniLog.Text = "Ready.";
 			// 
+			// button1
+			// 
+			this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.button1.Location = new System.Drawing.Point(936, 8);
+			this.button1.Name = "button1";
+			this.button1.Size = new System.Drawing.Size(55, 24);
+			this.button1.TabIndex = 2;
+			this.button1.Text = "Up";
+			this.button1.UseVisualStyleBackColor = true;
+			this.button1.Click += new System.EventHandler(this.button1_Click);
+			// 
+			// size
+			// 
+			this.size.Text = "Size";
+			// 
+			// binderTree
+			// 
+			this.binderTree.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.binderTree.Location = new System.Drawing.Point(8, 38);
+			this.binderTree.Name = "binderTree";
+			this.binderTree.Size = new System.Drawing.Size(488, 455);
+			this.binderTree.TabIndex = 3;
+			// 
 			// SyncPage
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(984, 561);
+			this.ClientSize = new System.Drawing.Size(999, 561);
 			this.Controls.Add(this.miniLog);
 			this.Controls.Add(this.label3);
 			this.Controls.Add(this.directoryBox);
@@ -256,7 +271,6 @@
 		#endregion
 
 		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-		private System.Windows.Forms.TreeView binderTree;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.Button syncButton;
@@ -274,8 +288,10 @@
 		private System.Windows.Forms.ListView localList;
 		private System.Windows.Forms.ColumnHeader name;
 		private System.Windows.Forms.ColumnHeader type;
-		private System.Windows.Forms.ColumnHeader size;
 		private System.Windows.Forms.ColumnHeader lastModified;
+		private System.Windows.Forms.Button button1;
+		private System.Windows.Forms.ColumnHeader size;
+		private System.Windows.Forms.TreeView binderTree;
 
 	}
 }

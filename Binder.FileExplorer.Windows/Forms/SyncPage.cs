@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -14,6 +15,8 @@ namespace Binder.Windows.FileExplorer
 {
 	public partial class SyncPage : Form
 	{
+		private string currentLocalDir;
+
 		public SyncPage()
 		{
 			InitializeComponent();
@@ -40,9 +43,10 @@ namespace Binder.Windows.FileExplorer
 			if(folderToOpen == System.Windows.Forms.DialogResult.OK)
 			{
 				Cursor.Current = Cursors.WaitCursor;
-				this.directoryBox.Text = openFolder.SelectedPath;
+				currentLocalDir = openFolder.SelectedPath;
+				directoryBox.Text = currentLocalDir;
 				//Session.PopulateTreeViewFromLocal(localTree, this.imageList1, this.directoryBox.Text, this.contextMenu);
-				Session.PopulateListViewFromLocal(localList, new DirectoryInfo(openFolder.SelectedPath));
+				Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir));
 				Cursor.Current = Cursors.Default;
 			}
 		}
@@ -74,15 +78,34 @@ namespace Binder.Windows.FileExplorer
 			if (e.KeyChar == (char)Keys.Return)
 			{
 				Cursor.Current = Cursors.WaitCursor;
+				currentLocalDir = directoryBox.Text;
 				//Session.PopulateTreeViewFromLocal(localTree, this.imageList1, this.directoryBox.Text, this.contextMenu);
-				Session.PopulateListViewFromLocal(localList, new DirectoryInfo(directoryBox.Text));
+				Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir));
 				Cursor.Current = Cursors.Default;
 			}
 		}
 
 		private void localList_MouseDoubleClick(object sender, MouseEventArgs e)
 		{
-			Session.PopulateListViewFromLocal(localList, new DirectoryInfo(openFolder.SelectedPath + "\\" + localList.FocusedItem.Text.ToString()));
+			if(localList.FocusedItem.ImageIndex == 0)
+			{
+				currentLocalDir = currentLocalDir.TrimEnd('\\') + "\\" + localList.FocusedItem.Text.ToString();
+				Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir));
+				directoryBox.Text = currentLocalDir;
+			}
+			else
+			{
+				Process.Start(currentLocalDir.TrimEnd('\\') + "\\" + localList.FocusedItem.Text.ToString());
+			}
+		}
+
+		private void button1_Click(object sender, EventArgs e)
+		{
+			int index = currentLocalDir.LastIndexOf("\\");
+			if (index > 0)
+				currentLocalDir = currentLocalDir.Substring(0, index);
+			Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir));
+			directoryBox.Text = currentLocalDir;
 		}
 	}
 }

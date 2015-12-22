@@ -126,9 +126,10 @@ namespace Binder.Windows.FileExplorer
 			{
 				item = new ListViewItem(dir.Name, 0);
 				subItems = new ListViewItem.ListViewSubItem[]
-                  {new ListViewItem.ListViewSubItem(item, "Folder"), 
-                   new ListViewItem.ListViewSubItem(item, 
-				dir.LastAccessTime.ToShortDateString())};
+					{new ListViewItem.ListViewSubItem(item, "Folder"),
+					new ListViewItem.ListViewSubItem(item, ""), 
+					new ListViewItem.ListViewSubItem(item, dir.LastAccessTime.ToShortDateString())};
+
 				item.SubItems.AddRange(subItems);
 				list.Items.Add(item);
 			}
@@ -136,15 +137,15 @@ namespace Binder.Windows.FileExplorer
 			{
 				item = new ListViewItem(file.Name, 1);
 				subItems = new ListViewItem.ListViewSubItem[]
-                  { new ListViewItem.ListViewSubItem(item, file.Extension.ToString() + " file"), new ListViewItem.ListViewSubItem(item, file.Length.ToString()), 
-                   new ListViewItem.ListViewSubItem(item, 
-				file.LastAccessTime.ToShortDateString())};
+					{new ListViewItem.ListViewSubItem(item, file.Extension.ToString() + " file"),
+					new ListViewItem.ListViewSubItem(item, file.Length + "B"), 
+					new ListViewItem.ListViewSubItem(item, file.LastAccessTime.ToShortDateString())};
 
 				item.SubItems.AddRange(subItems);
 				list.Items.Add(item);
 			}
 
-			list.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+//			list.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
 		}
 
 		private static void NodeImager(TreeNode node)
