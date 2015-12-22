@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using Newtonsoft.Json;
 using System.IO;
 using System.Web;
+using System.Drawing;
 
 namespace Binder.Windows.FileExplorer
 {
@@ -116,36 +117,99 @@ namespace Binder.Windows.FileExplorer
 				NodeImager(node);
 		}
 
-		public static void PopulateListViewFromLocal(ListView list, DirectoryInfo directory)
+		public static void PopulateListViewFromLocal(ListView list, DirectoryInfo directory, ImageList imageList)
 		{
 			list.Items.Clear();
 			ListViewItem.ListViewSubItem[] subItems;
 			ListViewItem item = null;
-
-			foreach (DirectoryInfo dir in directory.GetDirectories())
+			try
 			{
-				item = new ListViewItem(dir.Name, 0);
-				subItems = new ListViewItem.ListViewSubItem[]
-					{new ListViewItem.ListViewSubItem(item, "Folder"),
-					new ListViewItem.ListViewSubItem(item, ""), 
-					new ListViewItem.ListViewSubItem(item, dir.LastAccessTime.ToShortDateString())};
+				foreach (DirectoryInfo dir in directory.GetDirectories())
+				{
+					item = new ListViewItem(dir.Name, 0);
+					subItems = new ListViewItem.ListViewSubItem[]
+						{new ListViewItem.ListViewSubItem(item, "Folder"),
+						new ListViewItem.ListViewSubItem(item, ""), 
+						new ListViewItem.ListViewSubItem(item, dir.LastAccessTime.ToShortDateString())};
 
-				item.SubItems.AddRange(subItems);
-				list.Items.Add(item);
+					item.SubItems.AddRange(subItems);
+					list.Items.Add(item);
+				}
+				foreach (FileInfo file in directory.GetFiles())
+				{
+					Icon iconForFile = SystemIcons.WinLogo;
+					item = new ListViewItem(file.Name, 1);
+					iconForFile = Icon.ExtractAssociatedIcon(file.FullName);
+					subItems = new ListViewItem.ListViewSubItem[]
+						{new ListViewItem.ListViewSubItem(item, GetFileType(file.Extension.ToString().ToLower())), 
+						new ListViewItem.ListViewSubItem(item, file.Length + "B"), 
+						new ListViewItem.ListViewSubItem(item, file.LastAccessTime.ToShortDateString())};
+
+					item.SubItems.AddRange(subItems);
+					if (!imageList.Images.ContainsKey(file.Extension))
+					{
+						// If not, add the image to the image list.
+						iconForFile = Icon.ExtractAssociatedIcon(file.FullName);
+						imageList.Images.Add(file.Extension, iconForFile);
+					}
+					item.ImageKey = file.Extension;
+					list.Items.Add(item);
+				}
 			}
-			foreach (FileInfo file in directory.GetFiles())
+			catch(Exception e)
 			{
-				item = new ListViewItem(file.Name, 1);
-				subItems = new ListViewItem.ListViewSubItem[]
-					{new ListViewItem.ListViewSubItem(item, file.Extension.ToString() + " file"),
-					new ListViewItem.ListViewSubItem(item, file.Length + "B"), 
-					new ListViewItem.ListViewSubItem(item, file.LastAccessTime.ToShortDateString())};
-
-				item.SubItems.AddRange(subItems);
-				list.Items.Add(item);
+				MessageBox.Show(e.Message,"Error",MessageBoxButtons.OK,MessageBoxIcon.Error);
 			}
 
 //			list.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+		}
+
+		//TODO: There has to be a better way of doing this
+		private static string GetFileType(string ext)
+		{
+			switch(ext)
+			{
+				case ".jpg":
+				case ".jpeg":
+					return "JPEG image";
+				case ".png":
+					return "PNG image";
+				case ".ico":
+					return "Icon";
+				case ".exe":
+					return "Application";
+				case ".htm":
+				case ".html":
+					return "Webpage";
+				case ".doc":
+				case ".docx":
+					return "Microsoft Word Document";
+				case ".xls":
+				case ".xlsx":
+					return "Microsoft Excel Spreadsheet";
+				case ".txt":
+					return "Text document";
+				case ".ini":
+					return "Configuration settings";
+				case ".dll":
+					return "Application extension";
+				case ".msi":
+					return "Windows Installer Package";
+				case ".js":
+					return "Javascript file";
+				case ".cs":
+					return "C# file";
+				case ".bmp":
+					return "Bitmap image";
+				case ".csv":
+					return "Comma Separated Values file";
+				case ".gif":
+					return "GIF image";
+
+
+				default:
+					return ext.ToUpper().TrimStart('.') + " File";
+			}
 		}
 
 		private static void NodeImager(TreeNode node)

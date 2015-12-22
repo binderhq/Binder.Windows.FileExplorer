@@ -46,7 +46,7 @@ namespace Binder.Windows.FileExplorer
 				currentLocalDir = openFolder.SelectedPath;
 				directoryBox.Text = currentLocalDir;
 				//Session.PopulateTreeViewFromLocal(localTree, this.imageList1, this.directoryBox.Text, this.contextMenu);
-				Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir));
+				Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir), imageList1);
 				Cursor.Current = Cursors.Default;
 			}
 		}
@@ -80,7 +80,7 @@ namespace Binder.Windows.FileExplorer
 				Cursor.Current = Cursors.WaitCursor;
 				currentLocalDir = directoryBox.Text;
 				//Session.PopulateTreeViewFromLocal(localTree, this.imageList1, this.directoryBox.Text, this.contextMenu);
-				Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir));
+				Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir), imageList1);
 				Cursor.Current = Cursors.Default;
 			}
 		}
@@ -90,7 +90,7 @@ namespace Binder.Windows.FileExplorer
 			if(localList.FocusedItem.ImageIndex == 0)
 			{
 				currentLocalDir = currentLocalDir.TrimEnd('\\') + "\\" + localList.FocusedItem.Text.ToString();
-				Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir));
+				Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir), imageList1);
 				directoryBox.Text = currentLocalDir;
 			}
 			else
@@ -104,7 +104,7 @@ namespace Binder.Windows.FileExplorer
 			int index = currentLocalDir.LastIndexOf("\\");
 			if (index > 0)
 				currentLocalDir = currentLocalDir.Substring(0, index);
-			Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir));
+			Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir), imageList1);
 			directoryBox.Text = currentLocalDir;
 		}
 	}
