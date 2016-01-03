@@ -141,7 +141,7 @@ namespace Binder.Windows.FileExplorer
 					item = new ListViewItem(file.Name, 1);
 					iconForFile = Icon.ExtractAssociatedIcon(file.FullName);
 					subItems = new ListViewItem.ListViewSubItem[]
-						{new ListViewItem.ListViewSubItem(item, GetFileType(file.Extension.ToString().ToLower())), 
+						{new ListViewItem.ListViewSubItem(item, file.Extension.TrimStart('.').ToUpper() + " File"), 
 						new ListViewItem.ListViewSubItem(item, file.Length + "B"), 
 						new ListViewItem.ListViewSubItem(item, file.LastAccessTime.ToShortDateString())};
 
@@ -162,54 +162,6 @@ namespace Binder.Windows.FileExplorer
 			}
 
 //			list.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
-		}
-
-		//TODO: There has to be a better way of doing this
-		private static string GetFileType(string ext)
-		{
-			switch(ext)
-			{
-				case ".jpg":
-				case ".jpeg":
-					return "JPEG image";
-				case ".png":
-					return "PNG image";
-				case ".ico":
-					return "Icon";
-				case ".exe":
-					return "Application";
-				case ".htm":
-				case ".html":
-					return "Webpage";
-				case ".doc":
-				case ".docx":
-					return "Microsoft Word Document";
-				case ".xls":
-				case ".xlsx":
-					return "Microsoft Excel Spreadsheet";
-				case ".txt":
-					return "Text document";
-				case ".ini":
-					return "Configuration settings";
-				case ".dll":
-					return "Application extension";
-				case ".msi":
-					return "Windows Installer Package";
-				case ".js":
-					return "Javascript file";
-				case ".cs":
-					return "C# file";
-				case ".bmp":
-					return "Bitmap image";
-				case ".csv":
-					return "Comma Separated Values file";
-				case ".gif":
-					return "GIF image";
-
-
-				default:
-					return ext.ToUpper().TrimStart('.') + " File";
-			}
 		}
 
 		private static void NodeImager(TreeNode node)

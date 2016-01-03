@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Newtonsoft.Json;
 
 namespace Binder.Windows.FileExplorer
 {
@@ -17,13 +18,22 @@ namespace Binder.Windows.FileExplorer
 	{
 		private string currentLocalDir;
 
+		private class CurrentLocalDir { public string currentLocalDir; }
+
 		public SyncPage()
 		{
 			InitializeComponent();
+			
 		}
 
 		private void SyncPage_Load(object sender, EventArgs e)
 		{
+			if(File.Exists("C:\\Users\\ajones\\Downloads\\file.json"))
+			{
+				currentLocalDir = JsonConvert.DeserializeObject<CurrentLocalDir>(File.ReadAllText("C:\\Users\\ajones\\Downloads\\file.json")).currentLocalDir;
+				Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir), imageList1);
+			}
+
 			var currentDirectory = Session.GetDirectory(Session.currentSelectedSite);
 			string[] filePaths = currentDirectory.Select(x => x.RemoteFilePath).ToArray();
 			this.binderTree.Nodes.Clear();
@@ -87,6 +97,7 @@ namespace Binder.Windows.FileExplorer
 
 		private void localList_MouseDoubleClick(object sender, MouseEventArgs e)
 		{
+			Cursor.Current = Cursors.WaitCursor;
 			if(localList.FocusedItem.ImageIndex == 0)
 			{
 				currentLocalDir = currentLocalDir.TrimEnd('\\') + "\\" + localList.FocusedItem.Text.ToString();
@@ -97,6 +108,7 @@ namespace Binder.Windows.FileExplorer
 			{
 				Process.Start(currentLocalDir.TrimEnd('\\') + "\\" + localList.FocusedItem.Text.ToString());
 			}
+			Cursor.Current = Cursors.Default;
 		}
 
 		private void button1_Click(object sender, EventArgs e)
@@ -106,6 +118,12 @@ namespace Binder.Windows.FileExplorer
 				currentLocalDir = currentLocalDir.Substring(0, index);
 			Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir), imageList1);
 			directoryBox.Text = currentLocalDir;
+		}
+
+		private void SyncPage_FormClosed(object sender, FormClosedEventArgs e)
+		{
+			File.WriteAllText("C:\\Users\\ajones\\Downloads\\file.json", JsonConvert.SerializeObject(new CurrentLocalDir() { currentLocalDir = currentLocalDir }));
+			Environment.Exit(0);
 		}
 	}
 }
