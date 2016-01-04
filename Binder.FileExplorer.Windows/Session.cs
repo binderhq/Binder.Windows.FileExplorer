@@ -96,6 +96,45 @@ namespace Binder.Windows.FileExplorer
 			}
 		}
 
+		public static void PopulateListViewFromServer(ListView list, SubFolder[] folders, SiteFileModel[] files, ContextMenuStrip menu, ImageList imageList)
+		{
+			list.Items.Clear();
+			ListViewItem.ListViewSubItem[] subItems;
+			ListViewItem item = null;
+			try
+			{
+				foreach (SubFolder folder in folders)
+				{
+					item = new ListViewItem(folder.Name, 0);
+					subItems = new ListViewItem.ListViewSubItem[]
+						{new ListViewItem.ListViewSubItem(item, "File folder"),
+						new ListViewItem.ListViewSubItem(item, ""), 
+						new ListViewItem.ListViewSubItem(item, folder.LastWriteTimeUtc)};
+
+					item.SubItems.AddRange(subItems);
+					list.Items.Add(item);
+				}
+				foreach (SiteFileModel file in files)
+				{
+					item = new ListViewItem(file.Name, 1);
+					subItems = new ListViewItem.ListViewSubItem[]
+						{new ListViewItem.ListViewSubItem(item, ExtensionNamer(Path.GetExtension(file.Name))), 
+						new ListViewItem.ListViewSubItem(item, GetSizeReadable(file.Length)), 
+						new ListViewItem.ListViewSubItem(item, file.LastWriteTimeUtc)};
+
+					item.SubItems.AddRange(subItems);
+					list.Items.Add(item);
+					item.Name = file.Path;
+				}
+			}
+			catch (Exception e)
+			{
+				MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
+
+			list.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+		}
+
 		public static void PopulateTreeViewFromLocal(TreeView treeView, ImageList images, string path, ContextMenuStrip menu)
 		{
 			treeView.Nodes.Clear();
@@ -142,7 +181,7 @@ namespace Binder.Windows.FileExplorer
 					iconForFile = Icon.ExtractAssociatedIcon(file.FullName);
 					subItems = new ListViewItem.ListViewSubItem[]
 						{new ListViewItem.ListViewSubItem(item, ExtensionNamer(file.Extension)), 
-						new ListViewItem.ListViewSubItem(item, file.Length + "B"), 
+						new ListViewItem.ListViewSubItem(item, GetSizeReadable(file.Length)), 
 						new ListViewItem.ListViewSubItem(item, file.LastAccessTime.ToString())};
 
 					item.SubItems.AddRange(subItems);
@@ -170,6 +209,50 @@ namespace Binder.Windows.FileExplorer
 				return "Unknown file type";
 			else
 				return ext.ToUpper().TrimStart('.') + " file";
+		}
+
+		public static string GetSizeReadable(long i)
+		{
+			string sign = (i < 0 ? "-" : "");
+			double readable = (i < 0 ? -i : i);
+			string suffix;
+			if (i >= 0x1000000000000000) // Exabyte
+			{
+				suffix = "EB";
+				readable = (double)(i >> 50);
+			}
+			else if (i >= 0x4000000000000) // Petabyte
+			{
+				suffix = "PB";
+				readable = (double)(i >> 40);
+			}
+			else if (i >= 0x10000000000) // Terabyte
+			{
+				suffix = "TB";
+				readable = (double)(i >> 30);
+			}
+			else if (i >= 0x40000000) // Gigabyte
+			{
+				suffix = "GB";
+				readable = (double)(i >> 20);
+			}
+			else if (i >= 0x100000) // Megabyte
+			{
+				suffix = "MB";
+				readable = (double)(i >> 10);
+			}
+			else if (i >= 0x400) // Kilobyte
+			{
+				suffix = "KB";
+				readable = (double)i;
+			}
+			else
+			{
+				return i.ToString(sign + "0 B"); // Byte
+			}
+			readable = readable / 1024;
+
+			return sign + readable.ToString("0.### ") + suffix;
 		}
 
 		private static void NodeImager(TreeNode node)
@@ -287,7 +370,30 @@ namespace Binder.Windows.FileExplorer
 				return false;
 			}
 		}
-		
+
+	//Mckay gave me this stuff. He said it should just werk but there seems to be a lot missing
+		public static Task<HttpResponseMessage> PostFileAsync(this Url url, string filepath)
+		{
+			return new FlurlClient(url).PostFileAsync(filepath);
+		}
+
+		public static Task<HttpResponseMessage> PostFileAsync(this string url, string filepath)
+		{
+			return new FlurlClient(url).PostFileAsync(filepath);
+		}
+
+		public static Task<HttpResponseMessage> PostFileAsync(this FlurlClient client, string filepath)
+		{
+			var data = File.ReadAllBytes(filepath);
+			var content = new MultipartFormDataContent();
+			var file = new ByteArrayContent(data);
+			//content.Headers.Add("Content-Type", "multipart/form-data");
+			//content.Headers.Add("Content-Length", data.Length.ToString());
+			content.Add(file, "attachment", "a.txt");
+			return client.SendAsync(HttpMethod.Post, content: content);
+		}
+	//End McKay's code
+
 		public static CurrentUserInfo CurrentUser()
 		{
 			string url = catalogUrl + "service.api/authentication/CurrentUser?api_key=" + _sessionToken;
@@ -332,6 +438,15 @@ namespace Binder.Windows.FileExplorer
 			}
 		}
 
+		public static SiteFolderModel GetSiteFilesFolders(string siteId, string path)
+		{
+			string url = catalogUrl + "service.api/region/SiteNavigator/testing111/Folder?path=" + path + "&api_key=" + _sessionToken;
+			var response = url.GetAsync().Result;
+			var x = response.Content.ReadAsStringAsync().Result;
+			var y = JsonConvert.DeserializeObject<SiteFolderModel>(x);
+			return y;
+		}
+
 		public static ZipFileRequestModel ZipFileRequest(string siteId, string path)
 		{
 			string url = catalogUrl + "service.api/region/ZipFileRequests?api_key=" + _sessionToken;
@@ -366,6 +481,32 @@ namespace Binder.Windows.FileExplorer
 			public string Name;
 			public string Subdomain;
 			public string DefautStorageZoneId;
+		}
+
+		public class SiteFolderModel
+		{
+			public SubFolder[] Folders;
+			public SiteFileModel[] Files;
+		}
+
+		public class SubFolder
+		{
+			public string Name;
+			public string Path;
+			public string IconUrl;
+			public string ThumbnailUrl;
+			public string LastWriteTimeUtc;
+		}
+
+		public class SiteFileModel
+		{
+			public string DownloadUrl;
+			public string LastWriteTimeUtc;
+			public int Length;
+			public string ThumbnailUrl;
+			public string Name;
+			public string Path;
+			public string IconUrl;
 		}
 
 		public class CreateSessionResponse

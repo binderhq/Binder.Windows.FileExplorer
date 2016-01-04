@@ -16,6 +16,7 @@ namespace Binder.Windows.FileExplorer
 	public partial class SyncPage : Form
 	{
 		private string currentLocalDir;
+		private string currentBinderDir;
 
 		public SyncPage()
 		{
@@ -24,10 +25,9 @@ namespace Binder.Windows.FileExplorer
 
 		private void SyncPage_Load(object sender, EventArgs e)
 		{
-			var currentDirectory = Session.GetDirectory(Session.currentSelectedSite);
-			string[] filePaths = currentDirectory.Select(x => x.RemoteFilePath).ToArray();
-			this.binderTree.Nodes.Clear();
-			Session.PopulateTreeViewFromServer(binderTree, this.imageList1, filePaths, '/', this.contextMenu);
+			currentBinderDir = "/";
+			var currentDirectory = Session.GetSiteFilesFolders(Session.currentSelectedSite, currentBinderDir);
+			Session.PopulateListViewFromServer(binderList, currentDirectory.Folders, currentDirectory.Files, contextMenu, imageList1);
 		}
 
 		private void backButton_Click(object sender, EventArgs e)
@@ -45,32 +45,28 @@ namespace Binder.Windows.FileExplorer
 				Cursor.Current = Cursors.WaitCursor;
 				currentLocalDir = openFolder.SelectedPath;
 				directoryBox.Text = currentLocalDir;
-				//Session.PopulateTreeViewFromLocal(localTree, this.imageList1, this.directoryBox.Text, this.contextMenu);
 				Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir), imageList1);
+				if (directoryBox.Text.Length > 3)
+					button1.Enabled = true;
 				Cursor.Current = Cursors.Default;
 			}
 		}
 
 		private void downloadMenu_Click(object sender, EventArgs e)
 		{
-			string pathToDownload = this.binderTree.SelectedNode.Name;
-			string fileToDownload = this.binderTree.SelectedNode.Text;
+			string pathToDownload = this.binderList.FocusedItem.Name;
+			string fileToDownload = this.binderList.FocusedItem.Text;
 
 			saveFile.FileName = fileToDownload;
 			DialogResult downloadTo = saveFile.ShowDialog();
 
 			if(downloadTo == System.Windows.Forms.DialogResult.OK)
 			{
-//				if(this.binderTree.SelectedNode.ImageIndex == 1)
+				if (this.binderList.FocusedItem.ImageIndex != 0)
 					Session.GetFile(Session.currentSelectedSite, pathToDownload, fileToDownload.TrimEnd('/'), saveFile.FileName, this.progressBar1, this.miniLog);
-//				else if (this.binderTree.SelectedNode.ImageIndex == 0)
-//					Session.GetZipFile(pathToDownload, saveFile.FileName, this.progressBar1, this.miniLog);
+				else
+					Session.GetZipFile(pathToDownload, saveFile.FileName, this.progressBar1, this.miniLog);
 			}
-		}
-
-		private void binderTree_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
-		{
-			if (e.Button == MouseButtons.Right || e.Button == MouseButtons.Left) binderTree.SelectedNode = e.Node;
 		}
 
 		private void directoryBox_KeyPress(object sender, KeyPressEventArgs e)
@@ -79,8 +75,9 @@ namespace Binder.Windows.FileExplorer
 			{
 				Cursor.Current = Cursors.WaitCursor;
 				currentLocalDir = directoryBox.Text;
-				//Session.PopulateTreeViewFromLocal(localTree, this.imageList1, this.directoryBox.Text, this.contextMenu);
 				Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir), imageList1);
+				if(directoryBox.Text.Length > 3)
+					button1.Enabled = true;
 				Cursor.Current = Cursors.Default;
 			}
 		}
@@ -89,9 +86,11 @@ namespace Binder.Windows.FileExplorer
 		{
 			if(localList.FocusedItem.ImageIndex == 0)
 			{
-				currentLocalDir = currentLocalDir.TrimEnd('\\') + "\\" + localList.FocusedItem.Text.ToString();
+				currentLocalDir = currentLocalDir.TrimEnd('\\') + "\\" + localList.FocusedItem.Text.ToString() + "\\";
 				Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir), imageList1);
 				directoryBox.Text = currentLocalDir;
+				if (directoryBox.Text.Length > 3)
+					button1.Enabled = true;
 			}
 			else
 			{
@@ -101,15 +100,17 @@ namespace Binder.Windows.FileExplorer
 
 		private void button1_Click(object sender, EventArgs e)
 		{
-			int index = currentLocalDir.LastIndexOf("\\");
-			if (index > 0)
-				currentLocalDir = currentLocalDir.Substring(0, index);
+			int index = currentLocalDir.TrimEnd('\\').LastIndexOf("\\");
+			currentLocalDir = currentLocalDir.Substring(0, index) + "\\";
+			if(currentLocalDir.Length == 3)
+				button1.Enabled = false;
 			Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir), imageList1);
 			directoryBox.Text = currentLocalDir;
 		}
 
-		private void binderTree_ItemDrag(object sender, ItemDragEventArgs e)
+		private void binderList_ItemDrag(object sender, ItemDragEventArgs e)
 		{
+			binderList.FocusedItem = (ListViewItem) e.Item;
 			DoDragDrop(e.Item, DragDropEffects.Move);
 		}
 
@@ -120,16 +121,41 @@ namespace Binder.Windows.FileExplorer
 
 		private void localList_DragDrop(object sender, DragEventArgs e)
 		{
-			string pathToDownload = this.binderTree.SelectedNode.Name;
-			string fileToDownload = this.binderTree.SelectedNode.Text;
+			string pathToDownload = this.binderList.FocusedItem.Name;
+			string fileToDownload = this.binderList.FocusedItem.Text;
 
 			Session.GetFile(Session.currentSelectedSite, pathToDownload, fileToDownload.TrimEnd('/'), this.directoryBox.Text + "\\" + fileToDownload.TrimEnd('/'), this.progressBar1, this.miniLog);
 
 			Cursor.Current = Cursors.WaitCursor;
-			System.Threading.Thread.Sleep(200);
+			System.Threading.Thread.Sleep(500);
 			currentLocalDir = directoryBox.Text;
 			Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir), imageList1);
 			Cursor.Current = Cursors.Default;
+		}
+
+		private void binderList_MouseDoubleClick(object sender, MouseEventArgs e)
+		{
+			if (binderList.FocusedItem.ImageIndex == 0)
+			{
+				if(Equals(currentBinderDir, "/"))
+					button2.Enabled = true;
+				currentBinderDir = currentBinderDir.TrimEnd('/') + "/" + binderList.FocusedItem.Text;
+				var currentDirectory = Session.GetSiteFilesFolders(Session.currentSelectedSite, currentBinderDir);
+				Session.PopulateListViewFromServer(binderList, currentDirectory.Folders, currentDirectory.Files, contextMenu, imageList1);
+			}
+		}
+
+		private void button2_Click(object sender, EventArgs e)
+		{
+			int index = currentBinderDir.LastIndexOf("/");
+			currentBinderDir = currentBinderDir.Substring(0, index);
+			if(Equals(currentBinderDir, ""))
+			{
+				currentBinderDir = "/";
+				button2.Enabled = false;
+			}
+			var currentDirectory = Session.GetSiteFilesFolders(Session.currentSelectedSite, currentBinderDir);
+			Session.PopulateListViewFromServer(binderList, currentDirectory.Folders, currentDirectory.Files, contextMenu, imageList1);
 		}
 	}
 }

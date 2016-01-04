@@ -38,7 +38,11 @@
 			this.lastModified = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.imageList1 = new System.Windows.Forms.ImageList(this.components);
 			this.button1 = new System.Windows.Forms.Button();
-			this.binderTree = new System.Windows.Forms.TreeView();
+			this.binderList = new System.Windows.Forms.ListView();
+			this.name1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.type1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.size1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.lastModified1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.label1 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
 			this.syncButton = new System.Windows.Forms.Button();
@@ -52,6 +56,7 @@
 			this.saveFile = new System.Windows.Forms.SaveFileDialog();
 			this.miniLog = new System.Windows.Forms.TextBox();
 			this.openFolder = new System.Windows.Forms.FolderBrowserDialog();
+			this.button2 = new System.Windows.Forms.Button();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.contextMenu.SuspendLayout();
 			this.SuspendLayout();
@@ -66,7 +71,8 @@
 			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
 			this.tableLayoutPanel1.Controls.Add(this.localList, 1, 1);
 			this.tableLayoutPanel1.Controls.Add(this.button1, 1, 0);
-			this.tableLayoutPanel1.Controls.Add(this.binderTree, 0, 1);
+			this.tableLayoutPanel1.Controls.Add(this.binderList, 0, 1);
+			this.tableLayoutPanel1.Controls.Add(this.button2, 0, 0);
 			this.tableLayoutPanel1.GrowStyle = System.Windows.Forms.TableLayoutPanelGrowStyle.FixedSize;
 			this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 20);
 			this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -126,6 +132,7 @@
 			// 
 			this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.button1.Enabled = false;
 			this.button1.Location = new System.Drawing.Point(936, 8);
 			this.button1.Name = "button1";
 			this.button1.Size = new System.Drawing.Size(55, 24);
@@ -134,14 +141,42 @@
 			this.button1.UseVisualStyleBackColor = true;
 			this.button1.Click += new System.EventHandler(this.button1_Click);
 			// 
-			// binderTree
+			// binderList
 			// 
-			this.binderTree.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.binderTree.Location = new System.Drawing.Point(8, 38);
-			this.binderTree.Name = "binderTree";
-			this.binderTree.Size = new System.Drawing.Size(488, 455);
-			this.binderTree.TabIndex = 3;
-			this.binderTree.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.binderTree_ItemDrag);
+			this.binderList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.name1,
+            this.type1,
+            this.size1,
+            this.lastModified1});
+			this.binderList.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.binderList.ForeColor = System.Drawing.SystemColors.WindowText;
+			this.binderList.Location = new System.Drawing.Point(8, 38);
+			this.binderList.Name = "binderList";
+			this.binderList.Size = new System.Drawing.Size(488, 455);
+			this.binderList.SmallImageList = this.imageList1;
+			this.binderList.TabIndex = 3;
+			this.binderList.UseCompatibleStateImageBehavior = false;
+			this.binderList.View = System.Windows.Forms.View.Details;
+			this.binderList.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.binderList_ItemDrag);
+			this.binderList.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.binderList_MouseDoubleClick);
+			// 
+			// name1
+			// 
+			this.name1.Text = "Name";
+			this.name1.Width = 222;
+			// 
+			// type1
+			// 
+			this.type1.Text = "Type";
+			// 
+			// size1
+			// 
+			this.size1.Text = "Size";
+			// 
+			// lastModified1
+			// 
+			this.lastModified1.Text = "Last Modified";
+			this.lastModified1.Width = 81;
 			// 
 			// label1
 			// 
@@ -246,6 +281,19 @@
 			this.miniLog.TabIndex = 9;
 			this.miniLog.Text = "Ready.";
 			// 
+			// button2
+			// 
+			this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+			this.button2.Enabled = false;
+			this.button2.Location = new System.Drawing.Point(8, 8);
+			this.button2.Name = "button2";
+			this.button2.Size = new System.Drawing.Size(55, 24);
+			this.button2.TabIndex = 4;
+			this.button2.Text = "Up";
+			this.button2.UseVisualStyleBackColor = true;
+			this.button2.Click += new System.EventHandler(this.button2_Click);
+			// 
 			// SyncPage
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -295,7 +343,12 @@
 		private System.Windows.Forms.ColumnHeader lastModified;
 		private System.Windows.Forms.Button button1;
 		private System.Windows.Forms.ColumnHeader size;
-		private System.Windows.Forms.TreeView binderTree;
+		private System.Windows.Forms.ListView binderList;
+		private System.Windows.Forms.ColumnHeader name1;
+		private System.Windows.Forms.ColumnHeader type1;
+		private System.Windows.Forms.ColumnHeader size1;
+		private System.Windows.Forms.ColumnHeader lastModified1;
+		private System.Windows.Forms.Button button2;
 
 	}
 }
