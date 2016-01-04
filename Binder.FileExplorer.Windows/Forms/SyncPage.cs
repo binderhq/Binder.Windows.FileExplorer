@@ -10,7 +10,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Newtonsoft.Json;
 
 namespace Binder.Windows.FileExplorer
 {
@@ -18,22 +17,13 @@ namespace Binder.Windows.FileExplorer
 	{
 		private string currentLocalDir;
 
-		private class CurrentLocalDir { public string currentLocalDir; }
-
 		public SyncPage()
 		{
 			InitializeComponent();
-			
 		}
 
 		private void SyncPage_Load(object sender, EventArgs e)
 		{
-			if(File.Exists("C:\\Users\\ajones\\Downloads\\file.json"))
-			{
-				currentLocalDir = JsonConvert.DeserializeObject<CurrentLocalDir>(File.ReadAllText("C:\\Users\\ajones\\Downloads\\file.json")).currentLocalDir;
-				Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir), imageList1);
-			}
-
 			var currentDirectory = Session.GetDirectory(Session.currentSelectedSite);
 			string[] filePaths = currentDirectory.Select(x => x.RemoteFilePath).ToArray();
 			this.binderTree.Nodes.Clear();
@@ -80,7 +70,7 @@ namespace Binder.Windows.FileExplorer
 
 		private void binderTree_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
 		{
-			if (e.Button == MouseButtons.Right) binderTree.SelectedNode = e.Node;
+			if (e.Button == MouseButtons.Right || e.Button == MouseButtons.Left) binderTree.SelectedNode = e.Node;
 		}
 
 		private void directoryBox_KeyPress(object sender, KeyPressEventArgs e)
@@ -97,7 +87,6 @@ namespace Binder.Windows.FileExplorer
 
 		private void localList_MouseDoubleClick(object sender, MouseEventArgs e)
 		{
-			Cursor.Current = Cursors.WaitCursor;
 			if(localList.FocusedItem.ImageIndex == 0)
 			{
 				currentLocalDir = currentLocalDir.TrimEnd('\\') + "\\" + localList.FocusedItem.Text.ToString();
@@ -108,7 +97,6 @@ namespace Binder.Windows.FileExplorer
 			{
 				Process.Start(currentLocalDir.TrimEnd('\\') + "\\" + localList.FocusedItem.Text.ToString());
 			}
-			Cursor.Current = Cursors.Default;
 		}
 
 		private void button1_Click(object sender, EventArgs e)
@@ -120,10 +108,28 @@ namespace Binder.Windows.FileExplorer
 			directoryBox.Text = currentLocalDir;
 		}
 
-		private void SyncPage_FormClosed(object sender, FormClosedEventArgs e)
+		private void binderTree_ItemDrag(object sender, ItemDragEventArgs e)
 		{
-			File.WriteAllText("C:\\Users\\ajones\\Downloads\\file.json", JsonConvert.SerializeObject(new CurrentLocalDir() { currentLocalDir = currentLocalDir }));
-			Environment.Exit(0);
+			DoDragDrop(e.Item, DragDropEffects.Move);
+		}
+
+		private void localList_DragEnter(object sender, DragEventArgs e)
+		{
+			e.Effect = DragDropEffects.Move;
+		}
+
+		private void localList_DragDrop(object sender, DragEventArgs e)
+		{
+			string pathToDownload = this.binderTree.SelectedNode.Name;
+			string fileToDownload = this.binderTree.SelectedNode.Text;
+
+			Session.GetFile(Session.currentSelectedSite, pathToDownload, fileToDownload.TrimEnd('/'), this.directoryBox.Text + "\\" + fileToDownload.TrimEnd('/'), this.progressBar1, this.miniLog);
+
+			Cursor.Current = Cursors.WaitCursor;
+			System.Threading.Thread.Sleep(200);
+			currentLocalDir = directoryBox.Text;
+			Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir), imageList1);
+			Cursor.Current = Cursors.Default;
 		}
 	}
 }

@@ -34,8 +34,11 @@
 			this.localList = new System.Windows.Forms.ListView();
 			this.name = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.type = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.size = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.lastModified = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.imageList1 = new System.Windows.Forms.ImageList(this.components);
+			this.button1 = new System.Windows.Forms.Button();
+			this.binderTree = new System.Windows.Forms.TreeView();
 			this.label1 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
 			this.syncButton = new System.Windows.Forms.Button();
@@ -49,9 +52,6 @@
 			this.saveFile = new System.Windows.Forms.SaveFileDialog();
 			this.miniLog = new System.Windows.Forms.TextBox();
 			this.openFolder = new System.Windows.Forms.FolderBrowserDialog();
-			this.button1 = new System.Windows.Forms.Button();
-			this.size = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.binderTree = new System.Windows.Forms.TreeView();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.contextMenu.SuspendLayout();
 			this.SuspendLayout();
@@ -79,6 +79,7 @@
 			// 
 			// localList
 			// 
+			this.localList.AllowDrop = true;
 			this.localList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.name,
             this.type,
@@ -92,6 +93,8 @@
 			this.localList.TabIndex = 1;
 			this.localList.UseCompatibleStateImageBehavior = false;
 			this.localList.View = System.Windows.Forms.View.Details;
+			this.localList.DragDrop += new System.Windows.Forms.DragEventHandler(this.localList_DragDrop);
+			this.localList.DragEnter += new System.Windows.Forms.DragEventHandler(this.localList_DragEnter);
 			this.localList.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.localList_MouseDoubleClick);
 			// 
 			// name
@@ -102,6 +105,10 @@
 			// type
 			// 
 			this.type.Text = "Type";
+			// 
+			// size
+			// 
+			this.size.Text = "Size";
 			// 
 			// lastModified
 			// 
@@ -114,6 +121,27 @@
 			this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
 			this.imageList1.Images.SetKeyName(0, "folder.png");
 			this.imageList1.Images.SetKeyName(1, "pTEy9.png");
+			// 
+			// button1
+			// 
+			this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.button1.Location = new System.Drawing.Point(936, 8);
+			this.button1.Name = "button1";
+			this.button1.Size = new System.Drawing.Size(55, 24);
+			this.button1.TabIndex = 2;
+			this.button1.Text = "Up";
+			this.button1.UseVisualStyleBackColor = true;
+			this.button1.Click += new System.EventHandler(this.button1_Click);
+			// 
+			// binderTree
+			// 
+			this.binderTree.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.binderTree.Location = new System.Drawing.Point(8, 38);
+			this.binderTree.Name = "binderTree";
+			this.binderTree.Size = new System.Drawing.Size(488, 455);
+			this.binderTree.TabIndex = 3;
+			this.binderTree.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.binderTree_ItemDrag);
 			// 
 			// label1
 			// 
@@ -217,30 +245,6 @@
 			this.miniLog.Size = new System.Drawing.Size(120, 20);
 			this.miniLog.TabIndex = 9;
 			this.miniLog.Text = "Ready.";
-			// 
-			// button1
-			// 
-			this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.button1.Location = new System.Drawing.Point(936, 8);
-			this.button1.Name = "button1";
-			this.button1.Size = new System.Drawing.Size(55, 24);
-			this.button1.TabIndex = 2;
-			this.button1.Text = "Up";
-			this.button1.UseVisualStyleBackColor = true;
-			this.button1.Click += new System.EventHandler(this.button1_Click);
-			// 
-			// size
-			// 
-			this.size.Text = "Size";
-			// 
-			// binderTree
-			// 
-			this.binderTree.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.binderTree.Location = new System.Drawing.Point(8, 38);
-			this.binderTree.Name = "binderTree";
-			this.binderTree.Size = new System.Drawing.Size(488, 455);
-			this.binderTree.TabIndex = 3;
 			// 
 			// SyncPage
 			// 

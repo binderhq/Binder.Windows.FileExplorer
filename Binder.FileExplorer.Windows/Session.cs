@@ -128,7 +128,7 @@ namespace Binder.Windows.FileExplorer
 				{
 					item = new ListViewItem(dir.Name, 0);
 					subItems = new ListViewItem.ListViewSubItem[]
-						{new ListViewItem.ListViewSubItem(item, "Folder"),
+						{new ListViewItem.ListViewSubItem(item, "File folder"),
 						new ListViewItem.ListViewSubItem(item, ""), 
 						new ListViewItem.ListViewSubItem(item, dir.LastAccessTime.ToShortDateString())};
 
@@ -141,9 +141,9 @@ namespace Binder.Windows.FileExplorer
 					item = new ListViewItem(file.Name, 1);
 					iconForFile = Icon.ExtractAssociatedIcon(file.FullName);
 					subItems = new ListViewItem.ListViewSubItem[]
-						{new ListViewItem.ListViewSubItem(item, file.Extension.TrimStart('.').ToUpper() + " File"), 
+						{new ListViewItem.ListViewSubItem(item, ExtensionNamer(file.Extension)), 
 						new ListViewItem.ListViewSubItem(item, file.Length + "B"), 
-						new ListViewItem.ListViewSubItem(item, file.LastAccessTime.ToShortDateString())};
+						new ListViewItem.ListViewSubItem(item, file.LastAccessTime.ToString())};
 
 					item.SubItems.AddRange(subItems);
 					if (!imageList.Images.ContainsKey(file.Extension))
@@ -161,7 +161,15 @@ namespace Binder.Windows.FileExplorer
 				MessageBox.Show(e.Message,"Error",MessageBoxButtons.OK,MessageBoxIcon.Error);
 			}
 
-//			list.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+			list.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+		}
+
+		private static string ExtensionNamer(string ext)
+		{
+			if(Equals(ext, ""))
+				return "Unknown file type";
+			else
+				return ext.ToUpper().TrimStart('.') + " file";
 		}
 
 		private static void NodeImager(TreeNode node)
