@@ -192,6 +192,7 @@ namespace Binder.Windows.FileExplorer
 						imageList.Images.Add(file.Extension, iconForFile);
 					}
 					item.ImageKey = file.Extension;
+					item.Name = file.FullName;
 					list.Items.Add(item);
 				}
 			}
@@ -369,6 +370,12 @@ namespace Binder.Windows.FileExplorer
 				log.Text = "Zip file creation " + ZipFileCheck(zipId).Status;
 				return false;
 			}
+		}
+
+		public static void UploadFiles(string uploadTo, string uploadFrom)
+		{
+			string url = catalogUrl + "service.api/region/SiteNavigator/" + currentSelectedSite + "/Folder/UploadedFiles?path=" + WebUtility.UrlEncode(uploadTo) + "&api_key=" + _sessionToken;
+			PostFileAsync(url, uploadFrom);
 		}
 
 	//Mckay gave me this stuff. He said it should just werk but there seems to be a lot missing

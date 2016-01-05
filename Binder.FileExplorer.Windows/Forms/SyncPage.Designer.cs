@@ -43,6 +43,7 @@
 			this.type1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.size1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.lastModified1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.button2 = new System.Windows.Forms.Button();
 			this.label1 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
 			this.syncButton = new System.Windows.Forms.Button();
@@ -56,7 +57,6 @@
 			this.saveFile = new System.Windows.Forms.SaveFileDialog();
 			this.miniLog = new System.Windows.Forms.TextBox();
 			this.openFolder = new System.Windows.Forms.FolderBrowserDialog();
-			this.button2 = new System.Windows.Forms.Button();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.contextMenu.SuspendLayout();
 			this.SuspendLayout();
@@ -99,6 +99,7 @@
 			this.localList.TabIndex = 1;
 			this.localList.UseCompatibleStateImageBehavior = false;
 			this.localList.View = System.Windows.Forms.View.Details;
+			this.localList.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.localList_ItemDrag);
 			this.localList.DragDrop += new System.Windows.Forms.DragEventHandler(this.localList_DragDrop);
 			this.localList.DragEnter += new System.Windows.Forms.DragEventHandler(this.localList_DragEnter);
 			this.localList.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.localList_MouseDoubleClick);
@@ -143,6 +144,7 @@
 			// 
 			// binderList
 			// 
+			this.binderList.AllowDrop = true;
 			this.binderList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.name1,
             this.type1,
@@ -158,6 +160,8 @@
 			this.binderList.UseCompatibleStateImageBehavior = false;
 			this.binderList.View = System.Windows.Forms.View.Details;
 			this.binderList.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.binderList_ItemDrag);
+			this.binderList.DragDrop += new System.Windows.Forms.DragEventHandler(this.binderList_DragDrop);
+			this.binderList.DragEnter += new System.Windows.Forms.DragEventHandler(this.binderList_DragEnter);
 			this.binderList.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.binderList_MouseDoubleClick);
 			// 
 			// name1
@@ -177,6 +181,19 @@
 			// 
 			this.lastModified1.Text = "Last Modified";
 			this.lastModified1.Width = 81;
+			// 
+			// button2
+			// 
+			this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+			this.button2.Enabled = false;
+			this.button2.Location = new System.Drawing.Point(8, 8);
+			this.button2.Name = "button2";
+			this.button2.Size = new System.Drawing.Size(55, 24);
+			this.button2.TabIndex = 4;
+			this.button2.Text = "Up";
+			this.button2.UseVisualStyleBackColor = true;
+			this.button2.Click += new System.EventHandler(this.button2_Click);
 			// 
 			// label1
 			// 
@@ -280,19 +297,6 @@
 			this.miniLog.Size = new System.Drawing.Size(120, 20);
 			this.miniLog.TabIndex = 9;
 			this.miniLog.Text = "Ready.";
-			// 
-			// button2
-			// 
-			this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
-			this.button2.Enabled = false;
-			this.button2.Location = new System.Drawing.Point(8, 8);
-			this.button2.Name = "button2";
-			this.button2.Size = new System.Drawing.Size(55, 24);
-			this.button2.TabIndex = 4;
-			this.button2.Text = "Up";
-			this.button2.UseVisualStyleBackColor = true;
-			this.button2.Click += new System.EventHandler(this.button2_Click);
 			// 
 			// SyncPage
 			// 

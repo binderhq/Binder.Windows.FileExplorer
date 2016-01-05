@@ -110,7 +110,8 @@ namespace Binder.Windows.FileExplorer
 
 		private void binderList_ItemDrag(object sender, ItemDragEventArgs e)
 		{
-			binderList.FocusedItem = (ListViewItem) e.Item;
+			if(binderList.SelectedItems.Count <= 1)
+				binderList.FocusedItem = (ListViewItem) e.Item;
 			DoDragDrop(e.Item, DragDropEffects.Move);
 		}
 
@@ -124,7 +125,10 @@ namespace Binder.Windows.FileExplorer
 			string pathToDownload = this.binderList.FocusedItem.Name;
 			string fileToDownload = this.binderList.FocusedItem.Text;
 
-			Session.GetFile(Session.currentSelectedSite, pathToDownload, fileToDownload.TrimEnd('/'), this.directoryBox.Text + "\\" + fileToDownload.TrimEnd('/'), this.progressBar1, this.miniLog);
+			//Session.GetFile(Session.currentSelectedSite, pathToDownload, fileToDownload.TrimEnd('/'), this.directoryBox.Text + "\\" + fileToDownload.TrimEnd('/'), this.progressBar1, this.miniLog);
+
+			foreach (ListViewItem item in binderList.SelectedItems)
+				Session.GetFile(Session.currentSelectedSite, item.Name, item.Text.TrimEnd('/'), this.directoryBox.Text + "\\" + item.Text.TrimEnd('/'), this.progressBar1, this.miniLog);
 
 			Cursor.Current = Cursors.WaitCursor;
 			System.Threading.Thread.Sleep(500);
@@ -154,6 +158,24 @@ namespace Binder.Windows.FileExplorer
 				currentBinderDir = "/";
 				button2.Enabled = false;
 			}
+			var currentDirectory = Session.GetSiteFilesFolders(Session.currentSelectedSite, currentBinderDir);
+			Session.PopulateListViewFromServer(binderList, currentDirectory.Folders, currentDirectory.Files, contextMenu, imageList1);
+		}
+
+		private void localList_ItemDrag(object sender, ItemDragEventArgs e)
+		{
+			localList.FocusedItem = (ListViewItem)e.Item;
+			DoDragDrop(e.Item, DragDropEffects.Move);
+		}
+
+		private void binderList_DragEnter(object sender, DragEventArgs e)
+		{
+			e.Effect = DragDropEffects.Move;
+		}
+
+		private void binderList_DragDrop(object sender, DragEventArgs e)
+		{
+			Session.UploadFiles(currentBinderDir, localList.FocusedItem.Name);
 			var currentDirectory = Session.GetSiteFilesFolders(Session.currentSelectedSite, currentBinderDir);
 			Session.PopulateListViewFromServer(binderList, currentDirectory.Folders, currentDirectory.Files, contextMenu, imageList1);
 		}
