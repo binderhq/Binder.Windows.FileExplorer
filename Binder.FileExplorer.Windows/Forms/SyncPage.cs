@@ -26,8 +26,11 @@ namespace Binder.Windows.FileExplorer
 		private void SyncPage_Load(object sender, EventArgs e)
 		{
 			currentBinderDir = "/";
+			currentLocalDir = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
 			var currentDirectory = Session.GetSiteFilesFolders(Session.currentSelectedSite, currentBinderDir);
 			Session.PopulateListViewFromServer(binderList, currentDirectory.Folders, currentDirectory.Files, contextMenu, imageList1);
+			Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir), imageList1);
+			directoryBox.Text = currentLocalDir;
 		}
 
 		private void backButton_Click(object sender, EventArgs e)
@@ -75,6 +78,11 @@ namespace Binder.Windows.FileExplorer
 			{
 				Cursor.Current = Cursors.WaitCursor;
 				currentLocalDir = directoryBox.Text;
+				if(!currentLocalDir.EndsWith("\\"))
+				{
+					currentLocalDir = currentLocalDir + "\\";
+					directoryBox.Text = currentLocalDir;
+				}
 				Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir), imageList1);
 				if(directoryBox.Text.Length > 3)
 					button1.Enabled = true;

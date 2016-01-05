@@ -12,12 +12,14 @@ using Newtonsoft.Json;
 using System.IO;
 using System.Web;
 using System.Drawing;
+using Binder.APIMatic.Client;
 
 namespace Binder.Windows.FileExplorer
 {
 	public static class Session
 	{
 		public const string catalogUrl = "https://development.edocx.com.au:443/";
+
 		public static string SessionToken
 		{
 			get
@@ -66,7 +68,6 @@ namespace Binder.Windows.FileExplorer
 
 		}
 
-
 		public static void PopulateTreeViewFromServer(TreeView treeView, ImageList images, string[] paths, char pathSeparator, ContextMenuStrip menu)
 		{
 			TreeNode lastNode = null;
@@ -109,7 +110,7 @@ namespace Binder.Windows.FileExplorer
 					subItems = new ListViewItem.ListViewSubItem[]
 						{new ListViewItem.ListViewSubItem(item, "File folder"),
 						new ListViewItem.ListViewSubItem(item, ""), 
-						new ListViewItem.ListViewSubItem(item, DateFormatter(folder.LastWriteTimeUtc).ToString())};
+						new ListViewItem.ListViewSubItem(item, "")};
 
 					item.SubItems.AddRange(subItems);
 					list.Items.Add(item);
@@ -120,7 +121,7 @@ namespace Binder.Windows.FileExplorer
 					subItems = new ListViewItem.ListViewSubItem[]
 						{new ListViewItem.ListViewSubItem(item, ExtensionNamer(Path.GetExtension(file.Name))), 
 						new ListViewItem.ListViewSubItem(item, GetSizeReadable(file.Length)), 
-						new ListViewItem.ListViewSubItem(item, DateFormatter(file.LastWriteTimeUtc).ToString())};
+						new ListViewItem.ListViewSubItem(item, DateTime.Parse(file.LastWriteTimeUtc).ToLocalTime().ToString())};
 
 					item.SubItems.AddRange(subItems);
 					list.Items.Add(item);
@@ -133,22 +134,6 @@ namespace Binder.Windows.FileExplorer
 			}
 
 			list.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
-		}
-
-		public static DateTime DateFormatter(string date)
-		{
-			int dayFormat = Int32.Parse(date.Substring(8, 2));
-			int hourFormat = Int32.Parse(date.Substring(11, 2));
-			string timeSuffix = "AM";
-			if (hourFormat > 12)
-			{
-				hourFormat = hourFormat - 12;
-				timeSuffix = "PM";
-			}
-
-			string newDate = string.Format("{0}/{1}/{2} {3}:{4} {5}", dayFormat, date.Substring(5, 2), date.Substring(0, 4), hourFormat, date.Substring(14, 5), timeSuffix);
-			DateTime convertedDate = Convert.ToDateTime(newDate);
-			return convertedDate.ToLocalTime();
 		}
 
 		public static void PopulateTreeViewFromLocal(TreeView treeView, ImageList images, string path, ContextMenuStrip menu)
