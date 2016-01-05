@@ -31,7 +31,7 @@ namespace Binder.Windows.FileExplorer.Forms
 				Session.currentSelectedSite = Session.siteIds[sitesList.SelectedIndex];
 				SyncPage sp = new SyncPage();
 				sp.Show();
-				this.Close();
+				this.Hide();
 			}
 			else
 			{

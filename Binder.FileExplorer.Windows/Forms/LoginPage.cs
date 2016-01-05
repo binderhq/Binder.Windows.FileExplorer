@@ -15,8 +15,8 @@ namespace Binder.Windows.FileExplorer
 {
 	public partial class LoginPage : Form
 	{
-		public SitePage sitep = new SitePage();
-		public SyncPage syncp = new SyncPage();
+		public SitePage sitep;
+		public SyncPage syncp;
 		public LoginPage()
 		{
 			InitializeComponent();
@@ -39,6 +39,8 @@ namespace Binder.Windows.FileExplorer
 				Session.siteNames = CurrentUserSites.ConnectedSites.Select(x=>x.Site.Name).ToArray();
 				Session.siteIds = CurrentUserSites.ConnectedSites.Select(x=>x.Site.Id).ToArray();
 				this.signOut.Enabled = true;
+				sitep = new SitePage();
+				syncp = new SyncPage();
 				sitep.Show();
 			}
 			else
@@ -57,14 +59,14 @@ namespace Binder.Windows.FileExplorer
 			this.submit.Enabled = true;
 		}
 
-		private void LoginPage_FormClosed(object sender, FormClosedEventArgs e)
+		private void OnApplicationExit(object sender, EventArgs e)
 		{
 			sitep.Close();
 			syncp.Close();
 			Session.CloseSession();
 		}
 
-		private void OnApplicationExit(object sender, EventArgs e)
+		private void LoginPage_FormClosing(object sender, FormClosingEventArgs e)
 		{
 			sitep.Close();
 			syncp.Close();
