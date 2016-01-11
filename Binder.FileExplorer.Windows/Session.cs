@@ -41,6 +41,7 @@ namespace Binder.Windows.FileExplorer
 		public static string[] siteNames;
 		public static string[] siteIds;
 
+/*
 		public static void CreateSession(string username, string password)
 		{
 			try
@@ -67,6 +68,19 @@ namespace Binder.Windows.FileExplorer
 			}
 
 		}
+*/
+
+		public async static Task<Binder.APIMatic.Client.Models.CreateSessionResponse> CreateSession(string username, string password)
+		{
+			Binder.APIMatic.Client.Configuration.BaseUri = "https://development.edocx.com.au:443/service.api/";
+			var user = await new Binder.APIMatic.Client.Controllers.AuthenticationSessionsController()
+				.CreateSessionsPostAsync(new APIMatic.Client.Models.CreateSessionRequest() { Username = username, ClearTextPassword = password });
+			Binder.APIMatic.Client.Configuration.ApiKey = user.SessionToken;
+			_sessionToken = user.SessionToken;
+			return user;
+		}
+
+		
 
 		public static void PopulateTreeViewFromServer(TreeView treeView, ImageList images, string[] paths, char pathSeparator, ContextMenuStrip menu)
 		{
@@ -373,43 +387,44 @@ namespace Binder.Windows.FileExplorer
 			}
 		}
 
-		public static void UploadFiles(string uploadTo, string uploadFrom)
+		public static void UploadFiles(string uploadTo, string uploadFrom, string filename)
 		{
 			string url = catalogUrl + "service.api/region/SiteNavigator/" + currentSelectedSite + "/Folder/UploadedFiles?path=" + WebUtility.UrlEncode(uploadTo) + "&api_key=" + _sessionToken;
-			PostFileAsync(url, uploadFrom);
+			PostFileAsync(url, uploadFrom, filename);
 		}
 
-	//Mckay gave me this stuff. He said it should just werk but there seems to be a lot missing
-		public static Task<HttpResponseMessage> PostFileAsync(this Url url, string filepath)
+	//Code from mckay
+		public static Task<HttpResponseMessage> PostFileAsync(this Url url, string filepath, string filename)
 		{
-			return new FlurlClient(url).PostFileAsync(filepath);
+			return new FlurlClient(url).PostFileAsync(filepath, filename);
 		}
 
-		public static Task<HttpResponseMessage> PostFileAsync(this string url, string filepath)
+		public static Task<HttpResponseMessage> PostFileAsync(this string url, string filepath, string filename)
 		{
-			return new FlurlClient(url).PostFileAsync(filepath);
+			return new FlurlClient(url).PostFileAsync(filepath, filename);
 		}
 
-		public static Task<HttpResponseMessage> PostFileAsync(this FlurlClient client, string filepath)
+		public static Task<HttpResponseMessage> PostFileAsync(this FlurlClient client, string filepath, string filename)
 		{
 			var data = File.ReadAllBytes(filepath);
 			var content = new MultipartFormDataContent();
 			var file = new ByteArrayContent(data);
 			//content.Headers.Add("Content-Type", "multipart/form-data");
 			//content.Headers.Add("Content-Length", data.Length.ToString());
-			content.Add(file, "attachment", "a.txt");
+			//content.Add(file, "attachment", "a.txt");
+			content.Add(file, "upload", filename);
 			return client.SendAsync(HttpMethod.Post, content: content);
 		}
 	//End McKay's code
 
-		public static CurrentUserInfo CurrentUser()
-		{
-			string url = catalogUrl + "service.api/authentication/CurrentUser?api_key=" + _sessionToken;
-			var response = url.GetAsync().Result;
-			var x1 = response.Content.ReadAsStringAsync().Result;
-			var y1 = JsonConvert.DeserializeObject<CurrentUserInfo>(x1);
-			return y1;
-		}
+//		public static CurrentUserInfo CurrentUser()
+//		{
+//			string url = catalogUrl + "service.api/authentication/CurrentUser?api_key=" + _sessionToken;
+//			var response = url.GetAsync().Result;
+//			var x1 = response.Content.ReadAsStringAsync().Result;
+//			var y1 = JsonConvert.DeserializeObject<CurrentUserInfo>(x1);
+//			return y1;
+//		}
 
 		public static CurrentRegionUserSitesResponse CurrentSites()
 		{

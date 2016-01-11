@@ -23,19 +23,14 @@ namespace Binder.Windows.FileExplorer
 			Application.ApplicationExit += new EventHandler(this.OnApplicationExit);
 		}
 
-		private void button1_Click(object sender, EventArgs e)
+		private async void button1_Click(object sender, EventArgs e)
 		{
 			submit.Enabled = false;
 			Cursor.Current = Cursors.WaitCursor;
-			Session.CreateSession(this.username.Text, this.password.Text);
-			if(Session.isSuccessful)
+			try 
 			{
-				Session.CurrentUserInfo CurrentUserInfo = Session.CurrentUser();
+				var user = await Session.CreateSession(this.username.Text, this.password.Text);
 				Session.CurrentRegionUserSitesResponse CurrentUserSites = Session.CurrentSites();
-				string name = CurrentUserInfo.Name;
-				string username = CurrentUserInfo.Username;
-				string email = CurrentUserInfo.EmailAddress;
-
 				Session.siteNames = CurrentUserSites.ConnectedSites.Select(x=>x.Site.Name).ToArray();
 				Session.siteIds = CurrentUserSites.ConnectedSites.Select(x=>x.Site.Id).ToArray();
 				this.signOut.Enabled = true;
@@ -43,8 +38,11 @@ namespace Binder.Windows.FileExplorer
 				syncp = new SyncPage();
 				sitep.Show();
 			}
-			else
+			catch(Exception ex)
+			{
 				submit.Enabled = true;
+				MessageBox.Show(ex.Message + "\n\nInvalid username or password", "Login error", MessageBoxButtons.OK);
+			}
 			Cursor.Current = Cursors.Default;
 		}
 

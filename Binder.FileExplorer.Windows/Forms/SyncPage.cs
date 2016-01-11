@@ -183,7 +183,8 @@ namespace Binder.Windows.FileExplorer
 
 		private void binderList_DragDrop(object sender, DragEventArgs e)
 		{
-			Session.UploadFiles(currentBinderDir, localList.FocusedItem.Name);
+			foreach (ListViewItem item in localList.SelectedItems)
+				Session.UploadFiles(currentBinderDir, item.Name, item.Text);
 			var currentDirectory = Session.GetSiteFilesFolders(Session.currentSelectedSite, currentBinderDir);
 			Session.PopulateListViewFromServer(binderList, currentDirectory.Folders, currentDirectory.Files, contextMenu, imageList1);
 		}
