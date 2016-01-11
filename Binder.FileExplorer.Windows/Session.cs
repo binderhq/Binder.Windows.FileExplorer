@@ -223,7 +223,7 @@ namespace Binder.Windows.FileExplorer
 				suffix = "MB";
 				readable = (double)(i >> 10);
 			}
-			else if (i >= 0x400) // Kilobyte
+			else if (i >=  0x400) // Kilobyte
 			{
 				suffix = "KB";
 				readable = (double)i;
@@ -234,7 +234,7 @@ namespace Binder.Windows.FileExplorer
 			}
 			readable = readable / 1024;
 
-			return sign + readable.ToString("0.### ") + suffix;
+			return sign + readable.ToString("0.## ") + suffix;
 		}
 
 		private static void NodeImager(TreeNode node)
@@ -281,10 +281,15 @@ namespace Binder.Windows.FileExplorer
 				AddContextMenu(subNode, menu);
 		}
 
-		public static void GetFile(string siteId, string path, string filename, string savePath, ProgressBar progressBar, TextBox log)
+		public async static void GetFile(string siteId, string path, string filename, string savePath, ProgressBar progressBar, TextBox log)
 		{
 			log.Text = "Preparing...";
-			Uri uri = new Uri(catalogUrl + "service.api/region/SiteNavigator/" + siteId + "/File/Contents?path=" + WebUtility.UrlEncode(path) + "&api_key=" + _sessionToken);
+			
+			//todo: find out whats causing the 404
+			var downloadRequest = await new Binder.APIMatic.Client.Controllers.RegionSiteNavigatorController().CreateSiteNavigatorRequestDownloadAsync(path, siteId);
+			var doDownload = await new Binder.APIMatic.Client.Controllers.RegionStorageZonesController()
+				.GetStorageZonesGetNamedHiggsFileAsync(filename, downloadRequest.HiggsFileId, downloadRequest.StorageZoneId.ToString());
+
 			WebClient myWebClient = new WebClient();
 			myWebClient.DownloadProgressChanged += (s, e) =>
 			{
@@ -296,7 +301,22 @@ namespace Binder.Windows.FileExplorer
 				progressBar.Value = 0;
 				log.Text = "Ready.";
 			};
-			myWebClient.DownloadFileAsync(uri, savePath);
+			myWebClient.DownloadFileAsync(doDownload, savePath);
+		}
+
+		public async static void DownloadDirectory(string path, string savePath, ProgressBar progressBar, TextBox log)
+		{
+				var directory = await GetSiteFilesFolders(currentSelectedSite, path);
+				foreach(Binder.APIMatic.Client.Models.SiteFileModel file in directory.Files)
+				{
+					GetFile(currentSelectedSite, file.Path, file.Name, savePath, progressBar, log);
+				}
+				foreach(Binder.APIMatic.Client.Models.SubFolder folder in directory.Folders)
+				{
+					Directory.CreateDirectory(folder.Name);
+					string newSavePath = savePath + folder.Name;
+					DownloadDirectory(folder.Path, newSavePath, progressBar, log);
+				}
 		}
 
 		public async static void CloseSession()

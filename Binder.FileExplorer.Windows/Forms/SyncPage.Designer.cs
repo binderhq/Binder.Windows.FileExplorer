@@ -46,7 +46,6 @@
 			this.button2 = new System.Windows.Forms.Button();
 			this.label1 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
-			this.syncButton = new System.Windows.Forms.Button();
 			this.progressBar1 = new System.Windows.Forms.ProgressBar();
 			this.browseButton = new System.Windows.Forms.Button();
 			this.directoryBox = new System.Windows.Forms.TextBox();
@@ -80,7 +79,7 @@
 			this.tableLayoutPanel1.RowCount = 2;
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel1.Size = new System.Drawing.Size(999, 501);
+			this.tableLayoutPanel1.Size = new System.Drawing.Size(984, 501);
 			this.tableLayoutPanel1.TabIndex = 0;
 			// 
 			// localList
@@ -92,9 +91,9 @@
             this.size,
             this.lastModified});
 			this.localList.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.localList.Location = new System.Drawing.Point(502, 38);
+			this.localList.Location = new System.Drawing.Point(495, 38);
 			this.localList.Name = "localList";
-			this.localList.Size = new System.Drawing.Size(489, 455);
+			this.localList.Size = new System.Drawing.Size(481, 455);
 			this.localList.SmallImageList = this.imageList1;
 			this.localList.TabIndex = 1;
 			this.localList.UseCompatibleStateImageBehavior = false;
@@ -134,7 +133,7 @@
 			this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.button1.Enabled = false;
-			this.button1.Location = new System.Drawing.Point(936, 8);
+			this.button1.Location = new System.Drawing.Point(921, 8);
 			this.button1.Name = "button1";
 			this.button1.Size = new System.Drawing.Size(55, 24);
 			this.button1.TabIndex = 2;
@@ -154,7 +153,7 @@
 			this.binderList.ForeColor = System.Drawing.SystemColors.WindowText;
 			this.binderList.Location = new System.Drawing.Point(8, 38);
 			this.binderList.Name = "binderList";
-			this.binderList.Size = new System.Drawing.Size(488, 455);
+			this.binderList.Size = new System.Drawing.Size(481, 455);
 			this.binderList.SmallImageList = this.imageList1;
 			this.binderList.TabIndex = 3;
 			this.binderList.UseCompatibleStateImageBehavior = false;
@@ -208,34 +207,24 @@
 			// 
 			this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(933, 9);
+			this.label2.Location = new System.Drawing.Point(918, 9);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(54, 13);
 			this.label2.TabIndex = 2;
 			this.label2.Text = "Local files";
 			// 
-			// syncButton
-			// 
-			this.syncButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.syncButton.Location = new System.Drawing.Point(12, 527);
-			this.syncButton.Name = "syncButton";
-			this.syncButton.Size = new System.Drawing.Size(120, 23);
-			this.syncButton.TabIndex = 4;
-			this.syncButton.Text = "Sync Files to Binder";
-			this.syncButton.UseVisualStyleBackColor = true;
-			// 
 			// progressBar1
 			// 
 			this.progressBar1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.progressBar1.Location = new System.Drawing.Point(138, 527);
+			this.progressBar1.Location = new System.Drawing.Point(8, 527);
 			this.progressBar1.Name = "progressBar1";
-			this.progressBar1.Size = new System.Drawing.Size(225, 23);
+			this.progressBar1.Size = new System.Drawing.Size(355, 23);
 			this.progressBar1.TabIndex = 5;
 			// 
 			// browseButton
 			// 
 			this.browseButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.browseButton.Location = new System.Drawing.Point(867, 526);
+			this.browseButton.Location = new System.Drawing.Point(852, 526);
 			this.browseButton.Name = "browseButton";
 			this.browseButton.Size = new System.Drawing.Size(120, 23);
 			this.browseButton.TabIndex = 6;
@@ -245,8 +234,9 @@
 			// 
 			// directoryBox
 			// 
-			this.directoryBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.directoryBox.Location = new System.Drawing.Point(584, 528);
+			this.directoryBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.directoryBox.Location = new System.Drawing.Point(569, 528);
 			this.directoryBox.Name = "directoryBox";
 			this.directoryBox.Size = new System.Drawing.Size(277, 20);
 			this.directoryBox.TabIndex = 7;
@@ -254,9 +244,9 @@
 			// 
 			// label3
 			// 
-			this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(530, 531);
+			this.label3.Location = new System.Drawing.Point(515, 531);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(48, 13);
 			this.label3.TabIndex = 8;
@@ -302,13 +292,12 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(999, 561);
+			this.ClientSize = new System.Drawing.Size(984, 561);
 			this.Controls.Add(this.miniLog);
 			this.Controls.Add(this.label3);
 			this.Controls.Add(this.directoryBox);
 			this.Controls.Add(this.browseButton);
 			this.Controls.Add(this.progressBar1);
-			this.Controls.Add(this.syncButton);
 			this.Controls.Add(this.label2);
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.tableLayoutPanel1);
@@ -329,7 +318,6 @@
 		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.Button syncButton;
 		private System.Windows.Forms.ProgressBar progressBar1;
 		private System.Windows.Forms.Button browseButton;
 		private System.Windows.Forms.TextBox directoryBox;

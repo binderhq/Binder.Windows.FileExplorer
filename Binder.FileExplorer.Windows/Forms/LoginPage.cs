@@ -67,8 +67,12 @@ namespace Binder.Windows.FileExplorer
 
 		private void LoginPage_FormClosing(object sender, FormClosingEventArgs e)
 		{
-			sitep.Close();
-			syncp.Close();
+			try
+			{
+				sitep.Close();
+				syncp.Close();
+			}
+			catch { }
 			Session.CloseSession();
 		}
 	}
