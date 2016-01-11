@@ -30,9 +30,10 @@ namespace Binder.Windows.FileExplorer
 			try 
 			{
 				var user = await Session.CreateSession(this.username.Text, this.password.Text);
-				Session.CurrentRegionUserSitesResponse CurrentUserSites = Session.CurrentSites();
-				Session.siteNames = CurrentUserSites.ConnectedSites.Select(x=>x.Site.Name).ToArray();
-				Session.siteIds = CurrentUserSites.ConnectedSites.Select(x=>x.Site.Id).ToArray();
+//				Session.CurrentRegionUserSitesResponse CurrentUserSites = Session.CurrentSites();
+				Session.sites = await Session.CurrentSites();
+//				Session.siteNames = CurrentUserSites.ConnectedSites.Select(x=>x.Site.Name).ToArray();
+//				Session.siteIds = CurrentUserSites.ConnectedSites.Select(x=>x.Site.Id).ToArray();
 				this.signOut.Enabled = true;
 				sitep = new SitePage();
 				syncp = new SyncPage();

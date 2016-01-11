@@ -40,8 +40,9 @@
     <ApplicationIcon>binder_RGB_glyph_white_aqua_512x512_ico.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Binder.APIMatic.Client">
-      <HintPath>..\packages\Binder.APIMatic.Client.0.1.5847.29012\lib\portable-net40+win+wpa81\Binder.APIMatic.Client.dll</HintPath>
+    <Reference Include="Binder.APIMatic.Client, Version=0.1.5854.22577, Culture=neutral, PublicKeyToken=d6a32372ef194cad, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Binder.APIMatic.Client.0.1.5854.22577\lib\portable-net40+win+wpa81\Binder.APIMatic.Client.dll</HintPath>
     </Reference>
     <Reference Include="Flurl">
       <HintPath>..\packages\Flurl.1.0.10\lib\portable-net40+sl50+win+wpa81+wp80+MonoAndroid10+MonoTouch10\Flurl.dll</HintPath>
@@ -58,9 +59,9 @@
     <Reference Include="Microsoft.Threading.Tasks.Extensions.Desktop">
       <HintPath>..\packages\Microsoft.Bcl.Async.1.0.168\lib\net40\Microsoft.Threading.Tasks.Extensions.Desktop.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.8.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

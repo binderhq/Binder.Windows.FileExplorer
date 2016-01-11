@@ -23,11 +23,11 @@ namespace Binder.Windows.FileExplorer
 			InitializeComponent();
 		}
 
-		private void SyncPage_Load(object sender, EventArgs e)
+		private async void SyncPage_Load(object sender, EventArgs e)
 		{
 			currentBinderDir = "/";
 			currentLocalDir = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-			var currentDirectory = Session.GetSiteFilesFolders(Session.currentSelectedSite, currentBinderDir);
+			var currentDirectory = await Session.GetSiteFilesFolders(Session.currentSelectedSite, currentBinderDir);
 			Session.PopulateListViewFromServer(binderList, currentDirectory.Folders, currentDirectory.Files, contextMenu, imageList1);
 			Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir), imageList1);
 			directoryBox.Text = currentLocalDir;
@@ -67,8 +67,6 @@ namespace Binder.Windows.FileExplorer
 			{
 				if (this.binderList.FocusedItem.ImageIndex != 0)
 					Session.GetFile(Session.currentSelectedSite, pathToDownload, fileToDownload.TrimEnd('/'), saveFile.FileName, this.progressBar1, this.miniLog);
-				else
-					Session.GetZipFile(pathToDownload, saveFile.FileName, this.progressBar1, this.miniLog);
 			}
 		}
 
@@ -145,20 +143,23 @@ namespace Binder.Windows.FileExplorer
 			Cursor.Current = Cursors.Default;
 		}
 
-		private void binderList_MouseDoubleClick(object sender, MouseEventArgs e)
+		private async void binderList_MouseDoubleClick(object sender, MouseEventArgs e)
 		{
+			Cursor.Current = Cursors.WaitCursor;
 			if (binderList.FocusedItem.ImageIndex == 0)
 			{
 				if(Equals(currentBinderDir, "/"))
 					button2.Enabled = true;
 				currentBinderDir = currentBinderDir.TrimEnd('/') + "/" + binderList.FocusedItem.Text;
-				var currentDirectory = Session.GetSiteFilesFolders(Session.currentSelectedSite, currentBinderDir);
+				var currentDirectory = await Session.GetSiteFilesFolders(Session.currentSelectedSite, currentBinderDir);
 				Session.PopulateListViewFromServer(binderList, currentDirectory.Folders, currentDirectory.Files, contextMenu, imageList1);
 			}
+			Cursor.Current = Cursors.Default;
 		}
 
-		private void button2_Click(object sender, EventArgs e)
+		private async void button2_Click(object sender, EventArgs e)
 		{
+			Cursor.Current = Cursors.WaitCursor;
 			int index = currentBinderDir.LastIndexOf("/");
 			currentBinderDir = currentBinderDir.Substring(0, index);
 			if(Equals(currentBinderDir, ""))
@@ -166,8 +167,9 @@ namespace Binder.Windows.FileExplorer
 				currentBinderDir = "/";
 				button2.Enabled = false;
 			}
-			var currentDirectory = Session.GetSiteFilesFolders(Session.currentSelectedSite, currentBinderDir);
+			var currentDirectory = await Session.GetSiteFilesFolders(Session.currentSelectedSite, currentBinderDir);
 			Session.PopulateListViewFromServer(binderList, currentDirectory.Folders, currentDirectory.Files, contextMenu, imageList1);
+			button2.Enabled = true;
 		}
 
 		private void localList_ItemDrag(object sender, ItemDragEventArgs e)
@@ -181,12 +183,14 @@ namespace Binder.Windows.FileExplorer
 			e.Effect = DragDropEffects.Move;
 		}
 
-		private void binderList_DragDrop(object sender, DragEventArgs e)
+		private async void binderList_DragDrop(object sender, DragEventArgs e)
 		{
+			Cursor.Current = Cursors.WaitCursor;
 			foreach (ListViewItem item in localList.SelectedItems)
 				Session.UploadFiles(currentBinderDir, item.Name, item.Text);
-			var currentDirectory = Session.GetSiteFilesFolders(Session.currentSelectedSite, currentBinderDir);
+			var currentDirectory = await Session.GetSiteFilesFolders(Session.currentSelectedSite, currentBinderDir);
 			Session.PopulateListViewFromServer(binderList, currentDirectory.Folders, currentDirectory.Files, contextMenu, imageList1);
+			Cursor.Current = Cursors.Default;
 		}
 	}
 }

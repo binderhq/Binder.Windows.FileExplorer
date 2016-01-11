@@ -35,40 +35,8 @@ namespace Binder.Windows.FileExplorer
 			}
 		}
 		private static string _sessionToken;
-		public static string ResponseMessage;
-		public static bool isSuccessful;
 		public static string currentSelectedSite;
-		public static string[] siteNames;
-		public static string[] siteIds;
-
-/*
-		public static void CreateSession(string username, string password)
-		{
-			try
-			{
-				string ApiUrl = catalogUrl + "service.api/authentication/Sessions";
-				var response = ApiUrl.PostJsonAsync( new { Username = username, ClearTextPassword = password }).Result;
-				isSuccessful = response.IsSuccessStatusCode;
-
-				if(isSuccessful)
-				{
-					var x = response.Content.ReadAsStringAsync().Result;
-					var y = JsonConvert.DeserializeObject<CreateSessionResponse>(x);
-					_sessionToken = y.SessionToken;
-//					ResponseMessage = "Login successful";
-				}
-				else
-				{
-					throw new ArgumentNullException();
-				}
-			}
-			catch (Exception)
-			{
-				MessageBox.Show("Invalid username or password", "Login error", MessageBoxButtons.OK);
-			}
-
-		}
-*/
+		public static List<Binder.APIMatic.Client.Models.SiteDetails> sites;
 
 		public async static Task<Binder.APIMatic.Client.Models.CreateSessionResponse> CreateSession(string username, string password)
 		{
@@ -79,8 +47,6 @@ namespace Binder.Windows.FileExplorer
 			_sessionToken = user.SessionToken;
 			return user;
 		}
-
-		
 
 		public static void PopulateTreeViewFromServer(TreeView treeView, ImageList images, string[] paths, char pathSeparator, ContextMenuStrip menu)
 		{
@@ -111,14 +77,14 @@ namespace Binder.Windows.FileExplorer
 			}
 		}
 
-		public static void PopulateListViewFromServer(ListView list, SubFolder[] folders, SiteFileModel[] files, ContextMenuStrip menu, ImageList imageList)
+		public static void PopulateListViewFromServer(ListView list, List<Binder.APIMatic.Client.Models.SubFolder> folders, List<Binder.APIMatic.Client.Models.SiteFileModel> files, ContextMenuStrip menu, ImageList imageList)
 		{
 			list.Items.Clear();
 			ListViewItem.ListViewSubItem[] subItems;
 			ListViewItem item = null;
 			try
 			{
-				foreach (SubFolder folder in folders)
+				foreach (Binder.APIMatic.Client.Models.SubFolder folder in folders)
 				{
 					item = new ListViewItem(folder.Name, 0);
 					subItems = new ListViewItem.ListViewSubItem[]
@@ -129,13 +95,13 @@ namespace Binder.Windows.FileExplorer
 					item.SubItems.AddRange(subItems);
 					list.Items.Add(item);
 				}
-				foreach (SiteFileModel file in files)
+				foreach (Binder.APIMatic.Client.Models.SiteFileModel file in files)
 				{
 					item = new ListViewItem(file.Name, 1);
 					subItems = new ListViewItem.ListViewSubItem[]
 						{new ListViewItem.ListViewSubItem(item, ExtensionNamer(Path.GetExtension(file.Name))), 
-						new ListViewItem.ListViewSubItem(item, GetSizeReadable(file.Length)), 
-						new ListViewItem.ListViewSubItem(item, DateTime.Parse(file.LastWriteTimeUtc).ToLocalTime().ToString())};
+						new ListViewItem.ListViewSubItem(item, GetSizeReadable((int) file.Length)), 
+						new ListViewItem.ListViewSubItem(item, file.LastWriteTimeUtc.ToString())};
 
 					item.SubItems.AddRange(subItems);
 					list.Items.Add(item);
@@ -333,58 +299,10 @@ namespace Binder.Windows.FileExplorer
 			myWebClient.DownloadFileAsync(uri, savePath);
 		}
 
-		//TODO: Get zip file downloads working properly - THIS DOES NOT WORK AT THE MOMENT
-		public static void GetZipFile(string path, string savePath, ProgressBar progressBar, TextBox log)
+		public async static void CloseSession()
 		{
-			log.Text = "Preparing...";
-			var zipId = ZipFileRequest(currentSelectedSite, path).Id;
-			Uri uri = new Uri(catalogUrl + "service.api/region/ZipFileRequests/" + zipId + "/Contents?api_key=" + _sessionToken);
-			Uri uri2 = new Uri(catalogUrl + "service.api/region/ZipFileRequests/" + zipId + "?api_key=" + _sessionToken);
-			WebClient myWebClient = new WebClient();
-			bool isReady = false;
-
-			myWebClient.OpenReadAsync(uri2);
-
-			while(!isReady && !myWebClient.IsBusy)
-			{
-				isReady = ZipBuildComplete(zipId, savePath, log, progressBar);
-			}
-			if(isReady)
-			{
-				log.Text = "Downloading...";
-				myWebClient.DownloadFileAsync(uri, savePath);
-				log.Text = "Ready.";
-				progressBar.Value = 0;
-			}
-
-		}
-
-		public static void CloseSession()
-		{
-			string url = catalogUrl + "service.api/authentication/Sessions/" + _sessionToken + "?api_key=" + _sessionToken;
+			await new Binder.APIMatic.Client.Controllers.AuthenticationSessionsController().DeleteSessionsDeleteAsync(_sessionToken);
 			_sessionToken = null;
-			isSuccessful = false;
-		}
-
-		private static bool ZipBuildComplete(string zipId, string savePath, TextBox log, ProgressBar progressBar)
-		{
-			int percentComplete = ZipFileCheck(zipId).ProgressPercent;
-			if (percentComplete == 100)
-			{
-				log.Text = "Zip creation complete.";
-				return true;
-			}
-			else if (percentComplete > 0)
-			{
-				progressBar.Value = percentComplete;
-				log.Text = percentComplete.ToString() + "% built";
-				return false;
-			}
-			else
-			{
-				log.Text = "Zip file creation " + ZipFileCheck(zipId).Status;
-				return false;
-			}
 		}
 
 		public static void UploadFiles(string uploadTo, string uploadFrom, string filename)
@@ -417,31 +335,10 @@ namespace Binder.Windows.FileExplorer
 		}
 	//End McKay's code
 
-//		public static CurrentUserInfo CurrentUser()
-//		{
-//			string url = catalogUrl + "service.api/authentication/CurrentUser?api_key=" + _sessionToken;
-//			var response = url.GetAsync().Result;
-//			var x1 = response.Content.ReadAsStringAsync().Result;
-//			var y1 = JsonConvert.DeserializeObject<CurrentUserInfo>(x1);
-//			return y1;
-//		}
-
-		public static CurrentRegionUserSitesResponse CurrentSites()
+		public async static Task<List<Binder.APIMatic.Client.Models.SiteDetails>>CurrentSites()
 		{
-			string url = catalogUrl + "service.api/region/RegionCurrentUser/Sites?api_key=" + _sessionToken;
-			var response = url.GetAsync().Result;
-			var x2 = response.Content.ReadAsStringAsync().Result;
-			var y2 = JsonConvert.DeserializeObject<CurrentRegionUserSitesResponse>(x2);
-			return y2;
-		}
-
-		public static ShortFileInfo[] GetDirectory(string siteID)
-		{
-			string url = catalogUrl + "service.api/region/SiteNavigator/" + siteID + "/Folder/AllFiles?path=%2F&api_key=" + _sessionToken;
-			var response = url.GetAsync().Result;
-			var x = response.Content.ReadAsStringAsync().Result;
-			var y = JsonConvert.DeserializeObject<ShortFileInfo[]>(x);
-			return y;
+			var availableSites = await new Binder.APIMatic.Client.Controllers.RegionRegionCurrentUserController().GetRegionCurrentUserAccessibleSitesAsync();
+			return availableSites.ConnectedSites;
 		}
 		
 		private static TreeNode CreateDirectoryNode(DirectoryInfo directoryInfo)
@@ -461,103 +358,11 @@ namespace Binder.Windows.FileExplorer
 			}
 		}
 
-		public static SiteFolderModel GetSiteFilesFolders(string siteId, string path)
+		public async static Task<Binder.APIMatic.Client.Models.SiteFolderModel> GetSiteFilesFolders(string siteId, string path)
 		{
-			string url = catalogUrl + "service.api/region/SiteNavigator/testing111/Folder?path=" + path + "&api_key=" + _sessionToken;
-			var response = url.GetAsync().Result;
-			var x = response.Content.ReadAsStringAsync().Result;
-			var y = JsonConvert.DeserializeObject<SiteFolderModel>(x);
-			return y;
+			var SiteFileFolders = await new Binder.APIMatic.Client.Controllers.RegionSiteNavigatorController()
+				.GetSiteNavigatorGetFolderAsync(path, siteId);
+			return SiteFileFolders;
 		}
-
-		public static ZipFileRequestModel ZipFileRequest(string siteId, string path)
-		{
-			string url = catalogUrl + "service.api/region/ZipFileRequests?api_key=" + _sessionToken;
-			var response = url.PostJsonAsync( new { SiteIdOrSubdomain = siteId, SourcePath = path }).Result;
-			var x = response.Content.ReadAsStringAsync().Result;
-			var y = JsonConvert.DeserializeObject<ZipFileRequestModel>(x);
-			return y;
-		}
-
-		public static ZipFileRequestModel ZipFileCheck(string zipId)
-		{
-			string url = catalogUrl + "service.api/region/ZipFileRequests/" + zipId + "?api_key=" + _sessionToken;
-			var response = url.GetAsync().Result;
-			var x = response.Content.ReadAsStringAsync().Result;
-			var y = JsonConvert.DeserializeObject<ZipFileRequestModel>(x);
-			return y;
-		}
-
-		public class CurrentRegionUserSitesResponse
-		{
-			public SiteDetails[] ConnectedSites;
-		}
-		
-		public class SiteDetails
-		{
-			public SiteModel Site;
-		}
-
-		public class SiteModel
-		{
-			public string Id;
-			public string Name;
-			public string Subdomain;
-			public string DefautStorageZoneId;
-		}
-
-		public class SiteFolderModel
-		{
-			public SubFolder[] Folders;
-			public SiteFileModel[] Files;
-		}
-
-		public class SubFolder
-		{
-			public string Name;
-			public string Path;
-			public string IconUrl;
-			public string ThumbnailUrl;
-			public string LastWriteTimeUtc;
-		}
-
-		public class SiteFileModel
-		{
-			public string DownloadUrl;
-			public string LastWriteTimeUtc;
-			public int Length;
-			public string ThumbnailUrl;
-			public string Name;
-			public string Path;
-			public string IconUrl;
-		}
-
-		public class CreateSessionResponse
-		{
-			public string UserId;
-			public string Username;
-			public string SessionToken;
-		}
-
-		public class CurrentUserInfo
-		{
-			public string Username;
-			public string EmailAddress;
-			public string Name;
-		}
-
-		public class ShortFileInfo
-		{
-			public string RemoteFilePath;
-			public int Length;
-		}
-
-		public class ZipFileRequestModel
-		{
-			public string Id;
-			public int ProgressPercent;
-			public string OutputFilename;
-			public string Status;
-		} 
 	}
 }

@@ -20,7 +20,12 @@ namespace Binder.Windows.FileExplorer.Forms
 		private void SitePage_Load(object sender, EventArgs e)
 		{
 			this.sitesList.Items.Clear();
-			this.sitesList.Items.AddRange(Session.siteNames);
+			//this.sitesList.Items.AddRange(Session.sites.);
+			foreach(var site in Session.sites)
+			{
+				this.sitesList.Items.Add(site.Site.Name);
+			}
+				
 		}
 
 		private void selectSite_Click(object sender, EventArgs e)
@@ -28,7 +33,7 @@ namespace Binder.Windows.FileExplorer.Forms
 			Cursor.Current = Cursors.WaitCursor;
 			if (sitesList.SelectedItem != null)
 			{
-				Session.currentSelectedSite = Session.siteIds[sitesList.SelectedIndex];
+				Session.currentSelectedSite = Session.sites[sitesList.SelectedIndex].Site.Id;
 				SyncPage sp = new SyncPage();
 				sp.Show();
 				this.Hide();
