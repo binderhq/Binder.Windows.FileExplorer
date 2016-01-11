@@ -128,19 +128,22 @@ namespace Binder.Windows.FileExplorer
 
 		private void localList_DragDrop(object sender, DragEventArgs e)
 		{
-			string pathToDownload = this.binderList.FocusedItem.Name;
-			string fileToDownload = this.binderList.FocusedItem.Text;
+			if(!Object.ReferenceEquals(sender, binderList))
+			{
+				string pathToDownload = this.binderList.FocusedItem.Name;
+				string fileToDownload = this.binderList.FocusedItem.Text;
 
-			//Session.GetFile(Session.currentSelectedSite, pathToDownload, fileToDownload.TrimEnd('/'), this.directoryBox.Text + "\\" + fileToDownload.TrimEnd('/'), this.progressBar1, this.miniLog);
+				//Session.GetFile(Session.currentSelectedSite, pathToDownload, fileToDownload.TrimEnd('/'), this.directoryBox.Text + "\\" + fileToDownload.TrimEnd('/'), this.progressBar1, this.miniLog);
 
-			foreach (ListViewItem item in binderList.SelectedItems)
-				Session.GetFile(Session.currentSelectedSite, item.Name, item.Text.TrimEnd('/'), this.directoryBox.Text + "\\" + item.Text.TrimEnd('/'), this.progressBar1, this.miniLog);
+				foreach (ListViewItem item in binderList.SelectedItems)
+					Session.GetFile(Session.currentSelectedSite, item.Name, item.Text.TrimEnd('/'), this.directoryBox.Text + "\\" + item.Text.TrimEnd('/'), this.progressBar1, this.miniLog);
 
-			Cursor.Current = Cursors.WaitCursor;
-			System.Threading.Thread.Sleep(500);
-			currentLocalDir = directoryBox.Text;
-			Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir), imageList1);
-			Cursor.Current = Cursors.Default;
+				Cursor.Current = Cursors.WaitCursor;
+				System.Threading.Thread.Sleep(500);
+				currentLocalDir = directoryBox.Text;
+				Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir), imageList1);
+				Cursor.Current = Cursors.Default;
+			}
 		}
 
 		private async void binderList_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -185,12 +188,15 @@ namespace Binder.Windows.FileExplorer
 
 		private async void binderList_DragDrop(object sender, DragEventArgs e)
 		{
-			Cursor.Current = Cursors.WaitCursor;
-			foreach (ListViewItem item in localList.SelectedItems)
-				Session.UploadFiles(currentBinderDir, item.Name, item.Text);
-			var currentDirectory = await Session.GetSiteFilesFolders(Session.currentSelectedSite, currentBinderDir);
-			Session.PopulateListViewFromServer(binderList, currentDirectory.Folders, currentDirectory.Files, contextMenu, imageList1);
-			Cursor.Current = Cursors.Default;
+			if(!Object.ReferenceEquals(sender, binderList))
+			{
+				Cursor.Current = Cursors.WaitCursor;
+				foreach (ListViewItem item in localList.SelectedItems)
+					Session.UploadFiles(currentBinderDir, item.Name, item.Text);
+				var currentDirectory = await Session.GetSiteFilesFolders(Session.currentSelectedSite, currentBinderDir);
+				Session.PopulateListViewFromServer(binderList, currentDirectory.Folders, currentDirectory.Files, contextMenu, imageList1);
+				Cursor.Current = Cursors.Default;
+			}
 		}
 	}
 }
