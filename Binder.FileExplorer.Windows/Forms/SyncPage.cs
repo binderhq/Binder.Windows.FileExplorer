@@ -211,5 +211,12 @@ namespace Binder.Windows.FileExplorer
 			sp.Show();
 			this.Close();
 		}
+
+		private async void button4_Click(object sender, EventArgs e)
+		{
+			var currentDirectory = await Session.GetSiteFilesFolders(Session.currentSelectedSite, currentBinderDir);
+			Session.PopulateListViewFromServer(binderList, currentDirectory.Folders, currentDirectory.Files, contextMenu, imageList1);
+			Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir), imageList1);
+		}
 	}
 }

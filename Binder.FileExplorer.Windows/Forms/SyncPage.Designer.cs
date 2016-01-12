@@ -57,6 +57,7 @@
 			this.miniLog = new System.Windows.Forms.TextBox();
 			this.openFolder = new System.Windows.Forms.FolderBrowserDialog();
 			this.button3 = new System.Windows.Forms.Button();
+			this.button4 = new System.Windows.Forms.Button();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.contextMenu.SuspendLayout();
 			this.SuspendLayout();
@@ -80,7 +81,7 @@
 			this.tableLayoutPanel1.RowCount = 2;
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel1.Size = new System.Drawing.Size(984, 501);
+			this.tableLayoutPanel1.Size = new System.Drawing.Size(984, 472);
 			this.tableLayoutPanel1.TabIndex = 0;
 			// 
 			// localList
@@ -94,7 +95,7 @@
 			this.localList.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.localList.Location = new System.Drawing.Point(495, 38);
 			this.localList.Name = "localList";
-			this.localList.Size = new System.Drawing.Size(481, 455);
+			this.localList.Size = new System.Drawing.Size(481, 426);
 			this.localList.SmallImageList = this.imageList1;
 			this.localList.TabIndex = 1;
 			this.localList.UseCompatibleStateImageBehavior = false;
@@ -154,7 +155,7 @@
 			this.binderList.ForeColor = System.Drawing.SystemColors.WindowText;
 			this.binderList.Location = new System.Drawing.Point(8, 38);
 			this.binderList.Name = "binderList";
-			this.binderList.Size = new System.Drawing.Size(481, 455);
+			this.binderList.Size = new System.Drawing.Size(481, 426);
 			this.binderList.SmallImageList = this.imageList1;
 			this.binderList.TabIndex = 3;
 			this.binderList.UseCompatibleStateImageBehavior = false;
@@ -217,9 +218,9 @@
 			// progressBar1
 			// 
 			this.progressBar1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.progressBar1.Location = new System.Drawing.Point(138, 527);
+			this.progressBar1.Location = new System.Drawing.Point(102, 498);
 			this.progressBar1.Name = "progressBar1";
-			this.progressBar1.Size = new System.Drawing.Size(225, 23);
+			this.progressBar1.Size = new System.Drawing.Size(387, 23);
 			this.progressBar1.TabIndex = 5;
 			// 
 			// browseButton
@@ -282,28 +283,39 @@
 			// miniLog
 			// 
 			this.miniLog.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.miniLog.Location = new System.Drawing.Point(369, 528);
+			this.miniLog.Location = new System.Drawing.Point(12, 528);
 			this.miniLog.Name = "miniLog";
 			this.miniLog.ReadOnly = true;
-			this.miniLog.Size = new System.Drawing.Size(120, 20);
+			this.miniLog.Size = new System.Drawing.Size(477, 20);
 			this.miniLog.TabIndex = 9;
 			this.miniLog.Text = "Ready.";
 			// 
 			// button3
 			// 
-			this.button3.Location = new System.Drawing.Point(12, 526);
+			this.button3.Location = new System.Drawing.Point(12, 498);
 			this.button3.Name = "button3";
-			this.button3.Size = new System.Drawing.Size(120, 23);
+			this.button3.Size = new System.Drawing.Size(84, 23);
 			this.button3.TabIndex = 10;
 			this.button3.Text = "Select site";
 			this.button3.UseVisualStyleBackColor = true;
 			this.button3.Click += new System.EventHandler(this.button3_Click);
+			// 
+			// button4
+			// 
+			this.button4.Location = new System.Drawing.Point(852, 497);
+			this.button4.Name = "button4";
+			this.button4.Size = new System.Drawing.Size(120, 23);
+			this.button4.TabIndex = 11;
+			this.button4.Text = "Refresh directories";
+			this.button4.UseVisualStyleBackColor = true;
+			this.button4.Click += new System.EventHandler(this.button4_Click);
 			// 
 			// SyncPage
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(984, 561);
+			this.Controls.Add(this.button4);
 			this.Controls.Add(this.button3);
 			this.Controls.Add(this.miniLog);
 			this.Controls.Add(this.label3);
@@ -354,6 +366,7 @@
 		private System.Windows.Forms.ColumnHeader lastModified1;
 		private System.Windows.Forms.Button button2;
 		private System.Windows.Forms.Button button3;
+		private System.Windows.Forms.Button button4;
 
 	}
 }

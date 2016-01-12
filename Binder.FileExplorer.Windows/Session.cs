@@ -49,35 +49,6 @@ namespace Binder.Windows.FileExplorer
 			return user;
 		}
 
-		public static void PopulateTreeViewFromServer(TreeView treeView, ImageList images, string[] paths, char pathSeparator, ContextMenuStrip menu)
-		{
-			TreeNode lastNode = null;
-			string subPathAgg;
-			treeView.ImageList = images;
-			foreach (string path in paths)
-			{
-				subPathAgg = string.Empty;
-				foreach (string subPath in path.Split(pathSeparator))
-				{
-					subPathAgg += subPath + pathSeparator;
-					TreeNode[] nodes = treeView.Nodes.Find(subPathAgg, true);
-					if (nodes.Length == 0)
-						if (lastNode == null)
-							lastNode = treeView.Nodes.Add(subPathAgg, subPath);
-						else
-							lastNode = lastNode.Nodes.Add(subPathAgg, subPath);
-					else
-						lastNode = nodes[0];
-				}
-				lastNode = null;
-
-			}
-			foreach (TreeNode node in treeView.Nodes)
-			{
-				NodeImager(node, menu);
-			}
-		}
-
 		public static void PopulateListViewFromServer(ListView list, List<Binder.APIMatic.Client.Models.SubFolder> folders, List<Binder.APIMatic.Client.Models.SiteFileModel> files, ContextMenuStrip menu, ImageList imageList)
 		{
 			list.Items.Clear();
@@ -115,27 +86,6 @@ namespace Binder.Windows.FileExplorer
 			}
 
 			list.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
-		}
-
-		public static void PopulateTreeViewFromLocal(TreeView treeView, ImageList images, string path, ContextMenuStrip menu)
-		{
-			treeView.Nodes.Clear();
-			treeView.ImageList = images;
-			try
-			{
-				var rootDirectoryInfo = new DirectoryInfo(path);
-				treeView.Nodes.Add(CreateDirectoryNode(rootDirectoryInfo));
-			}
-//			catch(UnauthorizedAccessException)
-//			{
-//				MessageBox.Show("You do not have permission to access to one or more files in the specified directory.","Unauthorised access",MessageBoxButtons.OK);
-//			}
-			catch(ArgumentException)
-			{
-				MessageBox.Show("Please specify a valid directory","Directory not found", MessageBoxButtons.OK);
-			}
-			foreach (TreeNode node in treeView.Nodes)
-				NodeImager(node);
 		}
 
 		public static void PopulateListViewFromLocal(ListView list, DirectoryInfo directory, ImageList imageList)
@@ -285,12 +235,11 @@ namespace Binder.Windows.FileExplorer
 
 		public async static void GetFile(string siteId, string path, string filename, string savePath, ProgressBar progressBar, TextBox log)
 		{
-//			log.Text = "Preparing download...";
-//			//todo: find out whats causing the 404
-//			var downloadRequest = await new Binder.APIMatic.Client.Controllers.RegionSiteNavigatorController().CreateSiteNavigatorRequestDownloadAsync(path, siteId);
-//			var doDownload = await new Binder.APIMatic.Client.Controllers.RegionStorageZonesController()
-//				.GetStorageZonesGetHiggsFileAsync(filename, downloadRequest.HiggsFileId, downloadRequest.StorageZoneId.ToString());
-//			
+			log.Text = "Preparing download...";
+			//todo: find out whats causing the 404
+			var downloadRequest = await new Binder.APIMatic.Client.Controllers.RegionSiteNavigatorController().CreateSiteNavigatorRequestDownloadAsync(path, siteId);
+			var doDownload = await new Binder.APIMatic.Client.Controllers.RegionStorageZonesController()
+				.GetStorageZonesGetHiggsFileAsync(filename, downloadRequest.HiggsFileId, downloadRequest.StorageZoneId.ToString());
 		}
 
 		public async static void DownloadDirectory(string path, string savePath, ProgressBar progressBar, TextBox log)
@@ -320,9 +269,10 @@ namespace Binder.Windows.FileExplorer
 
 		public async static void UploadFiles(string uploadTo, string uploadFrom, ProgressBar progressBar, TextBox log)
 		{
-			log.Text = "Preparing upload...";
 			long storageZoneId = 1;
 			var fileInfo = new FileInfo(uploadFrom);
+			log.Text = "Preparing to upload " + fileInfo.Name;
+			
 			var region = await new Binder.APIMatic.Client.Controllers.RegionCurrentRegionController().GetCurrentRegionGetAsync();
 			var storageZone = await new Binder.APIMatic.Client.Controllers.RegionStorageZonesController().GetStorageZonesGetAsync(storageZoneId.ToString());
 
@@ -340,7 +290,7 @@ namespace Binder.Windows.FileExplorer
 						{
 							progressBar.Maximum = 100;
 							progressBar.Value = Convert.ToInt32((100*n)/fileInfo.Length);
-							log.Text = GetSizeReadable(n) + "/" + GetSizeReadable(fileInfo.Length) + " uploaded";
+							log.Text = "Uploading " + fileInfo.Name + " " + GetSizeReadable(n) + "/" + GetSizeReadable(fileInfo.Length) + " uploaded";
 						}));
 					};
 
@@ -359,7 +309,7 @@ namespace Binder.Windows.FileExplorer
 					.UpdateSiteNavigatorPostAsync(options, uploadTo, currentSelectedSite);
 
 				progressBar.Value = 0;
-				log.Text = "Ready.";
+				log.Text = "Uploaded " + fileInfo.Name;
 			}
 		}
 
@@ -371,31 +321,39 @@ namespace Binder.Windows.FileExplorer
 
 				if (attr.HasFlag(FileAttributes.Directory))
 				{
-					//Create file on Binder
-					DirectoryInfo info = new DirectoryInfo(item);
-					string newUploadTo = uploadTo + "/" + info.Name;
-					DirectoryInfo[] newUploadFromFolders = info.GetDirectories();
-					FileInfo[] newUploadFromFiles = info.GetFiles();
-
-					List<string> newUploadFrom = new List<string>();
-					foreach(DirectoryInfo folder in newUploadFromFolders)
-						newUploadFrom.Add(folder.FullName);
-					foreach(FileInfo file in newUploadFromFiles)
-						newUploadFrom.Add(file.FullName);
-
 					try
-					{ 
-						var folderRequest = new Binder.APIMatic.Client.Models.CreateFolderRequest()
-							{
-								FolderName = info.Name
-							};
-						var createFolder = await new Binder.APIMatic.Client.Controllers.RegionSiteNavigatorController().UpdateSiteNavigatorCreateFolderAsync(folderRequest, uploadTo, currentSelectedSite);
+					{
+						DirectoryInfo info = new DirectoryInfo(item);
+						string newUploadTo = uploadTo + "/" + info.Name;
+						DirectoryInfo[] newUploadFromFolders = info.GetDirectories();
+						FileInfo[] newUploadFromFiles = info.GetFiles();
+
+						log.Text = "Creating folder " + info.Name;
+
+						List<string> newUploadFrom = new List<string>();
+						foreach(DirectoryInfo folder in newUploadFromFolders)
+							newUploadFrom.Add(folder.FullName);
+						foreach(FileInfo file in newUploadFromFiles)
+							newUploadFrom.Add(file.FullName);
+						try
+						{ 
+							var folderRequest = new Binder.APIMatic.Client.Models.CreateFolderRequest()
+								{
+									FolderName = info.Name
+								};
+							var createFolder = await new Binder.APIMatic.Client.Controllers.RegionSiteNavigatorController().UpdateSiteNavigatorCreateFolderAsync(folderRequest, uploadTo, currentSelectedSite);
+						}
+						catch { }
+						UploadDirectory(newUploadTo, newUploadFrom, progressBar, log);
 					}
-					catch { }
-					UploadDirectory(newUploadTo, newUploadFrom, progressBar, log);
+					catch(Exception e)
+					{
+						log.Text = e.Message + " - Skipping upload.";
+					}
 				}
 				else
 					UploadFiles(uploadTo, item, progressBar, log);
+				//log.Text = "Ready.";
 			}
 		}
 

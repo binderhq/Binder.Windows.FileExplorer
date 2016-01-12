@@ -75,8 +75,12 @@ namespace Binder.Windows.FileExplorer
 			sitep.Close();
 			syncp.Close();
 			Session.CloseSession();
-			this.username.Clear();
-			this.password.Clear();
+			if(!checkBox2.Checked)
+			{
+				this.password.Clear();
+				if(!checkBox1.Checked)
+					this.username.Clear();
+			}
 			this.signOut.Enabled = false;
 			this.submit.Enabled = true;
 		}
@@ -115,6 +119,7 @@ namespace Binder.Windows.FileExplorer
 			{
 				checkBox2.Checked = false;
 				checkBox2.Enabled = false;
+
 				Properties.Settings.Default.username = "";
 				Properties.Settings.Default.password = "";
 				Properties.Settings.Default.Save();
