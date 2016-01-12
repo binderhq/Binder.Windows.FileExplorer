@@ -13,6 +13,7 @@ using System.IO;
 using System.Web;
 using System.Drawing;
 using Binder.APIMatic.Client;
+using Binder.API.Region.Foundation.FileAccess;
 
 namespace Binder.Windows.FileExplorer
 {
@@ -151,7 +152,8 @@ namespace Binder.Windows.FileExplorer
 						{new ListViewItem.ListViewSubItem(item, "File folder"),
 						new ListViewItem.ListViewSubItem(item, ""), 
 						new ListViewItem.ListViewSubItem(item, dir.LastAccessTime.ToShortDateString())};
-
+					
+					item.Name = dir.FullName;
 					item.SubItems.AddRange(subItems);
 					list.Items.Add(item);
 				}
@@ -283,25 +285,12 @@ namespace Binder.Windows.FileExplorer
 
 		public async static void GetFile(string siteId, string path, string filename, string savePath, ProgressBar progressBar, TextBox log)
 		{
-			log.Text = "Preparing...";
-			
-			//todo: find out whats causing the 404
-			var downloadRequest = await new Binder.APIMatic.Client.Controllers.RegionSiteNavigatorController().CreateSiteNavigatorRequestDownloadAsync(path, siteId);
-			var doDownload = await new Binder.APIMatic.Client.Controllers.RegionStorageZonesController()
-				.GetStorageZonesGetNamedHiggsFileAsync(filename, downloadRequest.HiggsFileId, downloadRequest.StorageZoneId.ToString());
-
-			WebClient myWebClient = new WebClient();
-			myWebClient.DownloadProgressChanged += (s, e) =>
-			{
-				progressBar.Value = e.ProgressPercentage;
-				log.Text = e.ProgressPercentage.ToString() + "% complete";
-			};
-			myWebClient.DownloadFileCompleted += (s, e) =>
-			{
-				progressBar.Value = 0;
-				log.Text = "Ready.";
-			};
-			myWebClient.DownloadFileAsync(doDownload, savePath);
+//			log.Text = "Preparing download...";
+//			//todo: find out whats causing the 404
+//			var downloadRequest = await new Binder.APIMatic.Client.Controllers.RegionSiteNavigatorController().CreateSiteNavigatorRequestDownloadAsync(path, siteId);
+//			var doDownload = await new Binder.APIMatic.Client.Controllers.RegionStorageZonesController()
+//				.GetStorageZonesGetHiggsFileAsync(filename, downloadRequest.HiggsFileId, downloadRequest.StorageZoneId.ToString());
+//			
 		}
 
 		public async static void DownloadDirectory(string path, string savePath, ProgressBar progressBar, TextBox log)
@@ -329,37 +318,86 @@ namespace Binder.Windows.FileExplorer
 			_sessionToken = null;
 		}
 
-		public static void UploadFiles(string uploadTo, string uploadFrom, string filename)
+		public async static void UploadFiles(string uploadTo, string uploadFrom, ProgressBar progressBar, TextBox log)
 		{
-			string url = catalogUrl + "service.api/region/SiteNavigator/" + currentSelectedSite + "/Folder/UploadedFiles?path=" + WebUtility.UrlEncode(uploadTo) + "&api_key=" + _sessionToken;
-//			var upload = await new Binder.APIMatic.Client.Controllers.RegionSiteNavigatorController().CreateSiteNavigatorUploadFilesToFolderAsync(uploadTo, currentSelectedSite);
-//			var upload2 = upload.ToString();
-			PostFileAsync(url, uploadFrom, filename);
+			log.Text = "Preparing upload...";
+			long storageZoneId = 1;
+			var fileInfo = new FileInfo(uploadFrom);
+			var region = await new Binder.APIMatic.Client.Controllers.RegionCurrentRegionController().GetCurrentRegionGetAsync();
+			var storageZone = await new Binder.APIMatic.Client.Controllers.RegionStorageZonesController().GetStorageZonesGetAsync(storageZoneId.ToString());
+
+			StorageEngine storageEngine = StorageEngineFactory.Create(storageZone.HiggsUrl, 
+				region.PieceCheckerEndpoint,
+				region.FileCompositionEndpoint,
+				region.FileRegistrationEndpoint,
+				storageZoneId);
+			
+			using(var fileStream = new FileStream(uploadFrom, FileMode.Open, FileAccess.Read))
+			{
+				Action<long> progress = (n) => {
+						Console.WriteLine(100*(n/fileInfo.Length));
+						progressBar.Invoke(new Action(() =>
+						{
+							progressBar.Maximum = 100;
+							progressBar.Value = Convert.ToInt32((100*n)/fileInfo.Length);
+							log.Text = GetSizeReadable(n) + "/" + GetSizeReadable(fileInfo.Length) + " uploaded";
+						}));
+					};
+
+				var storageResponse = storageEngine.StoreFile(fileStream, progress);
+
+				var options = new Binder.APIMatic.Client.Models.CreateSiteFileVersionOptions()
+				{
+					Length = fileInfo.Length,
+					FileModifiedTimeUtc = fileInfo.LastWriteTimeUtc,
+					HiggsFileId = storageResponse.HiggsFileID,
+					Name = fileInfo.Name,
+					StorageZoneId = storageZoneId.ToString()
+				};
+
+				var siteFile = await new Binder.APIMatic.Client.Controllers.RegionSiteNavigatorController()
+					.UpdateSiteNavigatorPostAsync(options, uploadTo, currentSelectedSite);
+
+				progressBar.Value = 0;
+				log.Text = "Ready.";
+			}
 		}
 
-	//Code from mckay
-		public static Task<HttpResponseMessage> PostFileAsync(this Url url, string filepath, string filename)
+		public async static void UploadDirectory(string uploadTo, List<string> uploadFrom, ProgressBar progressBar, TextBox log)
 		{
-			return new FlurlClient(url).PostFileAsync(filepath, filename);
-		}
+			foreach(string item in uploadFrom)
+			{
+				FileAttributes attr = File.GetAttributes(item);
 
-		public static Task<HttpResponseMessage> PostFileAsync(this string url, string filepath, string filename)
-		{
-			return new FlurlClient(url).PostFileAsync(filepath, filename);
-		}
+				if (attr.HasFlag(FileAttributes.Directory))
+				{
+					//Create file on Binder
+					DirectoryInfo info = new DirectoryInfo(item);
+					string newUploadTo = uploadTo + "/" + info.Name;
+					DirectoryInfo[] newUploadFromFolders = info.GetDirectories();
+					FileInfo[] newUploadFromFiles = info.GetFiles();
 
-		public static Task<HttpResponseMessage> PostFileAsync(this FlurlClient client, string filepath, string filename)
-		{
-			var data = File.ReadAllBytes(filepath);
-			var content = new MultipartFormDataContent();
-			var file = new ByteArrayContent(data);
-			//content.Headers.Add("Content-Type", "multipart/form-data");
-			//content.Headers.Add("Content-Length", data.Length.ToString());
-			//content.Add(file, "attachment", "a.txt");
-			content.Add(file, "upload", filename);
-			return client.SendAsync(HttpMethod.Post, content: content);
+					List<string> newUploadFrom = new List<string>();
+					foreach(DirectoryInfo folder in newUploadFromFolders)
+						newUploadFrom.Add(folder.FullName);
+					foreach(FileInfo file in newUploadFromFiles)
+						newUploadFrom.Add(file.FullName);
+
+					try
+					{ 
+						var folderRequest = new Binder.APIMatic.Client.Models.CreateFolderRequest()
+							{
+								FolderName = info.Name
+							};
+						var createFolder = await new Binder.APIMatic.Client.Controllers.RegionSiteNavigatorController().UpdateSiteNavigatorCreateFolderAsync(folderRequest, uploadTo, currentSelectedSite);
+					}
+					catch { }
+					UploadDirectory(newUploadTo, newUploadFrom, progressBar, log);
+				}
+				else
+					UploadFiles(uploadTo, item, progressBar, log);
+			}
 		}
-	//End McKay's code
 
 		public async static Task<List<Binder.APIMatic.Client.Models.SiteDetails>>CurrentSites()
 		{

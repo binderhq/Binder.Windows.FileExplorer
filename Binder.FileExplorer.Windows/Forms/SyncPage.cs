@@ -179,6 +179,14 @@ namespace Binder.Windows.FileExplorer
 			DoDragDrop(e.Item, DragDropEffects.Move);
 		}
 
+		private void UpdateProgressTextFromExternalThread(int completed, int total)
+		{
+			this.progressBar1.Invoke(new Action(() =>
+			{
+				this.progressBar1.Maximum = total;
+				this.progressBar1.Value = completed;
+			}));
+		}
 		private void binderList_DragEnter(object sender, DragEventArgs e)
 		{
 			e.Effect = DragDropEffects.Move;
@@ -187,8 +195,10 @@ namespace Binder.Windows.FileExplorer
 		private async void binderList_DragDrop(object sender, DragEventArgs e)
 		{
 			Cursor.Current = Cursors.WaitCursor;
+			List<string> selectedItems = new List<string>();
 			foreach (ListViewItem item in localList.SelectedItems)
-				Session.UploadFiles(currentBinderDir, item.Name, item.Text);
+				selectedItems.Add(item.Name);
+			Session.UploadDirectory(currentBinderDir,selectedItems,progressBar1,miniLog);
 			var currentDirectory = await Session.GetSiteFilesFolders(Session.currentSelectedSite, currentBinderDir);
 			Session.PopulateListViewFromServer(binderList, currentDirectory.Folders, currentDirectory.Files, contextMenu, imageList1);
 			Cursor.Current = Cursors.Default;

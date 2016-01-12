@@ -87,6 +87,17 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FileAccess\HiggsClient.cs" />
+    <Compile Include="FileAccess\IHiggsClient.cs" />
+    <Compile Include="FileAccess\ILocalPieceCache.cs" />
+    <Compile Include="FileAccess\NullPieceCache.cs" />
+    <Compile Include="FileAccess\RequestClasses\CheckPieceRequest.cs" />
+    <Compile Include="FileAccess\RequestClasses\DownloadPieceRequest.cs" />
+    <Compile Include="FileAccess\RequestClasses\IHiggsRequest.cs" />
+    <Compile Include="FileAccess\RequestClasses\RequestDefault.cs" />
+    <Compile Include="FileAccess\RequestClasses\UploadPieceRequest.cs" />
+    <Compile Include="FileAccess\StorageEngine.cs" />
+    <Compile Include="FileAccess\StorageEngineFactory.cs" />
     <Compile Include="Forms\LoginPage.cs">
       <SubType>Form</SubType>
     </Compile>
