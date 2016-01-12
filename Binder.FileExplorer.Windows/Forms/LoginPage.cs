@@ -23,12 +23,35 @@ namespace Binder.Windows.FileExplorer
 			Application.ApplicationExit += new EventHandler(this.OnApplicationExit);
 		}
 
+		private void LoginPage_Load(object sender, EventArgs e)
+		{
+			if(!Equals(Properties.Settings.Default.username,""))
+			{
+				username.Text = Properties.Settings.Default.username;
+				checkBox1.Checked = true;
+				if(!Equals(Properties.Settings.Default.password,""))
+				{
+					password.Text = Properties.Settings.Default.password;
+					checkBox2.Checked = true;
+					checkBox2.Enabled = true;
+				}
+			} 
+		}
+
 		private async void button1_Click(object sender, EventArgs e)
 		{
 			submit.Enabled = false;
 			Cursor.Current = Cursors.WaitCursor;
 			try 
 			{
+				if(checkBox1.Checked)
+				{
+					
+					if(checkBox2.Checked)
+					{
+						
+					}
+				}
 				var user = await Session.CreateSession(this.username.Text, this.password.Text);
 //				Session.CurrentRegionUserSitesResponse CurrentUserSites = Session.CurrentSites();
 				Session.sites = await Session.CurrentSites();
@@ -60,8 +83,12 @@ namespace Binder.Windows.FileExplorer
 
 		private void OnApplicationExit(object sender, EventArgs e)
 		{
-			sitep.Close();
-			syncp.Close();
+			try
+			{
+				sitep.Close();
+				syncp.Close();
+			}
+			catch { }
 			Session.CloseSession();
 		}
 
@@ -74,6 +101,38 @@ namespace Binder.Windows.FileExplorer
 			}
 			catch { }
 			Session.CloseSession();
+		}
+
+		private void checkBox1_Click(object sender, EventArgs e)
+		{
+			if(checkBox1.Checked)
+			{
+				checkBox2.Enabled = true;
+				Properties.Settings.Default.username = username.Text;
+				Properties.Settings.Default.Save();
+			}
+			else if(!checkBox1.Checked)
+			{
+				checkBox2.Checked = false;
+				checkBox2.Enabled = false;
+				Properties.Settings.Default.username = "";
+				Properties.Settings.Default.password = "";
+				Properties.Settings.Default.Save();
+			}
+		}
+
+		private void checkBox2_Click(object sender, EventArgs e)
+		{
+			if(checkBox2.Checked)
+			{ 
+				Properties.Settings.Default.password = password.Text;
+				Properties.Settings.Default.Save();
+			}
+			else if(!checkBox2.Checked)
+			{
+				Properties.Settings.Default.password = "";
+				Properties.Settings.Default.Save();
+			}
 		}
 	}
 }

@@ -194,5 +194,12 @@ namespace Binder.Windows.FileExplorer
 			Cursor.Current = Cursors.Default;
 		
 		}
+
+		private void button3_Click(object sender, EventArgs e)
+		{
+			SitePage sp = new SitePage();
+			sp.Show();
+			this.Close();
+		}
 	}
 }

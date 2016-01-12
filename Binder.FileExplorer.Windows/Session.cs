@@ -321,13 +321,19 @@ namespace Binder.Windows.FileExplorer
 
 		public async static void CloseSession()
 		{
-			await new Binder.APIMatic.Client.Controllers.AuthenticationSessionsController().DeleteSessionsDeleteAsync(_sessionToken);
+			try
+			{
+				await new Binder.APIMatic.Client.Controllers.AuthenticationSessionsController().DeleteSessionsDeleteAsync(_sessionToken);
+			}
+			catch { }
 			_sessionToken = null;
 		}
 
 		public static void UploadFiles(string uploadTo, string uploadFrom, string filename)
 		{
 			string url = catalogUrl + "service.api/region/SiteNavigator/" + currentSelectedSite + "/Folder/UploadedFiles?path=" + WebUtility.UrlEncode(uploadTo) + "&api_key=" + _sessionToken;
+//			var upload = await new Binder.APIMatic.Client.Controllers.RegionSiteNavigatorController().CreateSiteNavigatorUploadFilesToFolderAsync(uploadTo, currentSelectedSite);
+//			var upload2 = upload.ToString();
 			PostFileAsync(url, uploadFrom, filename);
 		}
 

@@ -56,6 +56,7 @@
 			this.saveFile = new System.Windows.Forms.SaveFileDialog();
 			this.miniLog = new System.Windows.Forms.TextBox();
 			this.openFolder = new System.Windows.Forms.FolderBrowserDialog();
+			this.button3 = new System.Windows.Forms.Button();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.contextMenu.SuspendLayout();
 			this.SuspendLayout();
@@ -216,9 +217,9 @@
 			// progressBar1
 			// 
 			this.progressBar1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.progressBar1.Location = new System.Drawing.Point(8, 527);
+			this.progressBar1.Location = new System.Drawing.Point(138, 527);
 			this.progressBar1.Name = "progressBar1";
-			this.progressBar1.Size = new System.Drawing.Size(355, 23);
+			this.progressBar1.Size = new System.Drawing.Size(225, 23);
 			this.progressBar1.TabIndex = 5;
 			// 
 			// browseButton
@@ -288,11 +289,22 @@
 			this.miniLog.TabIndex = 9;
 			this.miniLog.Text = "Ready.";
 			// 
+			// button3
+			// 
+			this.button3.Location = new System.Drawing.Point(12, 526);
+			this.button3.Name = "button3";
+			this.button3.Size = new System.Drawing.Size(120, 23);
+			this.button3.TabIndex = 10;
+			this.button3.Text = "Select site";
+			this.button3.UseVisualStyleBackColor = true;
+			this.button3.Click += new System.EventHandler(this.button3_Click);
+			// 
 			// SyncPage
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(984, 561);
+			this.Controls.Add(this.button3);
 			this.Controls.Add(this.miniLog);
 			this.Controls.Add(this.label3);
 			this.Controls.Add(this.directoryBox);
@@ -341,6 +353,7 @@
 		private System.Windows.Forms.ColumnHeader size1;
 		private System.Windows.Forms.ColumnHeader lastModified1;
 		private System.Windows.Forms.Button button2;
+		private System.Windows.Forms.Button button3;
 
 	}
 }
