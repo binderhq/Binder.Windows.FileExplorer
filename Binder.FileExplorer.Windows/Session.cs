@@ -66,6 +66,7 @@ namespace Binder.Windows.FileExplorer
 						new ListViewItem.ListViewSubItem(item, ""), 
 						new ListViewItem.ListViewSubItem(item, "")};
 
+					item.Name = folder.Path;
 					item.SubItems.AddRange(subItems);
 					list.Items.Add(item);
 				}
@@ -235,7 +236,7 @@ namespace Binder.Windows.FileExplorer
 				AddContextMenu(subNode, menu);
 		}
 
-		public async static void GetFile(string path, string filename, string savePath, ProgressBar progressBar, TextBox log)
+		public async static Task GetFile(string path, string savePath, ProgressBar progressBar, TextBox log)
 		{
 			long storageZoneId = 1;
 			log.Text = "Preparing download...";
@@ -250,28 +251,62 @@ namespace Binder.Windows.FileExplorer
 				region.FileRegistrationEndpoint,
 				storageZoneId);
 
+			var fileInfo = await new Binder.APIMatic.Client.Controllers.RegionSiteNavigatorController().GetSiteNavigatorGetFileAsync(path, currentSelectedSite);
 			
-			//using()
-			//{
-			//	var storageResponse = storageEngine.GetFile(request.HiggsFileId, stream);
-			//
+			using(var outputStream = new FileStream(savePath, FileMode.Create, FileAccess.Write))
+			{
+
+				Action<long> progress = (n) => {
+						Console.WriteLine(100*(n/fileInfo.Length));
+						progressBar.Invoke(new Action(() =>
+						{ 
+							progressBar.Maximum = 100;
+							progressBar.Value = Convert.ToInt32((100*n)/fileInfo.Length);
+							log.Text = "Downloading " + fileInfo.Name + " " + GetSizeReadable(n) + "/" + GetSizeReadable(((long) fileInfo.Length));
+						}));
+					};
+			
+				storageEngine.GetFile(request.HiggsFileId, progress, outputStream);
 			//	var downloadFile = await new Binder.APIMatic.Client.Controllers.RegionStorageZonesController().GetStorageZonesGetNamedHiggsFileAsync(filename, request.HiggsFileId, storageZoneId.ToString());
-			//}
+			}
 		}
 
-		public async static void DownloadDirectory(string path, string savePath, ProgressBar progressBar, TextBox log)
+		public async static Task DownloadDirectory(string downloadTo, List<string> downloadFromFolders, List<string> downloadFromFiles, ProgressBar progressBar, TextBox log)
 		{
-				var directory = await GetSiteFilesFolders(currentSelectedSite, path);
-				foreach(Binder.APIMatic.Client.Models.SiteFileModel file in directory.Files)
+			foreach(string folder in downloadFromFolders)
+			{
+				try
 				{
-					GetFile(file.Path, file.Name, savePath, progressBar, log);
+					var info = await new Binder.APIMatic.Client.Controllers.RegionSiteNavigatorController().GetSiteNavigatorGetFolderAsync(folder, currentSelectedSite);
+					string newDownloadTo = downloadTo + "\\" + info.Name;
+					List<Binder.APIMatic.Client.Models.SubFolder> newDownloadFromFolders = info.Folders;
+					List<Binder.APIMatic.Client.Models.SiteFileModel> newDownloadFromFiles = info.Files;
+
+					log.Text = "Creating folder " + newDownloadTo;
+
+					List<string> newDownloadFromFoldersPaths = new List<string>();
+					List<string> newDownloadFromFilesPaths = new List<string>();
+					foreach(Binder.APIMatic.Client.Models.SubFolder subfolder in newDownloadFromFolders)
+						newDownloadFromFoldersPaths.Add(subfolder.Path);
+					foreach(Binder.APIMatic.Client.Models.SiteFileModel file in newDownloadFromFiles)
+						newDownloadFromFilesPaths.Add(file.Path);
+					try
+					{
+						Directory.CreateDirectory(newDownloadTo);
+					}
+					catch { }
+					await DownloadDirectory(newDownloadTo, newDownloadFromFoldersPaths, newDownloadFromFilesPaths, progressBar, log);
 				}
-				foreach(Binder.APIMatic.Client.Models.SubFolder folder in directory.Folders)
+				catch(Exception e)
 				{
-					Directory.CreateDirectory(folder.Name);
-					string newSavePath = savePath + folder.Name;
-					DownloadDirectory(folder.Path, newSavePath, progressBar, log);
+					log.Text = e.Message + " - Skipping download";
 				}
+			}
+			foreach(string file in downloadFromFiles)
+			{
+				var info = await new Binder.APIMatic.Client.Controllers.RegionSiteNavigatorController().GetSiteNavigatorGetFileAsync(file, currentSelectedSite);
+				await GetFile(file, downloadTo + "\\" + info.Name, progressBar, log);
+			}
 		}
 
 		public async static void CloseSession()

@@ -252,7 +252,6 @@
 			this.downloadMenu.Name = "downloadMenu";
 			this.downloadMenu.Size = new System.Drawing.Size(128, 22);
 			this.downloadMenu.Text = "Download";
-			this.downloadMenu.Click += new System.EventHandler(this.downloadMenu_Click);
 			// 
 			// deleteToolStripMenuItem
 			// 

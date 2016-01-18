@@ -55,21 +55,6 @@ namespace Binder.Windows.FileExplorer
 			}
 		}
 
-		private void downloadMenu_Click(object sender, EventArgs e)
-		{
-			string pathToDownload = this.binderList.FocusedItem.Name;
-			string fileToDownload = this.binderList.FocusedItem.Text;
-
-			saveFile.FileName = fileToDownload;
-			DialogResult downloadTo = saveFile.ShowDialog();
-
-			if(downloadTo == System.Windows.Forms.DialogResult.OK)
-			{
-				if (this.binderList.FocusedItem.ImageIndex != 0)
-					Session.GetFile(pathToDownload, fileToDownload.TrimEnd('/'), saveFile.FileName, this.progressBar1, this.miniLog);
-			}
-		}
-
 		private void directoryBox_KeyPress(object sender, KeyPressEventArgs e)
 		{
 			if (e.KeyChar == (char)Keys.Return)
@@ -126,20 +111,25 @@ namespace Binder.Windows.FileExplorer
 			e.Effect = DragDropEffects.Move;
 		}
 
-		private void localList_DragDrop(object sender, DragEventArgs e)
+		private async void localList_DragDrop(object sender, DragEventArgs e)
 		{
-			string pathToDownload = this.binderList.FocusedItem.Name;
-			string fileToDownload = this.binderList.FocusedItem.Text;
-
-			//Session.GetFile(Session.currentSelectedSite, pathToDownload, fileToDownload.TrimEnd('/'), this.directoryBox.Text + "\\" + fileToDownload.TrimEnd('/'), this.progressBar1, this.miniLog);
-
-			foreach (ListViewItem item in binderList.SelectedItems)
-				Session.GetFile(item.Name, item.Text.TrimEnd('/'), this.directoryBox.Text + "\\" + item.Text.TrimEnd('/'), this.progressBar1, this.miniLog);
-
 			Cursor.Current = Cursors.WaitCursor;
-			System.Threading.Thread.Sleep(500);
-			currentLocalDir = directoryBox.Text;
+			List<string> selectedFolders = new List<string>();
+			List<string> selectedFiles = new List<string>();
+			foreach(ListViewItem item in binderList.SelectedItems)
+			{
+				if(item.ImageIndex == 0)
+					selectedFolders.Add(item.Name);
+				else
+					selectedFiles.Add(item.Name);
+			}
+
+			Task t = Session.DownloadDirectory(currentLocalDir.TrimEnd('\\'), selectedFolders, selectedFiles, progressBar1, miniLog);
+			await t;
+
 			Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir), imageList1);
+			miniLog.Text = "Ready.";
+			progressBar1.Value = 0;
 			Cursor.Current = Cursors.Default;
 			
 		}
@@ -203,6 +193,7 @@ namespace Binder.Windows.FileExplorer
 			var currentDirectory = await Session.GetSiteFilesFolders(Session.currentSelectedSite, currentBinderDir);
 			Session.PopulateListViewFromServer(binderList, currentDirectory.Folders, currentDirectory.Files, contextMenu, imageList1);
 			miniLog.Text = "Ready.";
+			progressBar1.Value = 0;
 			Cursor.Current = Cursors.Default;
 		
 		}
