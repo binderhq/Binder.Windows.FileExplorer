@@ -219,5 +219,18 @@ namespace Binder.Windows.FileExplorer
 			LoginPage lp = new LoginPage();
 			lp.Show();
 		}
+
+		private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Session.CloseSession();
+			Application.Exit();
+		}
+
+		private void selectSiteToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			SitePage sp = new SitePage();
+			sp.Show();
+			this.Close();
+		}
 	}
 }

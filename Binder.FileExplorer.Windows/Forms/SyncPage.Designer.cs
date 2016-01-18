@@ -58,8 +58,8 @@
 			this.button4 = new System.Windows.Forms.Button();
 			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
 			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.signOutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.selectSiteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.signOutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.contextMenu.SuspendLayout();
@@ -316,6 +316,13 @@
 			this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
 			this.fileToolStripMenuItem.Text = "File";
 			// 
+			// selectSiteToolStripMenuItem
+			// 
+			this.selectSiteToolStripMenuItem.Name = "selectSiteToolStripMenuItem";
+			this.selectSiteToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.selectSiteToolStripMenuItem.Text = "Select site";
+			this.selectSiteToolStripMenuItem.Click += new System.EventHandler(this.selectSiteToolStripMenuItem_Click);
+			// 
 			// signOutToolStripMenuItem
 			// 
 			this.signOutToolStripMenuItem.Name = "signOutToolStripMenuItem";
@@ -323,23 +330,19 @@
 			this.signOutToolStripMenuItem.Text = "Sign out";
 			this.signOutToolStripMenuItem.Click += new System.EventHandler(this.signOutToolStripMenuItem_Click);
 			// 
-			// selectSiteToolStripMenuItem
-			// 
-			this.selectSiteToolStripMenuItem.Name = "selectSiteToolStripMenuItem";
-			this.selectSiteToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-			this.selectSiteToolStripMenuItem.Text = "Select site";
-			// 
 			// exitToolStripMenuItem
 			// 
 			this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
 			this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.exitToolStripMenuItem.Text = "Exit";
+			this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
 			// 
 			// SyncPage
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(984, 584);
+			this.ControlBox = false;
 			this.Controls.Add(this.menuStrip1);
 			this.Controls.Add(this.button4);
 			this.Controls.Add(this.button3);

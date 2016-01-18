@@ -46,8 +46,8 @@ namespace Binder.Windows.FileExplorer.Forms
 			else
 			{
 				MessageBox.Show("Please select a site","Selection error",MessageBoxButtons.OK);
-				Cursor.Current = Cursors.Default;
 			}
+			Cursor.Current = Cursors.Default;
 		}
 
 		private void sitesList_MouseDoubleClick(object sender, MouseEventArgs e)

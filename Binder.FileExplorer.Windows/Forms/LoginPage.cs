@@ -40,31 +40,16 @@ namespace Binder.Windows.FileExplorer
 
 		private async void button1_Click(object sender, EventArgs e)
 		{
-//			try 
-//			{
-				if(checkBox1.Checked)
-				{
-					
-					if(checkBox2.Checked)
-					{
-						
-					}
-				}
+				Cursor.Current = Cursors.WaitCursor;
+				submit.Enabled = false;
 				var user = await Session.CreateSession(this.username.Text, this.password.Text);
-//				Session.CurrentRegionUserSitesResponse CurrentUserSites = Session.CurrentSites();
 				Session.sites = await Session.CurrentSites();
-//				Session.siteNames = CurrentUserSites.ConnectedSites.Select(x=>x.Site.Name).ToArray();
-//				Session.siteIds = CurrentUserSites.ConnectedSites.Select(x=>x.Site.Id).ToArray();
 				sitep = new SitePage();
 				syncp = new SyncPage();
 				sitep.Show();
+				submit.Enabled = true;
+				Cursor.Current = Cursors.Default;
 				this.Hide();
-//			}
-//			catch(Exception ex)
-//			{
-//				submit.Enabled = true;
-//				MessageBox.Show(ex.Message + "\n\nInvalid username or password", "Login error", MessageBoxButtons.OK);
-//			}
 		}
 
 		private void signOut_Click(object sender, EventArgs e)
