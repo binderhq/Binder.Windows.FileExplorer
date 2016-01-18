@@ -31,6 +31,7 @@ namespace Binder.Windows.FileExplorer
 			Session.PopulateListViewFromServer(binderList, currentDirectory.Folders, currentDirectory.Files, contextMenu, imageList1);
 			Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir), imageList1);
 			directoryBox.Text = currentLocalDir;
+			Session.IsReadOnly(label1, currentBinderDir);
 		}
 
 		private void backButton_Click(object sender, EventArgs e)
@@ -145,22 +146,25 @@ namespace Binder.Windows.FileExplorer
 				var currentDirectory = await Session.GetSiteFilesFolders(Session.currentSelectedSite, currentBinderDir);
 				Session.PopulateListViewFromServer(binderList, currentDirectory.Folders, currentDirectory.Files, contextMenu, imageList1);
 			}
+			Session.IsReadOnly(label1, currentBinderDir);
 			Cursor.Current = Cursors.Default;
 		}
 
-		private async void button2_Click(object sender, EventArgs e)
+		private async void button2_Click_1(object sender, EventArgs e)
 		{
 			Cursor.Current = Cursors.WaitCursor;
 			int index = currentBinderDir.LastIndexOf("/");
 			currentBinderDir = currentBinderDir.Substring(0, index);
-			if(Equals(currentBinderDir, ""))
+			if (Equals(currentBinderDir, ""))
 			{
 				currentBinderDir = "/";
 				button2.Enabled = false;
 			}
 			var currentDirectory = await Session.GetSiteFilesFolders(Session.currentSelectedSite, currentBinderDir);
 			Session.PopulateListViewFromServer(binderList, currentDirectory.Folders, currentDirectory.Files, contextMenu, imageList1);
+			Session.IsReadOnly(label1, currentBinderDir);
 			button2.Enabled = true;
+			Cursor.Current = Cursors.Default;
 		}
 
 		private void localList_ItemDrag(object sender, ItemDragEventArgs e)
@@ -192,6 +196,7 @@ namespace Binder.Windows.FileExplorer
 			await t;
 			var currentDirectory = await Session.GetSiteFilesFolders(Session.currentSelectedSite, currentBinderDir);
 			Session.PopulateListViewFromServer(binderList, currentDirectory.Folders, currentDirectory.Files, contextMenu, imageList1);
+			Session.IsReadOnly(label1, currentBinderDir);
 			miniLog.Text = "Ready.";
 			progressBar1.Value = 0;
 			Cursor.Current = Cursors.Default;
@@ -209,6 +214,7 @@ namespace Binder.Windows.FileExplorer
 		{
 			var currentDirectory = await Session.GetSiteFilesFolders(Session.currentSelectedSite, currentBinderDir);
 			Session.PopulateListViewFromServer(binderList, currentDirectory.Folders, currentDirectory.Files, contextMenu, imageList1);
+			Session.IsReadOnly(label1, currentBinderDir);
 			Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir), imageList1);
 		}
 
@@ -232,5 +238,6 @@ namespace Binder.Windows.FileExplorer
 			sp.Show();
 			this.Close();
 		}
+
 	}
 }

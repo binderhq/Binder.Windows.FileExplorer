@@ -438,9 +438,17 @@ namespace Binder.Windows.FileExplorer
 			return SiteFileFolders;
 		}
 
-	//	public async static Task<bool> IsReadOnly()
-	//	{
-	//		var permissions = await new Binder.APIMatic.Client.Controllers.RegionSitesController().GetSitesGetUsersAsync(currentSelectedSite);
-	//	}
+		public async static void IsReadOnly(Label label, string path)
+		{
+			var folderInfo = await new Binder.APIMatic.Client.Controllers.RegionSiteNavigatorController().GetSiteNavigatorGetFolderAsync(path, currentSelectedSite);
+			var permissions = folderInfo.Privileges;
+
+			if(!permissions.Contains("Write"))
+			{
+				label.Visible = true;
+			}
+			else
+				label.Visible = false;
+		}
 	}
 }

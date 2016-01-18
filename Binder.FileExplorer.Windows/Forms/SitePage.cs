@@ -29,7 +29,7 @@ namespace Binder.Windows.FileExplorer.Forms
 				item.Name = site.Site.Id;
 				sitesList.Items.Add(item);
 			}
-				
+			Cursor.Current = Cursors.Default;
 		}
 
 		private void selectSite_Click(object sender, EventArgs e)

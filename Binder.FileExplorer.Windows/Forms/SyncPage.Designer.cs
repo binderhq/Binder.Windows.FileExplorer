@@ -43,7 +43,9 @@
 			this.type1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.size1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.lastModified1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
 			this.button2 = new System.Windows.Forms.Button();
+			this.label1 = new System.Windows.Forms.Label();
 			this.progressBar1 = new System.Windows.Forms.ProgressBar();
 			this.browseButton = new System.Windows.Forms.Button();
 			this.directoryBox = new System.Windows.Forms.TextBox();
@@ -62,6 +64,7 @@
 			this.signOutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.tableLayoutPanel1.SuspendLayout();
+			this.tableLayoutPanel2.SuspendLayout();
 			this.contextMenu.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
 			this.SuspendLayout();
@@ -77,7 +80,7 @@
 			this.tableLayoutPanel1.Controls.Add(this.localList, 1, 1);
 			this.tableLayoutPanel1.Controls.Add(this.button1, 1, 0);
 			this.tableLayoutPanel1.Controls.Add(this.binderList, 0, 1);
-			this.tableLayoutPanel1.Controls.Add(this.button2, 0, 0);
+			this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel2, 0, 0);
 			this.tableLayoutPanel1.GrowStyle = System.Windows.Forms.TableLayoutPanelGrowStyle.FixedSize;
 			this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 27);
 			this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -187,18 +190,47 @@
 			this.lastModified1.Text = "Last Modified";
 			this.lastModified1.Width = 81;
 			// 
+			// tableLayoutPanel2
+			// 
+			this.tableLayoutPanel2.ColumnCount = 2;
+			this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+			this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+			this.tableLayoutPanel2.Controls.Add(this.button2, 0, 0);
+			this.tableLayoutPanel2.Controls.Add(this.label1, 1, 0);
+			this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.tableLayoutPanel2.Location = new System.Drawing.Point(5, 5);
+			this.tableLayoutPanel2.Margin = new System.Windows.Forms.Padding(0);
+			this.tableLayoutPanel2.Name = "tableLayoutPanel2";
+			this.tableLayoutPanel2.RowCount = 1;
+			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+			this.tableLayoutPanel2.Size = new System.Drawing.Size(487, 30);
+			this.tableLayoutPanel2.TabIndex = 4;
+			// 
 			// button2
 			// 
 			this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
 			this.button2.Enabled = false;
-			this.button2.Location = new System.Drawing.Point(8, 8);
+			this.button2.Location = new System.Drawing.Point(3, 3);
 			this.button2.Name = "button2";
 			this.button2.Size = new System.Drawing.Size(55, 24);
-			this.button2.TabIndex = 4;
+			this.button2.TabIndex = 5;
 			this.button2.Text = "Up";
 			this.button2.UseVisualStyleBackColor = true;
-			this.button2.Click += new System.EventHandler(this.button2_Click);
+			this.button2.Click += new System.EventHandler(this.button2_Click_1);
+			// 
+			// label1
+			// 
+			this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.label1.AutoSize = true;
+			this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 13F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.label1.ForeColor = System.Drawing.Color.DimGray;
+			this.label1.Location = new System.Drawing.Point(393, 8);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(91, 22);
+			this.label1.TabIndex = 6;
+			this.label1.Text = "Read only";
+			this.label1.Visible = false;
 			// 
 			// progressBar1
 			// 
@@ -319,21 +351,21 @@
 			// selectSiteToolStripMenuItem
 			// 
 			this.selectSiteToolStripMenuItem.Name = "selectSiteToolStripMenuItem";
-			this.selectSiteToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.selectSiteToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
 			this.selectSiteToolStripMenuItem.Text = "Select site";
 			this.selectSiteToolStripMenuItem.Click += new System.EventHandler(this.selectSiteToolStripMenuItem_Click);
 			// 
 			// signOutToolStripMenuItem
 			// 
 			this.signOutToolStripMenuItem.Name = "signOutToolStripMenuItem";
-			this.signOutToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.signOutToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
 			this.signOutToolStripMenuItem.Text = "Sign out";
 			this.signOutToolStripMenuItem.Click += new System.EventHandler(this.signOutToolStripMenuItem_Click);
 			// 
 			// exitToolStripMenuItem
 			// 
 			this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-			this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.exitToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
 			this.exitToolStripMenuItem.Text = "Exit";
 			this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
 			// 
@@ -358,6 +390,8 @@
 			this.Text = "File Synchronisation";
 			this.Load += new System.EventHandler(this.SyncPage_Load);
 			this.tableLayoutPanel1.ResumeLayout(false);
+			this.tableLayoutPanel2.ResumeLayout(false);
+			this.tableLayoutPanel2.PerformLayout();
 			this.contextMenu.ResumeLayout(false);
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();
@@ -391,7 +425,6 @@
 		private System.Windows.Forms.ColumnHeader type1;
 		private System.Windows.Forms.ColumnHeader size1;
 		private System.Windows.Forms.ColumnHeader lastModified1;
-		private System.Windows.Forms.Button button2;
 		private System.Windows.Forms.Button button3;
 		private System.Windows.Forms.Button button4;
 		private System.Windows.Forms.MenuStrip menuStrip1;
@@ -399,6 +432,9 @@
 		private System.Windows.Forms.ToolStripMenuItem signOutToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem selectSiteToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
+		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
+		private System.Windows.Forms.Button button2;
+		private System.Windows.Forms.Label label1;
 
 	}
 }
