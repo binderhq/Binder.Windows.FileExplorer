@@ -34,10 +34,10 @@
 			this.label3 = new System.Windows.Forms.Label();
 			this.label4 = new System.Windows.Forms.Label();
 			this.pictureBox1 = new System.Windows.Forms.PictureBox();
-			this.signOut = new System.Windows.Forms.Button();
 			this.checkBox1 = new System.Windows.Forms.CheckBox();
 			this.checkBox2 = new System.Windows.Forms.CheckBox();
 			this.username = new System.Windows.Forms.TextBox();
+			this.signOut = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -90,18 +90,6 @@
 			this.pictureBox1.TabIndex = 11;
 			this.pictureBox1.TabStop = false;
 			// 
-			// signOut
-			// 
-			this.signOut.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.signOut.Enabled = false;
-			this.signOut.Location = new System.Drawing.Point(152, 205);
-			this.signOut.Name = "signOut";
-			this.signOut.Size = new System.Drawing.Size(120, 23);
-			this.signOut.TabIndex = 12;
-			this.signOut.Text = "Sign out";
-			this.signOut.UseVisualStyleBackColor = true;
-			this.signOut.Click += new System.EventHandler(this.signOut_Click);
-			// 
 			// checkBox1
 			// 
 			this.checkBox1.AutoSize = true;
@@ -134,6 +122,17 @@
 			this.username.Size = new System.Drawing.Size(199, 20);
 			this.username.TabIndex = 0;
 			// 
+			// signOut
+			// 
+			this.signOut.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.signOut.Location = new System.Drawing.Point(152, 205);
+			this.signOut.Name = "signOut";
+			this.signOut.Size = new System.Drawing.Size(120, 23);
+			this.signOut.TabIndex = 12;
+			this.signOut.Text = "Quit";
+			this.signOut.UseVisualStyleBackColor = true;
+			this.signOut.Click += new System.EventHandler(this.signOut_Click);
+			// 
 			// LoginPage
 			// 
 			this.AcceptButton = this.submit;
@@ -159,7 +158,6 @@
 			this.Name = "LoginPage";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "Login";
-			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.LoginPage_FormClosing);
 			this.Load += new System.EventHandler(this.LoginPage_Load);
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
 			this.ResumeLayout(false);
@@ -175,8 +173,8 @@
 		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.Label label4;
 		private System.Windows.Forms.PictureBox pictureBox1;
-		private System.Windows.Forms.Button signOut;
 		private System.Windows.Forms.CheckBox checkBox1;
 		private System.Windows.Forms.CheckBox checkBox2;
+		private System.Windows.Forms.Button signOut;
 	}
 }

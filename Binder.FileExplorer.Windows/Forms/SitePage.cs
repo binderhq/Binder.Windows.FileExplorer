@@ -12,6 +12,7 @@ namespace Binder.Windows.FileExplorer.Forms
 {
 	public partial class SitePage : Form
 	{
+		
 		public SitePage()
 		{
 			InitializeComponent();
@@ -23,7 +24,10 @@ namespace Binder.Windows.FileExplorer.Forms
 			//this.sitesList.Items.AddRange(Session.sites.);
 			foreach(var site in Session.sites)
 			{
-				this.sitesList.Items.Add(site.Site.Name);
+				ListViewExt item = new ListViewExt();
+				item.Text = site.Site.Name;
+				item.Name = site.Site.Id;
+				sitesList.Items.Add(item);
 			}
 				
 		}
@@ -33,7 +37,8 @@ namespace Binder.Windows.FileExplorer.Forms
 			Cursor.Current = Cursors.WaitCursor;
 			if (sitesList.SelectedItem != null)
 			{
-				Session.currentSelectedSite = Session.sites[sitesList.SelectedIndex].Site.Id;
+				ListViewItem selectedItem = (ListViewItem) sitesList.SelectedItem;
+				Session.currentSelectedSite = selectedItem.Name;
 				SyncPage sp = new SyncPage();
 				sp.Show();
 				this.Hide();
@@ -48,6 +53,14 @@ namespace Binder.Windows.FileExplorer.Forms
 		private void sitesList_MouseDoubleClick(object sender, MouseEventArgs e)
 		{
 			selectSite_Click(sender, e);
+		}
+	}
+	
+	public class ListViewExt : ListViewItem
+	{
+		public override string ToString()
+		{
+			return this.Text;
 		}
 	}
 }

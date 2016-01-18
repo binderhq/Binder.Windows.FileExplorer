@@ -41,6 +41,7 @@
 			this.sitesList.Location = new System.Drawing.Point(0, 0);
 			this.sitesList.Name = "sitesList";
 			this.sitesList.Size = new System.Drawing.Size(303, 344);
+			this.sitesList.Sorted = true;
 			this.sitesList.TabIndex = 0;
 			this.sitesList.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.sitesList_MouseDoubleClick);
 			// 
@@ -60,6 +61,7 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(303, 387);
+			this.ControlBox = false;
 			this.Controls.Add(this.selectSite);
 			this.Controls.Add(this.sitesList);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;

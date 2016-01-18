@@ -40,10 +40,8 @@ namespace Binder.Windows.FileExplorer
 
 		private async void button1_Click(object sender, EventArgs e)
 		{
-			submit.Enabled = false;
-			Cursor.Current = Cursors.WaitCursor;
-			try 
-			{
+//			try 
+//			{
 				if(checkBox1.Checked)
 				{
 					
@@ -57,54 +55,30 @@ namespace Binder.Windows.FileExplorer
 				Session.sites = await Session.CurrentSites();
 //				Session.siteNames = CurrentUserSites.ConnectedSites.Select(x=>x.Site.Name).ToArray();
 //				Session.siteIds = CurrentUserSites.ConnectedSites.Select(x=>x.Site.Id).ToArray();
-				this.signOut.Enabled = true;
 				sitep = new SitePage();
 				syncp = new SyncPage();
 				sitep.Show();
-			}
-			catch(Exception ex)
-			{
-				submit.Enabled = true;
-				MessageBox.Show(ex.Message + "\n\nInvalid username or password", "Login error", MessageBoxButtons.OK);
-			}
-			Cursor.Current = Cursors.Default;
+				this.Hide();
+//			}
+//			catch(Exception ex)
+//			{
+//				submit.Enabled = true;
+//				MessageBox.Show(ex.Message + "\n\nInvalid username or password", "Login error", MessageBoxButtons.OK);
+//			}
 		}
 
 		private void signOut_Click(object sender, EventArgs e)
 		{
-			sitep.Close();
-			syncp.Close();
-			Session.CloseSession();
-			if(!checkBox2.Checked)
-			{
-				this.password.Clear();
-				if(!checkBox1.Checked)
-					this.username.Clear();
-			}
-			this.signOut.Enabled = false;
-			this.submit.Enabled = true;
+			Application.Exit();
 		}
 
 		private void OnApplicationExit(object sender, EventArgs e)
 		{
 			try
 			{
-				sitep.Close();
-				syncp.Close();
+				Session.CloseSession();
 			}
 			catch { }
-			Session.CloseSession();
-		}
-
-		private void LoginPage_FormClosing(object sender, FormClosingEventArgs e)
-		{
-			try
-			{
-				sitep.Close();
-				syncp.Close();
-			}
-			catch { }
-			Session.CloseSession();
 		}
 
 		private void checkBox1_Click(object sender, EventArgs e)

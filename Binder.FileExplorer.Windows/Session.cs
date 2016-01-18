@@ -41,11 +41,13 @@ namespace Binder.Windows.FileExplorer
 
 		public async static Task<Binder.APIMatic.Client.Models.CreateSessionResponse> CreateSession(string username, string password)
 		{
+			Cursor.Current = Cursors.WaitCursor;
 			Binder.APIMatic.Client.Configuration.BaseUri = "https://development.edocx.com.au:443/service.api/";
 			var user = await new Binder.APIMatic.Client.Controllers.AuthenticationSessionsController()
 				.CreateSessionsPostAsync(new APIMatic.Client.Models.CreateSessionRequest() { Username = username, ClearTextPassword = password });
 			Binder.APIMatic.Client.Configuration.ApiKey = user.SessionToken;
 			_sessionToken = user.SessionToken;
+			Cursor.Current = Cursors.Default;
 			return user;
 		}
 
@@ -233,13 +235,28 @@ namespace Binder.Windows.FileExplorer
 				AddContextMenu(subNode, menu);
 		}
 
-		public async static void GetFile(string siteId, string path, string filename, string savePath, ProgressBar progressBar, TextBox log)
+		public async static void GetFile(string path, string filename, string savePath, ProgressBar progressBar, TextBox log)
 		{
+			long storageZoneId = 1;
 			log.Text = "Preparing download...";
-			//todo: find out whats causing the 404
-			var downloadRequest = await new Binder.APIMatic.Client.Controllers.RegionSiteNavigatorController().CreateSiteNavigatorRequestDownloadAsync(path, siteId);
-			var doDownload = await new Binder.APIMatic.Client.Controllers.RegionStorageZonesController()
-				.GetStorageZonesGetHiggsFileAsync(filename, downloadRequest.HiggsFileId, downloadRequest.StorageZoneId.ToString());
+
+			var region = await new Binder.APIMatic.Client.Controllers.RegionCurrentRegionController().GetCurrentRegionGetAsync();
+			var	storageZone = await new Binder.APIMatic.Client.Controllers.RegionStorageZonesController().GetStorageZonesGetAsync(storageZoneId.ToString());
+			var request = await new Binder.APIMatic.Client.Controllers.RegionSiteNavigatorController().CreateSiteNavigatorRequestDownloadAsync(path, currentSelectedSite);
+
+			StorageEngine storageEngine = StorageEngineFactory.Create(storageZone.HiggsUrl,
+				region.PieceCheckerEndpoint,
+				region.FileCompositionEndpoint,
+				region.FileRegistrationEndpoint,
+				storageZoneId);
+
+			
+			//using()
+			//{
+			//	var storageResponse = storageEngine.GetFile(request.HiggsFileId, stream);
+			//
+			//	var downloadFile = await new Binder.APIMatic.Client.Controllers.RegionStorageZonesController().GetStorageZonesGetNamedHiggsFileAsync(filename, request.HiggsFileId, storageZoneId.ToString());
+			//}
 		}
 
 		public async static void DownloadDirectory(string path, string savePath, ProgressBar progressBar, TextBox log)
@@ -247,7 +264,7 @@ namespace Binder.Windows.FileExplorer
 				var directory = await GetSiteFilesFolders(currentSelectedSite, path);
 				foreach(Binder.APIMatic.Client.Models.SiteFileModel file in directory.Files)
 				{
-					GetFile(currentSelectedSite, file.Path, file.Name, savePath, progressBar, log);
+					GetFile(file.Path, file.Name, savePath, progressBar, log);
 				}
 				foreach(Binder.APIMatic.Client.Models.SubFolder folder in directory.Folders)
 				{
@@ -262,12 +279,13 @@ namespace Binder.Windows.FileExplorer
 			try
 			{
 				await new Binder.APIMatic.Client.Controllers.AuthenticationSessionsController().DeleteSessionsDeleteAsync(_sessionToken);
+				Binder.APIMatic.Client.Configuration.ApiKey = null;
 			}
-			catch { }
+			catch {}
 			_sessionToken = null;
 		}
 
-		public async static void UploadFiles(string uploadTo, string uploadFrom, ProgressBar progressBar, TextBox log)
+		public async static Task UploadFiles(string uploadTo, string uploadFrom, ProgressBar progressBar, TextBox log)
 		{
 			long storageZoneId = 1;
 			var fileInfo = new FileInfo(uploadFrom);
@@ -290,7 +308,7 @@ namespace Binder.Windows.FileExplorer
 						{
 							progressBar.Maximum = 100;
 							progressBar.Value = Convert.ToInt32((100*n)/fileInfo.Length);
-							log.Text = "Uploading " + fileInfo.Name + " " + GetSizeReadable(n) + "/" + GetSizeReadable(fileInfo.Length) + " uploaded";
+							log.Text = "Uploading " + fileInfo.Name + " " + GetSizeReadable(n) + "/" + GetSizeReadable(fileInfo.Length);
 						}));
 					};
 
@@ -309,11 +327,10 @@ namespace Binder.Windows.FileExplorer
 					.UpdateSiteNavigatorPostAsync(options, uploadTo, currentSelectedSite);
 
 				progressBar.Value = 0;
-				log.Text = "Uploaded " + fileInfo.Name;
 			}
 		}
 
-		public async static void UploadDirectory(string uploadTo, List<string> uploadFrom, ProgressBar progressBar, TextBox log)
+		public async static Task UploadDirectory(string uploadTo, List<string> uploadFrom, ProgressBar progressBar, TextBox log)
 		{
 			foreach(string item in uploadFrom)
 			{
@@ -328,7 +345,7 @@ namespace Binder.Windows.FileExplorer
 						DirectoryInfo[] newUploadFromFolders = info.GetDirectories();
 						FileInfo[] newUploadFromFiles = info.GetFiles();
 
-						log.Text = "Creating folder " + info.Name;
+						log.Text = "Creating folder " + newUploadTo;
 
 						List<string> newUploadFrom = new List<string>();
 						foreach(DirectoryInfo folder in newUploadFromFolders)
@@ -344,7 +361,7 @@ namespace Binder.Windows.FileExplorer
 							var createFolder = await new Binder.APIMatic.Client.Controllers.RegionSiteNavigatorController().UpdateSiteNavigatorCreateFolderAsync(folderRequest, uploadTo, currentSelectedSite);
 						}
 						catch { }
-						UploadDirectory(newUploadTo, newUploadFrom, progressBar, log);
+						await UploadDirectory(newUploadTo, newUploadFrom, progressBar, log);
 					}
 					catch(Exception e)
 					{
@@ -352,8 +369,7 @@ namespace Binder.Windows.FileExplorer
 					}
 				}
 				else
-					UploadFiles(uploadTo, item, progressBar, log);
-				//log.Text = "Ready.";
+					await UploadFiles(uploadTo, item, progressBar, log);
 			}
 		}
 
@@ -386,5 +402,10 @@ namespace Binder.Windows.FileExplorer
 				.GetSiteNavigatorGetFolderAsync(path, siteId);
 			return SiteFileFolders;
 		}
+
+	//	public async static Task<bool> IsReadOnly()
+	//	{
+	//		var permissions = await new Binder.APIMatic.Client.Controllers.RegionSitesController().GetSitesGetUsersAsync(currentSelectedSite);
+	//	}
 	}
 }

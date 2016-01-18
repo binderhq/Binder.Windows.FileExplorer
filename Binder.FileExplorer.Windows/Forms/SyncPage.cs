@@ -66,7 +66,7 @@ namespace Binder.Windows.FileExplorer
 			if(downloadTo == System.Windows.Forms.DialogResult.OK)
 			{
 				if (this.binderList.FocusedItem.ImageIndex != 0)
-					Session.GetFile(Session.currentSelectedSite, pathToDownload, fileToDownload.TrimEnd('/'), saveFile.FileName, this.progressBar1, this.miniLog);
+					Session.GetFile(pathToDownload, fileToDownload.TrimEnd('/'), saveFile.FileName, this.progressBar1, this.miniLog);
 			}
 		}
 
@@ -134,7 +134,7 @@ namespace Binder.Windows.FileExplorer
 			//Session.GetFile(Session.currentSelectedSite, pathToDownload, fileToDownload.TrimEnd('/'), this.directoryBox.Text + "\\" + fileToDownload.TrimEnd('/'), this.progressBar1, this.miniLog);
 
 			foreach (ListViewItem item in binderList.SelectedItems)
-				Session.GetFile(Session.currentSelectedSite, item.Name, item.Text.TrimEnd('/'), this.directoryBox.Text + "\\" + item.Text.TrimEnd('/'), this.progressBar1, this.miniLog);
+				Session.GetFile(item.Name, item.Text.TrimEnd('/'), this.directoryBox.Text + "\\" + item.Text.TrimEnd('/'), this.progressBar1, this.miniLog);
 
 			Cursor.Current = Cursors.WaitCursor;
 			System.Threading.Thread.Sleep(500);
@@ -198,9 +198,11 @@ namespace Binder.Windows.FileExplorer
 			List<string> selectedItems = new List<string>();
 			foreach (ListViewItem item in localList.SelectedItems)
 				selectedItems.Add(item.Name);
-			Session.UploadDirectory(currentBinderDir,selectedItems,progressBar1,miniLog);
+			Task t = Session.UploadDirectory(currentBinderDir,selectedItems,progressBar1,miniLog);
+			await t;
 			var currentDirectory = await Session.GetSiteFilesFolders(Session.currentSelectedSite, currentBinderDir);
 			Session.PopulateListViewFromServer(binderList, currentDirectory.Folders, currentDirectory.Files, contextMenu, imageList1);
+			miniLog.Text = "Ready.";
 			Cursor.Current = Cursors.Default;
 		
 		}
@@ -217,6 +219,14 @@ namespace Binder.Windows.FileExplorer
 			var currentDirectory = await Session.GetSiteFilesFolders(Session.currentSelectedSite, currentBinderDir);
 			Session.PopulateListViewFromServer(binderList, currentDirectory.Folders, currentDirectory.Files, contextMenu, imageList1);
 			Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir), imageList1);
+		}
+
+		private void signOutToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Session.CloseSession();
+			this.Close();
+			LoginPage lp = new LoginPage();
+			lp.Show();
 		}
 	}
 }
