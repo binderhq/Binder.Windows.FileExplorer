@@ -297,5 +297,16 @@ namespace Binder.Windows.FileExplorer
 				MessageBox.Show(err.Message);
 			}
 		}
+
+		private void cancelTransfer_Click(object sender, EventArgs e)
+		{
+
+		}
+
+		private async void openSiteInBrowserToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			await Session.OpenInBrowser();
+		}
 	}
+
 }

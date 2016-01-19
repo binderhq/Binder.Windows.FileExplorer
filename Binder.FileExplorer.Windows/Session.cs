@@ -476,5 +476,49 @@ namespace Binder.Windows.FileExplorer
 			var request = new Binder.APIMatic.Client.Models.CreateFolderRequest(){ FolderName = folderName };
 			var createFolder = await new Binder.APIMatic.Client.Controllers.RegionSiteNavigatorController().UpdateSiteNavigatorCreateFolderAsync(request, path, currentSelectedSite);
 		}
+
+		public async static Task OpenInBrowser()
+		{
+			var currentSiteDetails = await new Binder.APIMatic.Client.Controllers.RegionSitesController().GetSitesGetAsync(currentSelectedSite);
+			var currentRegion = await new Binder.APIMatic.Client.Controllers.RegionCurrentRegionController().GetCurrentRegionGetAsync();
+			string regionUrl = "";
+			if(Equals(currentRegion.EcosystemId, "Development"))
+				regionUrl = ".edo.cx/";
+			else if(Equals(currentRegion.EcosystemId, "Production")) //I'm assuming its Production
+				regionUrl = ".binder.com.au/";
+			string url = "https://" + currentSiteDetails.Subdomain + regionUrl;
+			System.Diagnostics.Process.Start(url);
+		}
+
+		public class KonamiSequence
+		{
+			List<Keys> Keys = new List<Keys>{System.Windows.Forms.Keys.Up, System.Windows.Forms.Keys.Up,
+										System.Windows.Forms.Keys.Down, System.Windows.Forms.Keys.Down, 
+										System.Windows.Forms.Keys.Left, System.Windows.Forms.Keys.Right, 
+										System.Windows.Forms.Keys.Left, System.Windows.Forms.Keys.Right, 
+										System.Windows.Forms.Keys.B, System.Windows.Forms.Keys.A};
+			private int mPosition = -1;
+			public int Position
+			{
+				get { return mPosition; }
+				private set { mPosition = value; }
+			}
+			public bool IsCompletedBy(Keys key)
+			{
+				if (Keys[Position + 1] == key)
+					Position++;
+				else if (Position == 1 && key == System.Windows.Forms.Keys.Up){}
+				else if (Keys[0] == key)
+					Position = 0;
+				else
+					Position = -1;
+				if (Position == Keys.Count - 1)
+				{
+					Position = -1;
+					return true;
+				}
+				return false;
+			}
+		}
 	}
 }

@@ -28,6 +28,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SitePage));
 			this.sitesList = new System.Windows.Forms.ListBox();
 			this.selectSite = new System.Windows.Forms.Button();
 			this.SuspendLayout();
@@ -43,6 +44,7 @@
 			this.sitesList.Size = new System.Drawing.Size(303, 344);
 			this.sitesList.Sorted = true;
 			this.sitesList.TabIndex = 0;
+			this.sitesList.KeyUp += new System.Windows.Forms.KeyEventHandler(this.sitesList_KeyUp);
 			this.sitesList.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.sitesList_MouseDoubleClick);
 			// 
 			// selectSite
@@ -65,6 +67,7 @@
 			this.Controls.Add(this.selectSite);
 			this.Controls.Add(this.sitesList);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "SitePage";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "Select a site";

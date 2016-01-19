@@ -54,8 +54,16 @@ namespace Binder.Windows.FileExplorer.Forms
 		{
 			selectSite_Click(sender, e);
 		}
+
+		private Session.KonamiSequence sequence = new Session.KonamiSequence();
+		
+		private void sitesList_KeyUp(object sender, KeyEventArgs e)
+		{
+			if (sequence.IsCompletedBy(e.KeyCode))
+				MessageBox.Show("Made with <3 in Brisbane, Australia", "By Aaron Jones", MessageBoxButtons.OK, MessageBoxIcon.Information);
+		}
 	}
-	
+
 	public class ListViewExt : ListViewItem
 	{
 		public override string ToString()

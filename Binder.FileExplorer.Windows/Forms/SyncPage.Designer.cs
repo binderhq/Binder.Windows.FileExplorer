@@ -63,6 +63,8 @@
 			this.selectSiteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.signOutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.cancelTransfer = new System.Windows.Forms.Button();
+			this.openSiteInBrowserToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.tableLayoutPanel2.SuspendLayout();
 			this.contextMenu.SuspendLayout();
@@ -88,7 +90,7 @@
 			this.tableLayoutPanel1.RowCount = 2;
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel1.Size = new System.Drawing.Size(984, 466);
+			this.tableLayoutPanel1.Size = new System.Drawing.Size(984, 467);
 			this.tableLayoutPanel1.TabIndex = 0;
 			// 
 			// localList
@@ -102,7 +104,7 @@
 			this.localList.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.localList.Location = new System.Drawing.Point(495, 38);
 			this.localList.Name = "localList";
-			this.localList.Size = new System.Drawing.Size(481, 420);
+			this.localList.Size = new System.Drawing.Size(481, 421);
 			this.localList.SmallImageList = this.imageList1;
 			this.localList.TabIndex = 4;
 			this.localList.UseCompatibleStateImageBehavior = false;
@@ -162,7 +164,7 @@
 			this.binderList.ForeColor = System.Drawing.SystemColors.WindowText;
 			this.binderList.Location = new System.Drawing.Point(8, 38);
 			this.binderList.Name = "binderList";
-			this.binderList.Size = new System.Drawing.Size(481, 420);
+			this.binderList.Size = new System.Drawing.Size(481, 421);
 			this.binderList.SmallImageList = this.imageList1;
 			this.binderList.TabIndex = 2;
 			this.binderList.UseCompatibleStateImageBehavior = false;
@@ -249,15 +251,15 @@
 			// progressBar1
 			// 
 			this.progressBar1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.progressBar1.Location = new System.Drawing.Point(12, 499);
+			this.progressBar1.Location = new System.Drawing.Point(12, 500);
 			this.progressBar1.Name = "progressBar1";
-			this.progressBar1.Size = new System.Drawing.Size(477, 23);
+			this.progressBar1.Size = new System.Drawing.Size(399, 23);
 			this.progressBar1.TabIndex = 5;
 			// 
 			// browseButton
 			// 
 			this.browseButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.browseButton.Location = new System.Drawing.Point(852, 527);
+			this.browseButton.Location = new System.Drawing.Point(852, 528);
 			this.browseButton.Name = "browseButton";
 			this.browseButton.Size = new System.Drawing.Size(120, 23);
 			this.browseButton.TabIndex = 8;
@@ -269,7 +271,7 @@
 			// 
 			this.directoryBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.directoryBox.Location = new System.Drawing.Point(569, 529);
+			this.directoryBox.Location = new System.Drawing.Point(569, 530);
 			this.directoryBox.Name = "directoryBox";
 			this.directoryBox.Size = new System.Drawing.Size(277, 20);
 			this.directoryBox.TabIndex = 6;
@@ -279,7 +281,7 @@
 			// 
 			this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(515, 532);
+			this.label3.Location = new System.Drawing.Point(515, 533);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(48, 13);
 			this.label3.TabIndex = 8;
@@ -313,7 +315,7 @@
 			// miniLog
 			// 
 			this.miniLog.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.miniLog.Location = new System.Drawing.Point(12, 529);
+			this.miniLog.Location = new System.Drawing.Point(12, 530);
 			this.miniLog.Name = "miniLog";
 			this.miniLog.ReadOnly = true;
 			this.miniLog.Size = new System.Drawing.Size(477, 20);
@@ -323,7 +325,7 @@
 			// button4
 			// 
 			this.button4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.button4.Location = new System.Drawing.Point(852, 498);
+			this.button4.Location = new System.Drawing.Point(852, 499);
 			this.button4.Name = "button4";
 			this.button4.Size = new System.Drawing.Size(120, 23);
 			this.button4.TabIndex = 7;
@@ -344,6 +346,7 @@
 			// fileToolStripMenuItem
 			// 
 			this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.openSiteInBrowserToolStripMenuItem,
             this.selectSiteToolStripMenuItem,
             this.signOutToolStripMenuItem,
             this.exitToolStripMenuItem});
@@ -374,12 +377,30 @@
 			this.exitToolStripMenuItem.Text = "Exit";
 			this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
 			// 
+			// cancelTransfer
+			// 
+			this.cancelTransfer.Location = new System.Drawing.Point(417, 499);
+			this.cancelTransfer.Name = "cancelTransfer";
+			this.cancelTransfer.Size = new System.Drawing.Size(75, 23);
+			this.cancelTransfer.TabIndex = 13;
+			this.cancelTransfer.Text = "Cancel";
+			this.cancelTransfer.UseVisualStyleBackColor = true;
+			this.cancelTransfer.Click += new System.EventHandler(this.cancelTransfer_Click);
+			// 
+			// openSiteInBrowserToolStripMenuItem
+			// 
+			this.openSiteInBrowserToolStripMenuItem.Name = "openSiteInBrowserToolStripMenuItem";
+			this.openSiteInBrowserToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
+			this.openSiteInBrowserToolStripMenuItem.Text = "Open site in browser";
+			this.openSiteInBrowserToolStripMenuItem.Click += new System.EventHandler(this.openSiteInBrowserToolStripMenuItem_Click);
+			// 
 			// SyncPage
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(984, 561);
 			this.ControlBox = false;
+			this.Controls.Add(this.cancelTransfer);
 			this.Controls.Add(this.menuStrip1);
 			this.Controls.Add(this.button4);
 			this.Controls.Add(this.miniLog);
@@ -388,6 +409,7 @@
 			this.Controls.Add(this.browseButton);
 			this.Controls.Add(this.progressBar1);
 			this.Controls.Add(this.tableLayoutPanel1);
+			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MinimumSize = new System.Drawing.Size(1000, 600);
 			this.Name = "SyncPage";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -439,6 +461,8 @@
 		private System.Windows.Forms.Button button2;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Button newFolder;
+		private System.Windows.Forms.Button cancelTransfer;
+		private System.Windows.Forms.ToolStripMenuItem openSiteInBrowserToolStripMenuItem;
 
 	}
 }
