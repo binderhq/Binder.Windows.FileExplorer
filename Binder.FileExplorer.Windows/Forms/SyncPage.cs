@@ -18,6 +18,7 @@ namespace Binder.Windows.FileExplorer
 	{
 		private string currentLocalDir;
 		private string currentBinderDir;
+		private static bool isTransferRunning = false;
 
 		public SyncPage()
 		{
@@ -33,6 +34,10 @@ namespace Binder.Windows.FileExplorer
 			Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir), imageList1);
 			directoryBox.Text = currentLocalDir;
 			Session.IsReadOnly(label1, currentBinderDir);
+
+			ToolTip toolTip1 = new ToolTip();
+			toolTip1.SetToolTip(label1, "The folder you are currently viewing has been set to \"Read only\". If you require write access to this folder, please contact the site's administrator.");
+			toolTip1.SetToolTip(newFolder, "Creates a new folder in the current directory. Note that you cannot use this to create new boxes.");
 		}
 
 		private void backButton_Click(object sender, EventArgs e)
@@ -116,6 +121,7 @@ namespace Binder.Windows.FileExplorer
 		private async void localList_DragDrop(object sender, DragEventArgs e)
 		{
 			Cursor.Current = Cursors.WaitCursor;
+			isTransferRunning = true;
 			List<string> selectedFolders = new List<string>();
 			List<string> selectedFiles = new List<string>();
 			foreach(ListViewItem item in binderList.SelectedItems)
@@ -128,7 +134,7 @@ namespace Binder.Windows.FileExplorer
 
 			Task t = Session.DownloadDirectory(currentLocalDir.TrimEnd('\\'), selectedFolders, selectedFiles, progressBar1, miniLog);
 			await t;
-
+			isTransferRunning = false;
 			Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir), imageList1);
 			miniLog.Text = "Ready.";
 			progressBar1.Value = 0;
@@ -190,11 +196,13 @@ namespace Binder.Windows.FileExplorer
 		private async void binderList_DragDrop(object sender, DragEventArgs e)
 		{
 			Cursor.Current = Cursors.WaitCursor;
+			isTransferRunning = true;
 			List<string> selectedItems = new List<string>();
 			foreach (ListViewItem item in localList.SelectedItems)
 				selectedItems.Add(item.Name);
 			Task t = Session.UploadDirectory(currentBinderDir,selectedItems,progressBar1,miniLog);
 			await t;
+			isTransferRunning = false;
 			var currentDirectory = await Session.GetSiteFilesFolders(Session.currentSelectedSite, currentBinderDir);
 			Session.PopulateListViewFromServer(binderList, currentDirectory.Folders, currentDirectory.Files, contextMenu, imageList1);
 			Session.IsReadOnly(label1, currentBinderDir);
@@ -202,13 +210,6 @@ namespace Binder.Windows.FileExplorer
 			progressBar1.Value = 0;
 			Cursor.Current = Cursors.Default;
 		
-		}
-
-		private void button3_Click(object sender, EventArgs e)
-		{
-			SitePage sp = new SitePage();
-			sp.Show();
-			this.Close();
 		}
 
 		private async void button4_Click(object sender, EventArgs e)
@@ -223,23 +224,63 @@ namespace Binder.Windows.FileExplorer
 
 		private void signOutToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			Session.CloseSession();
-			this.Close();
-			LoginPage lp = new LoginPage();
-			lp.Show();
+			if (isTransferRunning)
+			{
+				if (MessageBox.Show("There is a file transfer in progress. Are you sure you want to close? This could result in missing or corrupted files.", "Confirm close", MessageBoxButtons.YesNo) == DialogResult.Yes)
+				{
+					isTransferRunning = false;
+					Session.CloseSession();
+					this.Close();
+					LoginPage lp = new LoginPage();
+					lp.Show();
+				}
+			}
+			else
+			{
+				Session.CloseSession();
+				this.Close();
+				LoginPage lp = new LoginPage();
+				lp.Show();
+			}
+			
 		}
 
 		private void exitToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			Session.CloseSession();
-			Application.Exit();
+			if (isTransferRunning)
+			{
+				if (MessageBox.Show("There is a file transfer in progress. Are you sure you want to close? This could result in missing or corrupted files.", "Confirm close", MessageBoxButtons.YesNo) == DialogResult.Yes)
+				{
+					isTransferRunning = false;
+					Session.CloseSession();
+					Application.Exit();
+				}
+			}
+			else
+			{
+				Session.CloseSession();
+				Application.Exit();
+			}
 		}
 
 		private void selectSiteToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			SitePage sp = new SitePage();
-			sp.Show();
-			this.Close();
+			if (isTransferRunning)
+			{
+				if (MessageBox.Show("There is a file transfer in progress. Are you sure you want to close? This could result in missing or corrupted files.", "Confirm close", MessageBoxButtons.YesNo) == DialogResult.Yes)
+				{
+					isTransferRunning = false;
+					SitePage sp = new SitePage();
+					sp.Show();
+					this.Close();
+				}
+			}
+			else 
+			{
+				SitePage sp = new SitePage();
+				sp.Show();
+				this.Close();
+			}
 		}
 
 		private async void newFolder_Click(object sender, EventArgs e)
@@ -256,11 +297,5 @@ namespace Binder.Windows.FileExplorer
 				MessageBox.Show(err.Message);
 			}
 		}
-
-		private void SyncPage_FormClosed(object sender, FormClosedEventArgs e)
-		{
-			Application.Exit();
-		}
-
 	}
 }

@@ -57,7 +57,7 @@
 			this.submit.Location = new System.Drawing.Point(15, 205);
 			this.submit.Name = "submit";
 			this.submit.Size = new System.Drawing.Size(120, 23);
-			this.submit.TabIndex = 2;
+			this.submit.TabIndex = 4;
 			this.submit.Text = "Sign in";
 			this.submit.UseVisualStyleBackColor = true;
 			this.submit.Click += new System.EventHandler(this.button1_Click);
@@ -96,7 +96,7 @@
 			this.checkBox1.Location = new System.Drawing.Point(73, 153);
 			this.checkBox1.Name = "checkBox1";
 			this.checkBox1.Size = new System.Drawing.Size(126, 17);
-			this.checkBox1.TabIndex = 13;
+			this.checkBox1.TabIndex = 2;
 			this.checkBox1.Text = "Remember username";
 			this.checkBox1.UseVisualStyleBackColor = true;
 			this.checkBox1.Click += new System.EventHandler(this.checkBox1_Click);
@@ -108,7 +108,7 @@
 			this.checkBox2.Location = new System.Drawing.Point(73, 176);
 			this.checkBox2.Name = "checkBox2";
 			this.checkBox2.Size = new System.Drawing.Size(125, 17);
-			this.checkBox2.TabIndex = 14;
+			this.checkBox2.TabIndex = 3;
 			this.checkBox2.Text = "Remember password";
 			this.checkBox2.UseVisualStyleBackColor = true;
 			this.checkBox2.Click += new System.EventHandler(this.checkBox2_Click);
@@ -128,7 +128,7 @@
 			this.signOut.Location = new System.Drawing.Point(152, 205);
 			this.signOut.Name = "signOut";
 			this.signOut.Size = new System.Drawing.Size(120, 23);
-			this.signOut.TabIndex = 12;
+			this.signOut.TabIndex = 5;
 			this.signOut.Text = "Quit";
 			this.signOut.UseVisualStyleBackColor = true;
 			this.signOut.Click += new System.EventHandler(this.signOut_Click);

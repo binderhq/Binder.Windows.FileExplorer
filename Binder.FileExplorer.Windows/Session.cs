@@ -13,14 +13,13 @@ using System.IO;
 using System.Web;
 using System.Drawing;
 using Binder.APIMatic.Client;
-using Binder.API.Region.Foundation.FileAccess;
+using Binder.Client.StorageEngine;
+//using Binder.API.Region.Foundation.FileAccess;
 
 namespace Binder.Windows.FileExplorer
 {
 	public static class Session
 	{
-		public const string catalogUrl = "https://development.edocx.com.au:443/";
-
 		public static string SessionToken
 		{
 			get
@@ -343,16 +342,17 @@ namespace Binder.Windows.FileExplorer
 			
 			using(var fileStream = new FileStream(uploadFrom, FileMode.Open, FileAccess.Read))
 			{
-				Action<long> progress = (n) => {
+				Action<long> progress = (n) => 
+					{
 						Console.WriteLine(100*(n/fileInfo.Length));
 						progressBar.Invoke(new Action(() =>
 						{
+							log.Text = "Uploading " + fileInfo.Name + " " + GetSizeReadable(n) + "/" + GetSizeReadable(fileInfo.Length);
 							progressBar.Maximum = 100;
 							progressBar.Value = Convert.ToInt32((100*n)/fileInfo.Length);
-							log.Text = "Uploading " + fileInfo.Name + " " + GetSizeReadable(n) + "/" + GetSizeReadable(fileInfo.Length);
 						}));
-					};
 
+					};
 				var storageResponse = storageEngine.StoreFile(fileStream, progress);
 
 				var options = new Binder.APIMatic.Client.Models.CreateSiteFileVersionOptions()
@@ -402,7 +402,14 @@ namespace Binder.Windows.FileExplorer
 							var createFolder = await new Binder.APIMatic.Client.Controllers.RegionSiteNavigatorController().UpdateSiteNavigatorCreateFolderAsync(folderRequest, uploadTo, currentSelectedSite);
 						}
 						catch { }
-						await UploadDirectory(newUploadTo, newUploadFrom, progressBar, log);
+						try
+						{
+							await UploadDirectory(newUploadTo, newUploadFrom, progressBar, log);
+						}
+						catch (Exception e)
+						{
+							log.Text = e.Message + " - Skipping upload.";
+						}
 					}
 					catch(Exception e)
 					{
@@ -410,7 +417,14 @@ namespace Binder.Windows.FileExplorer
 					}
 				}
 				else
-					await UploadFiles(uploadTo, item, progressBar, log);
+					try
+					{
+						await UploadFiles(uploadTo, item, progressBar, log);
+					}
+					catch (Exception e)
+					{
+						log.Text = e.Message + " - Skipping upload.";
+					}
 			}
 		}
 

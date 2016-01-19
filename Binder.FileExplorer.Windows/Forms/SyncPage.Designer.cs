@@ -57,7 +57,6 @@
 			this.saveFile = new System.Windows.Forms.SaveFileDialog();
 			this.miniLog = new System.Windows.Forms.TextBox();
 			this.openFolder = new System.Windows.Forms.FolderBrowserDialog();
-			this.button3 = new System.Windows.Forms.Button();
 			this.button4 = new System.Windows.Forms.Button();
 			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
 			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -89,7 +88,7 @@
 			this.tableLayoutPanel1.RowCount = 2;
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel1.Size = new System.Drawing.Size(984, 488);
+			this.tableLayoutPanel1.Size = new System.Drawing.Size(984, 466);
 			this.tableLayoutPanel1.TabIndex = 0;
 			// 
 			// localList
@@ -103,9 +102,9 @@
 			this.localList.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.localList.Location = new System.Drawing.Point(495, 38);
 			this.localList.Name = "localList";
-			this.localList.Size = new System.Drawing.Size(481, 442);
+			this.localList.Size = new System.Drawing.Size(481, 420);
 			this.localList.SmallImageList = this.imageList1;
-			this.localList.TabIndex = 1;
+			this.localList.TabIndex = 4;
 			this.localList.UseCompatibleStateImageBehavior = false;
 			this.localList.View = System.Windows.Forms.View.Details;
 			this.localList.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.localList_ItemDrag);
@@ -146,7 +145,7 @@
 			this.button1.Location = new System.Drawing.Point(921, 8);
 			this.button1.Name = "button1";
 			this.button1.Size = new System.Drawing.Size(55, 24);
-			this.button1.TabIndex = 2;
+			this.button1.TabIndex = 3;
 			this.button1.Text = "Up";
 			this.button1.UseVisualStyleBackColor = true;
 			this.button1.Click += new System.EventHandler(this.button1_Click);
@@ -163,9 +162,9 @@
 			this.binderList.ForeColor = System.Drawing.SystemColors.WindowText;
 			this.binderList.Location = new System.Drawing.Point(8, 38);
 			this.binderList.Name = "binderList";
-			this.binderList.Size = new System.Drawing.Size(481, 442);
+			this.binderList.Size = new System.Drawing.Size(481, 420);
 			this.binderList.SmallImageList = this.imageList1;
-			this.binderList.TabIndex = 3;
+			this.binderList.TabIndex = 2;
 			this.binderList.UseCompatibleStateImageBehavior = false;
 			this.binderList.View = System.Windows.Forms.View.Details;
 			this.binderList.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.binderList_ItemDrag);
@@ -194,8 +193,8 @@
 			// tableLayoutPanel2
 			// 
 			this.tableLayoutPanel2.ColumnCount = 3;
-			this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 18.82716F));
-			this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 81.17284F));
+			this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 61F));
+			this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
 			this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 155F));
 			this.tableLayoutPanel2.Controls.Add(this.button2, 0, 0);
 			this.tableLayoutPanel2.Controls.Add(this.label1, 2, 0);
@@ -205,7 +204,7 @@
 			this.tableLayoutPanel2.Margin = new System.Windows.Forms.Padding(0);
 			this.tableLayoutPanel2.Name = "tableLayoutPanel2";
 			this.tableLayoutPanel2.RowCount = 1;
-			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
 			this.tableLayoutPanel2.Size = new System.Drawing.Size(487, 30);
 			this.tableLayoutPanel2.TabIndex = 4;
 			// 
@@ -217,7 +216,7 @@
 			this.button2.Location = new System.Drawing.Point(3, 3);
 			this.button2.Name = "button2";
 			this.button2.Size = new System.Drawing.Size(55, 24);
-			this.button2.TabIndex = 5;
+			this.button2.TabIndex = 0;
 			this.button2.Text = "Up";
 			this.button2.UseVisualStyleBackColor = true;
 			this.button2.Click += new System.EventHandler(this.button2_Click_1);
@@ -239,10 +238,10 @@
 			// 
 			this.newFolder.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
-			this.newFolder.Location = new System.Drawing.Point(65, 3);
+			this.newFolder.Location = new System.Drawing.Point(64, 3);
 			this.newFolder.Name = "newFolder";
 			this.newFolder.Size = new System.Drawing.Size(75, 24);
-			this.newFolder.TabIndex = 7;
+			this.newFolder.TabIndex = 1;
 			this.newFolder.Text = "New Folder";
 			this.newFolder.UseVisualStyleBackColor = true;
 			this.newFolder.Click += new System.EventHandler(this.newFolder_Click);
@@ -250,18 +249,18 @@
 			// progressBar1
 			// 
 			this.progressBar1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.progressBar1.Location = new System.Drawing.Point(102, 521);
+			this.progressBar1.Location = new System.Drawing.Point(12, 499);
 			this.progressBar1.Name = "progressBar1";
-			this.progressBar1.Size = new System.Drawing.Size(387, 23);
+			this.progressBar1.Size = new System.Drawing.Size(477, 23);
 			this.progressBar1.TabIndex = 5;
 			// 
 			// browseButton
 			// 
 			this.browseButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.browseButton.Location = new System.Drawing.Point(852, 549);
+			this.browseButton.Location = new System.Drawing.Point(852, 527);
 			this.browseButton.Name = "browseButton";
 			this.browseButton.Size = new System.Drawing.Size(120, 23);
-			this.browseButton.TabIndex = 6;
+			this.browseButton.TabIndex = 8;
 			this.browseButton.Text = "Browse";
 			this.browseButton.UseVisualStyleBackColor = true;
 			this.browseButton.Click += new System.EventHandler(this.browseButton_Click);
@@ -270,17 +269,17 @@
 			// 
 			this.directoryBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.directoryBox.Location = new System.Drawing.Point(569, 551);
+			this.directoryBox.Location = new System.Drawing.Point(569, 529);
 			this.directoryBox.Name = "directoryBox";
 			this.directoryBox.Size = new System.Drawing.Size(277, 20);
-			this.directoryBox.TabIndex = 7;
+			this.directoryBox.TabIndex = 6;
 			this.directoryBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.directoryBox_KeyPress);
 			// 
 			// label3
 			// 
 			this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(515, 554);
+			this.label3.Location = new System.Drawing.Point(515, 532);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(48, 13);
 			this.label3.TabIndex = 8;
@@ -314,31 +313,20 @@
 			// miniLog
 			// 
 			this.miniLog.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.miniLog.Location = new System.Drawing.Point(12, 551);
+			this.miniLog.Location = new System.Drawing.Point(12, 529);
 			this.miniLog.Name = "miniLog";
 			this.miniLog.ReadOnly = true;
 			this.miniLog.Size = new System.Drawing.Size(477, 20);
-			this.miniLog.TabIndex = 9;
+			this.miniLog.TabIndex = 5;
 			this.miniLog.Text = "Ready.";
-			// 
-			// button3
-			// 
-			this.button3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.button3.Location = new System.Drawing.Point(12, 521);
-			this.button3.Name = "button3";
-			this.button3.Size = new System.Drawing.Size(84, 23);
-			this.button3.TabIndex = 10;
-			this.button3.Text = "Select site";
-			this.button3.UseVisualStyleBackColor = true;
-			this.button3.Click += new System.EventHandler(this.button3_Click);
 			// 
 			// button4
 			// 
 			this.button4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.button4.Location = new System.Drawing.Point(852, 520);
+			this.button4.Location = new System.Drawing.Point(852, 498);
 			this.button4.Name = "button4";
 			this.button4.Size = new System.Drawing.Size(120, 23);
-			this.button4.TabIndex = 11;
+			this.button4.TabIndex = 7;
 			this.button4.Text = "Refresh directories";
 			this.button4.UseVisualStyleBackColor = true;
 			this.button4.Click += new System.EventHandler(this.button4_Click);
@@ -360,6 +348,8 @@
             this.signOutToolStripMenuItem,
             this.exitToolStripMenuItem});
 			this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
+			this.fileToolStripMenuItem.ShortcutKeyDisplayString = "F";
+			this.fileToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F)));
 			this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
 			this.fileToolStripMenuItem.Text = "File";
 			// 
@@ -388,10 +378,10 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(984, 584);
+			this.ClientSize = new System.Drawing.Size(984, 561);
+			this.ControlBox = false;
 			this.Controls.Add(this.menuStrip1);
 			this.Controls.Add(this.button4);
-			this.Controls.Add(this.button3);
 			this.Controls.Add(this.miniLog);
 			this.Controls.Add(this.label3);
 			this.Controls.Add(this.directoryBox);
@@ -402,7 +392,6 @@
 			this.Name = "SyncPage";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "File Management";
-			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.SyncPage_FormClosed);
 			this.Load += new System.EventHandler(this.SyncPage_Load);
 			this.tableLayoutPanel1.ResumeLayout(false);
 			this.tableLayoutPanel2.ResumeLayout(false);
@@ -440,7 +429,6 @@
 		private System.Windows.Forms.ColumnHeader type1;
 		private System.Windows.Forms.ColumnHeader size1;
 		private System.Windows.Forms.ColumnHeader lastModified1;
-		private System.Windows.Forms.Button button3;
 		private System.Windows.Forms.Button button4;
 		private System.Windows.Forms.MenuStrip menuStrip1;
 		private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;

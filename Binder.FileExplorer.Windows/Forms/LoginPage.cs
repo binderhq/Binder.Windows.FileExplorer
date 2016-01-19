@@ -20,7 +20,6 @@ namespace Binder.Windows.FileExplorer
 		public LoginPage()
 		{
 			InitializeComponent();
-			Application.ApplicationExit += new EventHandler(this.OnApplicationExit);
 		}
 
 		private void LoginPage_Load(object sender, EventArgs e)
@@ -62,15 +61,6 @@ namespace Binder.Windows.FileExplorer
 		private void signOut_Click(object sender, EventArgs e)
 		{
 			Application.Exit();
-		}
-
-		private void OnApplicationExit(object sender, EventArgs e)
-		{
-			try
-			{
-				Session.CloseSession();
-			}
-			catch { }
 		}
 
 		private void checkBox1_Click(object sender, EventArgs e)
