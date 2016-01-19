@@ -1,4 +1,5 @@
 ﻿using Binder.Windows.FileExplorer.Forms;
+using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -212,10 +213,12 @@ namespace Binder.Windows.FileExplorer
 
 		private async void button4_Click(object sender, EventArgs e)
 		{
+			button4.Enabled = false;
 			var currentDirectory = await Session.GetSiteFilesFolders(Session.currentSelectedSite, currentBinderDir);
 			Session.PopulateListViewFromServer(binderList, currentDirectory.Folders, currentDirectory.Files, contextMenu, imageList1);
 			Session.IsReadOnly(label1, currentBinderDir);
 			Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir), imageList1);
+			button4.Enabled = true;
 		}
 
 		private void signOutToolStripMenuItem_Click(object sender, EventArgs e)
@@ -237,6 +240,26 @@ namespace Binder.Windows.FileExplorer
 			SitePage sp = new SitePage();
 			sp.Show();
 			this.Close();
+		}
+
+		private async void newFolder_Click(object sender, EventArgs e)
+		{
+			string folderName = Microsoft.VisualBasic.Interaction.InputBox("Enter folder name: ", "Create new folder", "", -1, -1);
+			try
+			{
+				await Session.CreateBinderFolder(folderName, currentBinderDir);
+				var currentDirectory = await Session.GetSiteFilesFolders(Session.currentSelectedSite, currentBinderDir);
+				Session.PopulateListViewFromServer(binderList, currentDirectory.Folders, currentDirectory.Files, contextMenu, imageList1);
+			}
+			catch(Exception err)
+			{
+				MessageBox.Show(err.Message);
+			}
+		}
+
+		private void SyncPage_FormClosed(object sender, FormClosedEventArgs e)
+		{
+			Application.Exit();
 		}
 
 	}

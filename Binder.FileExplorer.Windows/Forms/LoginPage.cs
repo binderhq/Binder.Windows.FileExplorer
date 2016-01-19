@@ -40,9 +40,11 @@ namespace Binder.Windows.FileExplorer
 
 		private async void button1_Click(object sender, EventArgs e)
 		{
+			try
+			{	
 				Cursor.Current = Cursors.WaitCursor;
 				submit.Enabled = false;
-				var user = await Session.CreateSession(this.username.Text, this.password.Text);
+				await Session.CreateSession(this.username.Text, this.password.Text);
 				Session.sites = await Session.CurrentSites();
 				sitep = new SitePage();
 				syncp = new SyncPage();
@@ -50,6 +52,11 @@ namespace Binder.Windows.FileExplorer
 				submit.Enabled = true;
 				Cursor.Current = Cursors.Default;
 				this.Hide();
+			}
+			catch
+			{ 
+				submit.Enabled = true;
+			}
 		}
 
 		private void signOut_Click(object sender, EventArgs e)

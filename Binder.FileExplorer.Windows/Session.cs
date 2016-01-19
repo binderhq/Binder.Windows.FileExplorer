@@ -39,16 +39,22 @@ namespace Binder.Windows.FileExplorer
 		public static string currentSelectedSite;
 		public static List<Binder.APIMatic.Client.Models.SiteDetails> sites;
 
-		public async static Task<Binder.APIMatic.Client.Models.CreateSessionResponse> CreateSession(string username, string password)
+		public async static Task CreateSession(string username, string password)
 		{
-			Cursor.Current = Cursors.WaitCursor;
-			Binder.APIMatic.Client.Configuration.BaseUri = "https://development.edocx.com.au:443/service.api/";
-			var user = await new Binder.APIMatic.Client.Controllers.AuthenticationSessionsController()
-				.CreateSessionsPostAsync(new APIMatic.Client.Models.CreateSessionRequest() { Username = username, ClearTextPassword = password });
-			Binder.APIMatic.Client.Configuration.ApiKey = user.SessionToken;
-			_sessionToken = user.SessionToken;
-			Cursor.Current = Cursors.Default;
-			return user;
+			try
+			{
+				Cursor.Current = Cursors.WaitCursor;
+				Binder.APIMatic.Client.Configuration.BaseUri = "https://development.edocx.com.au:443/service.api/";
+				var user = await new Binder.APIMatic.Client.Controllers.AuthenticationSessionsController()
+					.CreateSessionsPostAsync(new APIMatic.Client.Models.CreateSessionRequest() { Username = username, ClearTextPassword = password });
+				Binder.APIMatic.Client.Configuration.ApiKey = user.SessionToken;
+				_sessionToken = user.SessionToken;
+				Cursor.Current = Cursors.Default;
+			}
+			catch(Exception e)
+			{
+				DialogResult dialog = MessageBox.Show(e.Message);
+			}
 		}
 
 		public static void PopulateListViewFromServer(ListView list, List<Binder.APIMatic.Client.Models.SubFolder> folders, List<Binder.APIMatic.Client.Models.SiteFileModel> files, ContextMenuStrip menu, ImageList imageList)
@@ -449,6 +455,12 @@ namespace Binder.Windows.FileExplorer
 			}
 			else
 				label.Visible = false;
+		}
+
+		public async static Task CreateBinderFolder(string folderName, string path)
+		{
+			var request = new Binder.APIMatic.Client.Models.CreateFolderRequest(){ FolderName = folderName };
+			var createFolder = await new Binder.APIMatic.Client.Controllers.RegionSiteNavigatorController().UpdateSiteNavigatorCreateFolderAsync(request, path, currentSelectedSite);
 		}
 	}
 }
