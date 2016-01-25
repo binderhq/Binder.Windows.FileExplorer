@@ -60,7 +60,7 @@ namespace Binder.Windows.FileExplorer.Forms
 		private void sitesList_KeyUp(object sender, KeyEventArgs e)
 		{
 			if (sequence.IsCompletedBy(e.KeyCode))
-				MessageBox.Show("Made with <3 in Brisbane, Australia", "By Aaron Jones", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				MessageBox.Show("Made with ❤️ in Brisbane, Australia", "By Aaron Jones", MessageBoxButtons.OK, MessageBoxIcon.Information);
 		}
 	}
 

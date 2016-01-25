@@ -19,6 +19,7 @@ namespace Binder.Windows.FileExplorer
 		private string currentLocalDir;
 		private string currentBinderDir;
 		private static bool isTransferRunning = false;
+		private static bool isChangingForms = false;
 
 		public SyncPage()
 		{
@@ -27,6 +28,9 @@ namespace Binder.Windows.FileExplorer
 
 		private async void SyncPage_Load(object sender, EventArgs e)
 		{
+			isChangingForms = false;
+			binderList.AllowDrop = true;
+			localList.AllowDrop = true;
 			currentBinderDir = "/";
 			currentLocalDir = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
 			var currentDirectory = await Session.GetSiteFilesFolders(Session.currentSelectedSite, currentBinderDir);
@@ -37,7 +41,7 @@ namespace Binder.Windows.FileExplorer
 
 			ToolTip toolTip1 = new ToolTip();
 			toolTip1.SetToolTip(label1, "The folder you are currently viewing has been set to \"Read only\". If you require write access to this folder, please contact the site's administrator.");
-			toolTip1.SetToolTip(newFolder, "Creates a new folder in the current directory. Note that you cannot use this to create new boxes.");
+			toolTip1.SetToolTip(newFolder, "Creates a new folder in the current directory. If you are browsing the root \"/\" directory, this will create a new box instead");
 		}
 
 		private void backButton_Click(object sender, EventArgs e)
@@ -120,26 +124,29 @@ namespace Binder.Windows.FileExplorer
 
 		private async void localList_DragDrop(object sender, DragEventArgs e)
 		{
-			Cursor.Current = Cursors.WaitCursor;
-			isTransferRunning = true;
-			List<string> selectedFolders = new List<string>();
-			List<string> selectedFiles = new List<string>();
-			foreach(ListViewItem item in binderList.SelectedItems)
+			if(!Session.isTransferRunning)
 			{
-				if(item.ImageIndex == 0)
-					selectedFolders.Add(item.Name);
-				else
-					selectedFiles.Add(item.Name);
-			}
+				Cursor.Current = Cursors.WaitCursor;
+				isTransferRunning = true;
+				List<string> selectedFolders = new List<string>();
+				List<string> selectedFiles = new List<string>();
+				foreach(ListViewItem item in binderList.SelectedItems)
+				{
+					if(item.ImageIndex == 0)
+						selectedFolders.Add(item.Name);
+					else
+						selectedFiles.Add(item.Name);
+				}
 
-			Task t = Session.DownloadDirectory(currentLocalDir.TrimEnd('\\'), selectedFolders, selectedFiles, progressBar1, miniLog);
-			await t;
-			isTransferRunning = false;
-			Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir), imageList1);
-			miniLog.Text = "Ready.";
-			progressBar1.Value = 0;
-			Cursor.Current = Cursors.Default;
-			
+				await Session.DownloadDirectory(currentLocalDir.TrimEnd('\\'), selectedFolders, selectedFiles, progressBar1, miniLog);
+				isTransferRunning = false;
+				Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir), imageList1);
+				miniLog.Text = "Ready.";
+				progressBar1.Value = 0;
+				Cursor.Current = Cursors.Default;
+			}
+			else
+				MessageBox.Show("Please wait until the current file transfer has finished before starting a new one.", "File Transfer in Progress");
 		}
 
 		private async void binderList_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -163,14 +170,14 @@ namespace Binder.Windows.FileExplorer
 			int index = currentBinderDir.LastIndexOf("/");
 			currentBinderDir = currentBinderDir.Substring(0, index);
 			if (Equals(currentBinderDir, ""))
-			{
 				currentBinderDir = "/";
+			if(Equals(currentBinderDir, "/"))
 				button2.Enabled = false;
-			}
+			else
+				button2.Enabled = true;
 			var currentDirectory = await Session.GetSiteFilesFolders(Session.currentSelectedSite, currentBinderDir);
 			Session.PopulateListViewFromServer(binderList, currentDirectory.Folders, currentDirectory.Files, contextMenu, imageList1);
 			Session.IsReadOnly(label1, currentBinderDir);
-			button2.Enabled = true;
 			Cursor.Current = Cursors.Default;
 		}
 
@@ -195,21 +202,25 @@ namespace Binder.Windows.FileExplorer
 
 		private async void binderList_DragDrop(object sender, DragEventArgs e)
 		{
-			Cursor.Current = Cursors.WaitCursor;
-			isTransferRunning = true;
-			List<string> selectedItems = new List<string>();
-			foreach (ListViewItem item in localList.SelectedItems)
-				selectedItems.Add(item.Name);
-			Task t = Session.UploadDirectory(currentBinderDir,selectedItems,progressBar1,miniLog);
-			await t;
-			isTransferRunning = false;
-			var currentDirectory = await Session.GetSiteFilesFolders(Session.currentSelectedSite, currentBinderDir);
-			Session.PopulateListViewFromServer(binderList, currentDirectory.Folders, currentDirectory.Files, contextMenu, imageList1);
-			Session.IsReadOnly(label1, currentBinderDir);
-			miniLog.Text = "Ready.";
-			progressBar1.Value = 0;
-			Cursor.Current = Cursors.Default;
-		
+			if(!Session.isTransferRunning)
+			{
+				Cursor.Current = Cursors.WaitCursor;
+				isTransferRunning = true;
+				List<string> selectedItems = new List<string>();
+				foreach (ListViewItem item in localList.SelectedItems)
+					selectedItems.Add(item.Name);
+				Task t = Session.UploadDirectory(currentBinderDir,selectedItems,progressBar1,miniLog);
+				await t;
+				isTransferRunning = false;
+				var currentDirectory = await Session.GetSiteFilesFolders(Session.currentSelectedSite, currentBinderDir);
+				Session.PopulateListViewFromServer(binderList, currentDirectory.Folders, currentDirectory.Files, contextMenu, imageList1);
+				Session.IsReadOnly(label1, currentBinderDir);
+				miniLog.Text = "Ready.";
+				progressBar1.Value = 0;
+				Cursor.Current = Cursors.Default;
+			}
+			else
+				MessageBox.Show("Please wait until the current file transfer has finished before starting a new one.", "File Transfer in Progress");
 		}
 
 		private async void button4_Click(object sender, EventArgs e)
@@ -228,6 +239,7 @@ namespace Binder.Windows.FileExplorer
 			{
 				if (MessageBox.Show("There is a file transfer in progress. Are you sure you want to close? This could result in missing or corrupted files.", "Confirm close", MessageBoxButtons.YesNo) == DialogResult.Yes)
 				{
+					isChangingForms = true;
 					isTransferRunning = false;
 					Session.CloseSession();
 					this.Close();
@@ -237,6 +249,7 @@ namespace Binder.Windows.FileExplorer
 			}
 			else
 			{
+				isChangingForms = true;
 				Session.CloseSession();
 				this.Close();
 				LoginPage lp = new LoginPage();
@@ -269,6 +282,7 @@ namespace Binder.Windows.FileExplorer
 			{
 				if (MessageBox.Show("There is a file transfer in progress. Are you sure you want to close? This could result in missing or corrupted files.", "Confirm close", MessageBoxButtons.YesNo) == DialogResult.Yes)
 				{
+					isChangingForms = true;
 					isTransferRunning = false;
 					SitePage sp = new SitePage();
 					sp.Show();
@@ -277,6 +291,7 @@ namespace Binder.Windows.FileExplorer
 			}
 			else 
 			{
+				isChangingForms = true;
 				SitePage sp = new SitePage();
 				sp.Show();
 				this.Close();
@@ -285,10 +300,20 @@ namespace Binder.Windows.FileExplorer
 
 		private async void newFolder_Click(object sender, EventArgs e)
 		{
-			string folderName = Microsoft.VisualBasic.Interaction.InputBox("Enter folder name: ", "Create new folder", "", -1, -1);
 			try
 			{
-				await Session.CreateBinderFolder(folderName, currentBinderDir);
+				if(Equals(currentBinderDir, "/"))
+				{
+					string boxName = Microsoft.VisualBasic.Interaction.InputBox("Enter box name: ", "Create new box");
+					if(boxName.Length > 0) //VB is awful
+						await Session.CreateBox(boxName);
+				}
+				else
+				{
+					string folderName = Microsoft.VisualBasic.Interaction.InputBox("Enter folder name: ", "Create new folder", "", -1, -1);
+					if(folderName.Length > 0)
+						await Session.CreateBinderFolder(folderName, currentBinderDir);
+				}
 				var currentDirectory = await Session.GetSiteFilesFolders(Session.currentSelectedSite, currentBinderDir);
 				Session.PopulateListViewFromServer(binderList, currentDirectory.Folders, currentDirectory.Files, contextMenu, imageList1);
 			}
@@ -306,6 +331,24 @@ namespace Binder.Windows.FileExplorer
 		private async void openSiteInBrowserToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			await Session.OpenInBrowser();
+		}
+
+		private void SyncPage_FormClosing(object sender, FormClosingEventArgs e)
+		{
+			if(isTransferRunning)
+			{
+				if (MessageBox.Show("There is a file transfer in progress. Are you sure you want to close? This could result in missing or corrupted files.", "Confirm close", MessageBoxButtons.YesNo) == DialogResult.No)
+				{
+					e.Cancel = true;
+				}
+				else
+				{
+					isTransferRunning = false;
+					Application.Exit();
+				}
+			}
+			else
+				Application.Exit();
 		}
 	}
 

@@ -1,4 +1,5 @@
-﻿namespace Binder.Windows.FileExplorer
+﻿using System.Threading.Tasks;
+namespace Binder.Windows.FileExplorer
 {
 	partial class SyncPage
 	{
@@ -60,11 +61,11 @@
 			this.button4 = new System.Windows.Forms.Button();
 			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
 			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.openSiteInBrowserToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.selectSiteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.signOutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.cancelTransfer = new System.Windows.Forms.Button();
-			this.openSiteInBrowserToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.tableLayoutPanel2.SuspendLayout();
 			this.contextMenu.SuspendLayout();
@@ -143,7 +144,6 @@
 			// 
 			this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.button1.Enabled = false;
 			this.button1.Location = new System.Drawing.Point(921, 8);
 			this.button1.Name = "button1";
 			this.button1.Size = new System.Drawing.Size(55, 24);
@@ -356,29 +356,37 @@
 			this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
 			this.fileToolStripMenuItem.Text = "File";
 			// 
+			// openSiteInBrowserToolStripMenuItem
+			// 
+			this.openSiteInBrowserToolStripMenuItem.Name = "openSiteInBrowserToolStripMenuItem";
+			this.openSiteInBrowserToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
+			this.openSiteInBrowserToolStripMenuItem.Text = "Open site in browser";
+			this.openSiteInBrowserToolStripMenuItem.Click += new System.EventHandler(this.openSiteInBrowserToolStripMenuItem_Click);
+			// 
 			// selectSiteToolStripMenuItem
 			// 
 			this.selectSiteToolStripMenuItem.Name = "selectSiteToolStripMenuItem";
-			this.selectSiteToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
+			this.selectSiteToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
 			this.selectSiteToolStripMenuItem.Text = "Select site";
 			this.selectSiteToolStripMenuItem.Click += new System.EventHandler(this.selectSiteToolStripMenuItem_Click);
 			// 
 			// signOutToolStripMenuItem
 			// 
 			this.signOutToolStripMenuItem.Name = "signOutToolStripMenuItem";
-			this.signOutToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
+			this.signOutToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
 			this.signOutToolStripMenuItem.Text = "Sign out";
 			this.signOutToolStripMenuItem.Click += new System.EventHandler(this.signOutToolStripMenuItem_Click);
 			// 
 			// exitToolStripMenuItem
 			// 
 			this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-			this.exitToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
+			this.exitToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
 			this.exitToolStripMenuItem.Text = "Exit";
 			this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
 			// 
 			// cancelTransfer
 			// 
+			this.cancelTransfer.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.cancelTransfer.Location = new System.Drawing.Point(417, 499);
 			this.cancelTransfer.Name = "cancelTransfer";
 			this.cancelTransfer.Size = new System.Drawing.Size(75, 23);
@@ -387,19 +395,11 @@
 			this.cancelTransfer.UseVisualStyleBackColor = true;
 			this.cancelTransfer.Click += new System.EventHandler(this.cancelTransfer_Click);
 			// 
-			// openSiteInBrowserToolStripMenuItem
-			// 
-			this.openSiteInBrowserToolStripMenuItem.Name = "openSiteInBrowserToolStripMenuItem";
-			this.openSiteInBrowserToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
-			this.openSiteInBrowserToolStripMenuItem.Text = "Open site in browser";
-			this.openSiteInBrowserToolStripMenuItem.Click += new System.EventHandler(this.openSiteInBrowserToolStripMenuItem_Click);
-			// 
 			// SyncPage
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(984, 561);
-			this.ControlBox = false;
+			this.ClientSize = new System.Drawing.Size(984, 584);
 			this.Controls.Add(this.cancelTransfer);
 			this.Controls.Add(this.menuStrip1);
 			this.Controls.Add(this.button4);
@@ -414,6 +414,7 @@
 			this.Name = "SyncPage";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "File Management";
+			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SyncPage_FormClosing);
 			this.Load += new System.EventHandler(this.SyncPage_Load);
 			this.tableLayoutPanel1.ResumeLayout(false);
 			this.tableLayoutPanel2.ResumeLayout(false);

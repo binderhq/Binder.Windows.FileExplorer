@@ -36,6 +36,7 @@ namespace Binder.Windows.FileExplorer
 		}
 		private static string _sessionToken;
 		public static string currentSelectedSite;
+		public static bool isTransferRunning = false;
 		public static List<Binder.APIMatic.Client.Models.SiteDetails> sites;
 
 		public async static Task CreateSession(string username, string password)
@@ -257,7 +258,6 @@ namespace Binder.Windows.FileExplorer
 				storageZoneId);
 
 			var fileInfo = await new Binder.APIMatic.Client.Controllers.RegionSiteNavigatorController().GetSiteNavigatorGetFileAsync(path, currentSelectedSite);
-			
 			using(var outputStream = new FileStream(savePath, FileMode.Create, FileAccess.Write))
 			{
 
@@ -270,14 +270,17 @@ namespace Binder.Windows.FileExplorer
 							log.Text = "Downloading " + fileInfo.Name + " " + GetSizeReadable(n) + "/" + GetSizeReadable(((long) fileInfo.Length));
 						}));
 					};
-			
-				storageEngine.GetFile(request.HiggsFileId, progress, outputStream);
+				var t = Task.Run( () => {
+					storageEngine.GetFile(request.HiggsFileId, progress, outputStream);
+				});
+				await t;
 			//	var downloadFile = await new Binder.APIMatic.Client.Controllers.RegionStorageZonesController().GetStorageZonesGetNamedHiggsFileAsync(filename, request.HiggsFileId, storageZoneId.ToString());
 			}
 		}
 
 		public async static Task DownloadDirectory(string downloadTo, List<string> downloadFromFolders, List<string> downloadFromFiles, ProgressBar progressBar, TextBox log)
 		{
+			isTransferRunning = true;
 			foreach(string folder in downloadFromFolders)
 			{
 				try
@@ -299,12 +302,15 @@ namespace Binder.Windows.FileExplorer
 					{
 						Directory.CreateDirectory(newDownloadTo);
 					}
-					catch { }
+					catch(Exception e)
+					{
+						MessageBox.Show(e.Message + " - Skipping download");
+					}
 					await DownloadDirectory(newDownloadTo, newDownloadFromFoldersPaths, newDownloadFromFilesPaths, progressBar, log);
 				}
 				catch(Exception e)
 				{
-					log.Text = e.Message + " - Skipping download";
+					MessageBox.Show(e.Message + " - Skipping download");
 				}
 			}
 			foreach(string file in downloadFromFiles)
@@ -312,6 +318,7 @@ namespace Binder.Windows.FileExplorer
 				var info = await new Binder.APIMatic.Client.Controllers.RegionSiteNavigatorController().GetSiteNavigatorGetFileAsync(file, currentSelectedSite);
 				await GetFile(file, downloadTo + "\\" + info.Name, progressBar, log);
 			}
+			isTransferRunning = false;
 		}
 
 		public async static void CloseSession()
@@ -364,8 +371,11 @@ namespace Binder.Windows.FileExplorer
 					StorageZoneId = storageZoneId.ToString()
 				};
 
-				var siteFile = await new Binder.APIMatic.Client.Controllers.RegionSiteNavigatorController()
-					.UpdateSiteNavigatorPostAsync(options, uploadTo, currentSelectedSite);
+				var t = Task.Run( () => {
+					var siteFIle = new Binder.APIMatic.Client.Controllers.RegionSiteNavigatorController()
+						.UpdateSiteNavigatorPostAsync(options, uploadTo, currentSelectedSite);
+				});
+				await t;
 
 				progressBar.Value = 0;
 			}
@@ -373,59 +383,59 @@ namespace Binder.Windows.FileExplorer
 
 		public async static Task UploadDirectory(string uploadTo, List<string> uploadFrom, ProgressBar progressBar, TextBox log)
 		{
+			isTransferRunning = true;
 			foreach(string item in uploadFrom)
 			{
 				FileAttributes attr = File.GetAttributes(item);
 
 				if (attr.HasFlag(FileAttributes.Directory))
 				{
+					DirectoryInfo info = new DirectoryInfo(item);
+					string newUploadTo = uploadTo + "/" + info.Name;
+					DirectoryInfo[] newUploadFromFolders = info.GetDirectories();
+					FileInfo[] newUploadFromFiles = info.GetFiles();
+
+					log.Text = "Creating folder " + newUploadTo;
+
+					List<string> newUploadFrom = new List<string>();
+					foreach(DirectoryInfo folder in newUploadFromFolders)
+						newUploadFrom.Add(folder.FullName);
+					foreach(FileInfo file in newUploadFromFiles)
+						newUploadFrom.Add(file.FullName);
 					try
-					{
-						DirectoryInfo info = new DirectoryInfo(item);
-						string newUploadTo = uploadTo + "/" + info.Name;
-						DirectoryInfo[] newUploadFromFolders = info.GetDirectories();
-						FileInfo[] newUploadFromFiles = info.GetFiles();
-
-						log.Text = "Creating folder " + newUploadTo;
-
-						List<string> newUploadFrom = new List<string>();
-						foreach(DirectoryInfo folder in newUploadFromFolders)
-							newUploadFrom.Add(folder.FullName);
-						foreach(FileInfo file in newUploadFromFiles)
-							newUploadFrom.Add(file.FullName);
-						try
-						{ 
-							var folderRequest = new Binder.APIMatic.Client.Models.CreateFolderRequest()
-								{
-									FolderName = info.Name
-								};
-							var createFolder = await new Binder.APIMatic.Client.Controllers.RegionSiteNavigatorController().UpdateSiteNavigatorCreateFolderAsync(folderRequest, uploadTo, currentSelectedSite);
-						}
-						catch { }
-						try
-						{
-							await UploadDirectory(newUploadTo, newUploadFrom, progressBar, log);
-						}
-						catch (Exception e)
-						{
-							log.Text = e.Message + " - Skipping upload.";
-						}
+					{ 
+						var folderRequest = new Binder.APIMatic.Client.Models.CreateFolderRequest()
+							{
+								FolderName = info.Name
+							};
+						var createFolder = await new Binder.APIMatic.Client.Controllers.RegionSiteNavigatorController().UpdateSiteNavigatorCreateFolderAsync(folderRequest, uploadTo, currentSelectedSite);
 					}
 					catch(Exception e)
 					{
-						log.Text = e.Message + " - Skipping upload.";
+						MessageBox.Show("Creation of folder " + item + " failed. " + e.Message);
+					}
+					try
+					{
+						await UploadDirectory(newUploadTo, newUploadFrom, progressBar, log);
+					}
+					catch (Exception e)
+					{
+						MessageBox.Show("Uploading of file " + newUploadFrom + " to " + newUploadTo + " failed. " + e.Message);
 					}
 				}
 				else
+				{
 					try
 					{
 						await UploadFiles(uploadTo, item, progressBar, log);
 					}
 					catch (Exception e)
 					{
-						log.Text = e.Message + " - Skipping upload.";
+						MessageBox.Show("Uploading of file " + item + " to " + uploadTo + " failed. " + e.Message);
 					}
+				}
 			}
+			isTransferRunning = false;
 		}
 
 		public async static Task<List<Binder.APIMatic.Client.Models.SiteDetails>>CurrentSites()
@@ -488,6 +498,17 @@ namespace Binder.Windows.FileExplorer
 				regionUrl = ".binder.com.au/";
 			string url = "https://" + currentSiteDetails.Subdomain + regionUrl;
 			System.Diagnostics.Process.Start(url);
+		}
+
+		public async static Task CreateBox(string name)
+		{
+			var request = new Binder.APIMatic.Client.Models.CreateBoxRequest(){ SiteIdOrSubdomain = currentSelectedSite, Name = name };
+			var createBox = await new Binder.APIMatic.Client.Controllers.RegionBoxesController().CreateBoxesCreateBoxAsync(request);
+			var userInfo = await new Binder.APIMatic.Client.Controllers.AuthenticationCurrentUserController().GetCurrentUserGetAsync();
+			var userSiteInfo = await new Binder.APIMatic.Client.Controllers.RegionSitesController().GetSitesGetUsersAsync(currentSelectedSite);
+			string siteUserId = userSiteInfo.Where(x=>x.UserId == userInfo.Id).First().Id;
+			var permissionRequest = new Binder.APIMatic.Client.Models.CreateBoxUserRequest(){ SiteUserId = siteUserId, CanWrite = true };
+			var setUser = await new Binder.APIMatic.Client.Controllers.RegionBoxesController().CreateBoxesAddBoxUserAsync(createBox.Id, permissionRequest);
 		}
 
 		public class KonamiSequence
