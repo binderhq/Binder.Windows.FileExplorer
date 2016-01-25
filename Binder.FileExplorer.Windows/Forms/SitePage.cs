@@ -62,6 +62,14 @@ namespace Binder.Windows.FileExplorer.Forms
 			if (sequence.IsCompletedBy(e.KeyCode))
 				MessageBox.Show("Made with ❤️ in Brisbane, Australia", "By Aaron Jones", MessageBoxButtons.OK, MessageBoxIcon.Information);
 		}
+
+		private void button1_Click(object sender, EventArgs e)
+		{
+			Session.CloseSession();
+			LoginPage lp = new LoginPage();
+			lp.Show();
+			this.Close();
+		}
 	}
 
 	public class ListViewExt : ListViewItem

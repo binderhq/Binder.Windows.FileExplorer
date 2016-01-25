@@ -357,6 +357,7 @@ namespace Binder.Windows.FileExplorer
 							log.Text = "Uploading " + fileInfo.Name + " " + GetSizeReadable(n) + "/" + GetSizeReadable(fileInfo.Length);
 							progressBar.Maximum = 100;
 							progressBar.Value = Convert.ToInt32((100*n)/fileInfo.Length);
+
 						}));
 
 					};

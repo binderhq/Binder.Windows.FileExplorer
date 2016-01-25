@@ -28,11 +28,11 @@ namespace Binder.Windows.FileExplorer
 			{
 				username.Text = Properties.Settings.Default.username;
 				checkBox1.Checked = true;
+				checkBox2.Enabled = true;
 				if(!Equals(Properties.Settings.Default.password,""))
 				{
 					password.Text = Properties.Settings.Default.password;
 					checkBox2.Checked = true;
-					checkBox2.Enabled = true;
 				}
 			} 
 		}

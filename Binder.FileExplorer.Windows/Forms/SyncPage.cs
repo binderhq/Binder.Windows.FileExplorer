@@ -217,7 +217,7 @@ namespace Binder.Windows.FileExplorer
 				Session.IsReadOnly(label1, currentBinderDir);
 				miniLog.Text = "Ready.";
 				progressBar1.Value = 0;
-				Cursor.Current = Cursors.Default;
+				Cursor.Current = Cursors.Default;				
 			}
 			else
 				MessageBox.Show("Please wait until the current file transfer has finished before starting a new one.", "File Transfer in Progress");
@@ -325,7 +325,7 @@ namespace Binder.Windows.FileExplorer
 
 		private void cancelTransfer_Click(object sender, EventArgs e)
 		{
-
+			
 		}
 
 		private async void openSiteInBrowserToolStripMenuItem_Click(object sender, EventArgs e)
