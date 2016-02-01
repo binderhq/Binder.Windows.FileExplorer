@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Threading;
 
 namespace Binder.Windows.FileExplorer
 {
@@ -128,6 +129,7 @@ namespace Binder.Windows.FileExplorer
 			{
 				Cursor.Current = Cursors.WaitCursor;
 				isTransferRunning = true;
+				Session.cts = new CancellationTokenSource();
 				List<string> selectedFolders = new List<string>();
 				List<string> selectedFiles = new List<string>();
 				foreach(ListViewItem item in binderList.SelectedItems)
@@ -137,8 +139,8 @@ namespace Binder.Windows.FileExplorer
 					else
 						selectedFiles.Add(item.Name);
 				}
-
-				await Session.DownloadDirectory(currentLocalDir.TrimEnd('\\'), selectedFolders, selectedFiles, progressBar1, miniLog);
+				Task t = Session.DownloadDirectory(currentLocalDir.TrimEnd('\\'), selectedFolders, selectedFiles, progressBar1, miniLog);
+				await t;
 				isTransferRunning = false;
 				Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir), imageList1);
 				miniLog.Text = "Ready.";
@@ -187,12 +189,15 @@ namespace Binder.Windows.FileExplorer
 			DoDragDrop(e.Item, DragDropEffects.Move);
 		}
 
-		private void UpdateProgressTextFromExternalThread(int completed, int total)
+		private void UpdateProgressTextFromExternalThread(int completed, int total, string logText)
 		{
 			this.progressBar1.Invoke(new Action(() =>
 			{
 				this.progressBar1.Maximum = total;
 				this.progressBar1.Value = completed;
+			}));
+			this.miniLog.Invoke(new Action( () => {
+				this.miniLog.Text = logText;
 			}));
 		}
 		private void binderList_DragEnter(object sender, DragEventArgs e)
@@ -206,10 +211,11 @@ namespace Binder.Windows.FileExplorer
 			{
 				Cursor.Current = Cursors.WaitCursor;
 				isTransferRunning = true;
+				Session.cts = new CancellationTokenSource();
 				List<string> selectedItems = new List<string>();
 				foreach (ListViewItem item in localList.SelectedItems)
 					selectedItems.Add(item.Name);
-				Task t = Session.UploadDirectory(currentBinderDir,selectedItems,progressBar1,miniLog);
+				Task t = Session.UploadDirectory(currentBinderDir, selectedItems, progressBar1, miniLog);
 				await t;
 				isTransferRunning = false;
 				var currentDirectory = await Session.GetSiteFilesFolders(Session.currentSelectedSite, currentBinderDir);
@@ -304,13 +310,13 @@ namespace Binder.Windows.FileExplorer
 			{
 				if(Equals(currentBinderDir, "/"))
 				{
-					string boxName = Microsoft.VisualBasic.Interaction.InputBox("Enter box name: ", "Create new box");
+					string boxName = Microsoft.VisualBasic.Interaction.InputBox("Enter box name: ", "Create new box", " ");
 					if(boxName.Length > 0) //VB is awful
 						await Session.CreateBox(boxName);
 				}
 				else
 				{
-					string folderName = Microsoft.VisualBasic.Interaction.InputBox("Enter folder name: ", "Create new folder", "", -1, -1);
+					string folderName = Microsoft.VisualBasic.Interaction.InputBox("Enter folder name: ", "Create new folder", " ");
 					if(folderName.Length > 0)
 						await Session.CreateBinderFolder(folderName, currentBinderDir);
 				}
@@ -325,7 +331,7 @@ namespace Binder.Windows.FileExplorer
 
 		private void cancelTransfer_Click(object sender, EventArgs e)
 		{
-			
+			Session.CancelTransfer();
 		}
 
 		private async void openSiteInBrowserToolStripMenuItem_Click(object sender, EventArgs e)
@@ -351,5 +357,4 @@ namespace Binder.Windows.FileExplorer
 				Application.Exit();
 		}
 	}
-
 }

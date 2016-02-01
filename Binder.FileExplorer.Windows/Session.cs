@@ -14,6 +14,7 @@ using System.Web;
 using System.Drawing;
 using Binder.APIMatic.Client;
 using Binder.Client.StorageEngine;
+using System.Threading;
 //using Binder.API.Region.Foundation.FileAccess;
 
 namespace Binder.Windows.FileExplorer
@@ -36,6 +37,7 @@ namespace Binder.Windows.FileExplorer
 		}
 		private static string _sessionToken;
 		public static string currentSelectedSite;
+		public static CancellationTokenSource cts;
 		public static bool isTransferRunning = false;
 		public static List<Binder.APIMatic.Client.Models.SiteDetails> sites;
 
@@ -242,6 +244,12 @@ namespace Binder.Windows.FileExplorer
 				AddContextMenu(subNode, menu);
 		}
 
+		public static void CancelTransfer()
+		{
+			//cts = new CancellationTokenSource();
+			cts.Cancel();
+		}
+
 		public async static Task GetFile(string path, string savePath, ProgressBar progressBar, TextBox log)
 		{
 			long storageZoneId = 1;
@@ -262,17 +270,19 @@ namespace Binder.Windows.FileExplorer
 			{
 
 				Action<long> progress = (n) => {
-						Console.WriteLine(100*(n/fileInfo.Length));
-						progressBar.Invoke(new Action(() =>
-						{ 
-							progressBar.Maximum = 100;
-							progressBar.Value = Convert.ToInt32((100*n)/fileInfo.Length);
-							log.Text = "Downloading " + fileInfo.Name + " " + GetSizeReadable(n) + "/" + GetSizeReadable(((long) fileInfo.Length));
-						}));
-					};
-				var t = Task.Run( () => {
-					storageEngine.GetFile(request.HiggsFileId, progress, outputStream);
-				});
+					Console.WriteLine(100*(n/fileInfo.Length));
+					progressBar.Invoke(new Action(() =>
+					{ 
+						progressBar.Maximum = 100;
+						progressBar.Value = Convert.ToInt32((100*n)/fileInfo.Length);
+						log.Text = "Downloading " + fileInfo.Name + " " + GetSizeReadable(n) + "/" + GetSizeReadable(((long) fileInfo.Length));
+					}));
+				};
+
+				Task t = Task.Run( () => {
+					storageEngine.GetFile(request.HiggsFileId, progress, outputStream, cts.Token);
+				}, cts.Token);
+
 				await t;
 			//	var downloadFile = await new Binder.APIMatic.Client.Controllers.RegionStorageZonesController().GetStorageZonesGetNamedHiggsFileAsync(filename, request.HiggsFileId, storageZoneId.ToString());
 			}
@@ -323,13 +333,12 @@ namespace Binder.Windows.FileExplorer
 
 		public async static void CloseSession()
 		{
-			try
+			if(!Equals(_sessionToken, null))
 			{
 				await new Binder.APIMatic.Client.Controllers.AuthenticationSessionsController().DeleteSessionsDeleteAsync(_sessionToken);
 				Binder.APIMatic.Client.Configuration.ApiKey = null;
+				_sessionToken = null;
 			}
-			catch {}
-			_sessionToken = null;
 		}
 
 		public async static Task UploadFiles(string uploadTo, string uploadFrom, ProgressBar progressBar, TextBox log)
@@ -361,7 +370,7 @@ namespace Binder.Windows.FileExplorer
 						}));
 
 					};
-				var storageResponse = storageEngine.StoreFile(fileStream, progress);
+				var storageResponse = storageEngine.StoreFile(fileStream, progress, cts.Token);
 
 				var options = new Binder.APIMatic.Client.Models.CreateSiteFileVersionOptions()
 				{
@@ -372,10 +381,10 @@ namespace Binder.Windows.FileExplorer
 					StorageZoneId = storageZoneId.ToString()
 				};
 
-				var t = Task.Run( () => {
-					var siteFIle = new Binder.APIMatic.Client.Controllers.RegionSiteNavigatorController()
+				Task t = Task.Run( () => {
+					new Binder.APIMatic.Client.Controllers.RegionSiteNavigatorController()
 						.UpdateSiteNavigatorPostAsync(options, uploadTo, currentSelectedSite);
-				});
+				}, cts.Token);
 				await t;
 
 				progressBar.Value = 0;
@@ -386,7 +395,7 @@ namespace Binder.Windows.FileExplorer
 		{
 			isTransferRunning = true;
 			foreach(string item in uploadFrom)
-			{
+			{				
 				FileAttributes attr = File.GetAttributes(item);
 
 				if (attr.HasFlag(FileAttributes.Directory))
@@ -439,7 +448,7 @@ namespace Binder.Windows.FileExplorer
 			isTransferRunning = false;
 		}
 
-		public async static Task<List<Binder.APIMatic.Client.Models.SiteDetails>>CurrentSites()
+		public async static Task<List<Binder.APIMatic.Client.Models.SiteDetails>> CurrentSites()
 		{
 			var availableSites = await new Binder.APIMatic.Client.Controllers.RegionRegionCurrentUserController().GetRegionCurrentUserAccessibleSitesAsync();
 			return availableSites.ConnectedSites;
