@@ -129,7 +129,7 @@
 			this.signOut.Name = "signOut";
 			this.signOut.Size = new System.Drawing.Size(120, 23);
 			this.signOut.TabIndex = 5;
-			this.signOut.Text = "Quit";
+			this.signOut.Text = "Exit";
 			this.signOut.UseVisualStyleBackColor = true;
 			this.signOut.Click += new System.EventHandler(this.signOut_Click);
 			// 

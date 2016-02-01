@@ -329,7 +329,7 @@ namespace Binder.Windows.FileExplorer
 			this.button4.Name = "button4";
 			this.button4.Size = new System.Drawing.Size(120, 23);
 			this.button4.TabIndex = 7;
-			this.button4.Text = "Refresh directories";
+			this.button4.Text = "Refresh";
 			this.button4.UseVisualStyleBackColor = true;
 			this.button4.Click += new System.EventHandler(this.button4_Click);
 			// 

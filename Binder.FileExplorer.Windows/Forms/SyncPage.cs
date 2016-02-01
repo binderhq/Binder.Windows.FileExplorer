@@ -247,6 +247,7 @@ namespace Binder.Windows.FileExplorer
 				{
 					isChangingForms = true;
 					isTransferRunning = false;
+					Session.CancelTransfer();
 					Session.CloseSession();
 					this.Close();
 					LoginPage lp = new LoginPage();
@@ -271,6 +272,7 @@ namespace Binder.Windows.FileExplorer
 				if (MessageBox.Show("There is a file transfer in progress. Are you sure you want to close? This could result in missing or corrupted files.", "Confirm close", MessageBoxButtons.YesNo) == DialogResult.Yes)
 				{
 					isTransferRunning = false;
+					Session.CancelTransfer();
 					Session.CloseSession();
 					Application.Exit();
 				}
@@ -290,6 +292,7 @@ namespace Binder.Windows.FileExplorer
 				{
 					isChangingForms = true;
 					isTransferRunning = false;
+					Session.CancelTransfer();
 					SitePage sp = new SitePage();
 					sp.Show();
 					this.Close();
@@ -350,6 +353,7 @@ namespace Binder.Windows.FileExplorer
 				else
 				{
 					isTransferRunning = false;
+					Session.CancelTransfer();
 					Application.Exit();
 				}
 			}

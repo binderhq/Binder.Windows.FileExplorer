@@ -370,22 +370,22 @@ namespace Binder.Windows.FileExplorer
 						}));
 
 					};
-				var storageResponse = storageEngine.StoreFile(fileStream, progress, cts.Token);
-
-				var options = new Binder.APIMatic.Client.Models.CreateSiteFileVersionOptions()
-				{
-					Length = fileInfo.Length,
-					FileModifiedTimeUtc = fileInfo.LastWriteTimeUtc,
-					HiggsFileId = storageResponse.HiggsFileID,
-					Name = fileInfo.Name,
-					StorageZoneId = storageZoneId.ToString()
-				};
-
-				Task t = Task.Run( () => {
+				Task s = Task.Run( () => {
+					var storageResponse = storageEngine.StoreFile(fileStream, progress, cts.Token);
+					var options = new Binder.APIMatic.Client.Models.CreateSiteFileVersionOptions()
+					{
+						Length = fileInfo.Length,
+						FileModifiedTimeUtc = fileInfo.LastWriteTimeUtc,
+						HiggsFileId = storageResponse.HiggsFileID,
+						Name = fileInfo.Name,
+						StorageZoneId = storageZoneId.ToString()
+					};
 					new Binder.APIMatic.Client.Controllers.RegionSiteNavigatorController()
-						.UpdateSiteNavigatorPostAsync(options, uploadTo, currentSelectedSite);
+							.UpdateSiteNavigatorPostAsync(options, uploadTo, currentSelectedSite);
 				}, cts.Token);
-				await t;
+				
+				await s;
+
 
 				progressBar.Value = 0;
 			}
