@@ -41,19 +41,29 @@ namespace Binder.Windows.FileExplorer
 		{
 			try
 			{	
-				Cursor.Current = Cursors.WaitCursor;
-				submit.Enabled = false;
-				await Session.CreateSession(this.username.Text, this.password.Text);
-				Session.sites = await Session.CurrentSites();
-				sitep = new SitePage();
-				syncp = new SyncPage();
-				sitep.Show();
+				if(String.IsNullOrWhiteSpace(username.Text) && String.IsNullOrWhiteSpace(password.Text))
+					MessageBox.Show("Please enter your login details.");
+				else if(String.IsNullOrWhiteSpace(username.Text))
+					MessageBox.Show("Please enter a valid username.");
+				else if(String.IsNullOrWhiteSpace(password.Text))
+					MessageBox.Show("Please enter a valid password.");
+				else
+				{
+					Cursor.Current = Cursors.WaitCursor;
+					submit.Enabled = false;
+					await Session.CreateSession(this.username.Text, this.password.Text);
+					Session.sites = await Session.CurrentSites();
+					sitep = new SitePage();
+					syncp = new SyncPage();
+					sitep.Show();
+					this.Hide();
+				}
 				submit.Enabled = true;
 				Cursor.Current = Cursors.Default;
-				this.Hide();
 			}
 			catch
-			{ 
+			{
+				MessageBox.Show("Username or password invalid.");
 				submit.Enabled = true;
 			}
 		}

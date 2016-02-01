@@ -39,6 +39,7 @@ namespace Binder.Windows.FileExplorer.Forms
 			{
 				ListViewItem selectedItem = (ListViewItem) sitesList.SelectedItem;
 				Session.currentSelectedSite = selectedItem.Name;
+				Session.currentSelectedSiteName = selectedItem.Text;
 				SyncPage sp = new SyncPage();
 				sp.Show();
 				this.Hide();

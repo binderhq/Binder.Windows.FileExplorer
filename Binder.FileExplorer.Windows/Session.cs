@@ -37,26 +37,20 @@ namespace Binder.Windows.FileExplorer
 		}
 		private static string _sessionToken;
 		public static string currentSelectedSite;
+		public static string currentSelectedSiteName;
 		public static CancellationTokenSource cts;
 		public static bool isTransferRunning = false;
 		public static List<Binder.APIMatic.Client.Models.SiteDetails> sites;
 
 		public async static Task CreateSession(string username, string password)
 		{
-			try
-			{
-				Cursor.Current = Cursors.WaitCursor;
-				Binder.APIMatic.Client.Configuration.BaseUri = "https://development.edocx.com.au:443/service.api/";
-				var user = await new Binder.APIMatic.Client.Controllers.AuthenticationSessionsController()
-					.CreateSessionsPostAsync(new APIMatic.Client.Models.CreateSessionRequest() { Username = username, ClearTextPassword = password });
-				Binder.APIMatic.Client.Configuration.ApiKey = user.SessionToken;
-				_sessionToken = user.SessionToken;
-				Cursor.Current = Cursors.Default;
-			}
-			catch(Exception e)
-			{
-				DialogResult dialog = MessageBox.Show(e.Message);
-			}
+			Cursor.Current = Cursors.WaitCursor;
+			Binder.APIMatic.Client.Configuration.BaseUri = "https://development.edocx.com.au:443/service.api/";
+			var user = await new Binder.APIMatic.Client.Controllers.AuthenticationSessionsController()
+				.CreateSessionsPostAsync(new APIMatic.Client.Models.CreateSessionRequest() { Username = username, ClearTextPassword = password });
+			Binder.APIMatic.Client.Configuration.ApiKey = user.SessionToken;
+			_sessionToken = user.SessionToken;
+			Cursor.Current = Cursors.Default;
 		}
 
 		public static void PopulateListViewFromServer(ListView list, List<Binder.APIMatic.Client.Models.SubFolder> folders, List<Binder.APIMatic.Client.Models.SiteFileModel> files, ContextMenuStrip menu, ImageList imageList)
@@ -505,7 +499,7 @@ namespace Binder.Windows.FileExplorer
 			return SiteFileFolders;
 		}
 
-		public async static void IsReadOnly(Label label, string path)
+		public async static void IsReadOnly(ToolStripLabel label, string path)
 		{
 			var folderInfo = await new Binder.APIMatic.Client.Controllers.RegionSiteNavigatorController().GetSiteNavigatorGetFolderAsync(path, currentSelectedSite);
 			var permissions = folderInfo.Privileges;

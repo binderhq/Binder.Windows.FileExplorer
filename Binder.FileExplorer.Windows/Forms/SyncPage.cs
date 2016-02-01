@@ -21,10 +21,14 @@ namespace Binder.Windows.FileExplorer
 		private string currentBinderDir;
 		private static bool isTransferRunning = false;
 		private static bool isChangingForms = false;
+		private ListViewColumnSorter lvwColumnSorter;
 
 		public SyncPage()
 		{
 			InitializeComponent();
+			lvwColumnSorter = new ListViewColumnSorter();
+			this.localList.ListViewItemSorter = lvwColumnSorter;
+			this.binderList.ListViewItemSorter = lvwColumnSorter;
 		}
 
 		private async void SyncPage_Load(object sender, EventArgs e)
@@ -33,16 +37,14 @@ namespace Binder.Windows.FileExplorer
 			binderList.AllowDrop = true;
 			localList.AllowDrop = true;
 			currentBinderDir = "/";
+			this.Text = Session.currentSelectedSiteName + " - File Management";
 			currentLocalDir = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
 			var currentDirectory = await Session.GetSiteFilesFolders(Session.currentSelectedSite, currentBinderDir);
 			Session.PopulateListViewFromServer(binderList, currentDirectory.Folders, currentDirectory.Files, contextMenu, imageList1);
 			Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir), imageList1);
 			directoryBox.Text = currentLocalDir;
-			Session.IsReadOnly(label1, currentBinderDir);
-
-			ToolTip toolTip1 = new ToolTip();
-			toolTip1.SetToolTip(label1, "The folder you are currently viewing has been set to \"Read only\". If you require write access to this folder, please contact the site's administrator.");
-			toolTip1.SetToolTip(newFolder, "Creates a new folder in the current directory. If you are browsing the root \"/\" directory, this will create a new box instead");
+			binderBox.Text = currentBinderDir;
+			Session.IsReadOnly(toolStripLabel1, currentBinderDir);
 		}
 
 		private void backButton_Click(object sender, EventArgs e)
@@ -62,7 +64,7 @@ namespace Binder.Windows.FileExplorer
 				directoryBox.Text = currentLocalDir;
 				Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir), imageList1);
 				if (directoryBox.Text.Length > 3)
-					button1.Enabled = true;
+					toolStripButton4.Enabled = true;
 				Cursor.Current = Cursors.Default;
 			}
 		}
@@ -80,7 +82,7 @@ namespace Binder.Windows.FileExplorer
 				}
 				Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir), imageList1);
 				if(directoryBox.Text.Length > 3)
-					button1.Enabled = true;
+					toolStripButton4.Enabled = true;
 				Cursor.Current = Cursors.Default;
 			}
 		}
@@ -93,22 +95,12 @@ namespace Binder.Windows.FileExplorer
 				Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir), imageList1);
 				directoryBox.Text = currentLocalDir;
 				if (directoryBox.Text.Length > 3)
-					button1.Enabled = true;
+					toolStripButton4.Enabled = true;
 			}
 			else
 			{
 				Process.Start(currentLocalDir.TrimEnd('\\') + "\\" + localList.FocusedItem.Text.ToString());
 			}
-		}
-
-		private void button1_Click(object sender, EventArgs e)
-		{
-			int index = currentLocalDir.TrimEnd('\\').LastIndexOf("\\");
-			currentLocalDir = currentLocalDir.Substring(0, index) + "\\";
-			if(currentLocalDir.Length == 3)
-				button1.Enabled = false;
-			Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir), imageList1);
-			directoryBox.Text = currentLocalDir;
 		}
 
 		private void binderList_ItemDrag(object sender, ItemDragEventArgs e)
@@ -139,9 +131,12 @@ namespace Binder.Windows.FileExplorer
 					else
 						selectedFiles.Add(item.Name);
 				}
+				cancelTransfer.Enabled = true;
 				Task t = Session.DownloadDirectory(currentLocalDir.TrimEnd('\\'), selectedFolders, selectedFiles, progressBar1, miniLog);
 				await t;
+				cancelTransfer.Enabled = false;
 				isTransferRunning = false;
+				Thread.Sleep(1000);
 				Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir), imageList1);
 				miniLog.Text = "Ready.";
 				progressBar1.Value = 0;
@@ -157,29 +152,13 @@ namespace Binder.Windows.FileExplorer
 			if (binderList.FocusedItem.ImageIndex == 0)
 			{
 				if(Equals(currentBinderDir, "/"))
-					button2.Enabled = true;
+					toolStripButton3.Enabled = true;
 				currentBinderDir = currentBinderDir.TrimEnd('/') + "/" + binderList.FocusedItem.Text;
 				var currentDirectory = await Session.GetSiteFilesFolders(Session.currentSelectedSite, currentBinderDir);
 				Session.PopulateListViewFromServer(binderList, currentDirectory.Folders, currentDirectory.Files, contextMenu, imageList1);
+				binderBox.Text = currentBinderDir;
 			}
-			Session.IsReadOnly(label1, currentBinderDir);
-			Cursor.Current = Cursors.Default;
-		}
-
-		private async void button2_Click_1(object sender, EventArgs e)
-		{
-			Cursor.Current = Cursors.WaitCursor;
-			int index = currentBinderDir.LastIndexOf("/");
-			currentBinderDir = currentBinderDir.Substring(0, index);
-			if (Equals(currentBinderDir, ""))
-				currentBinderDir = "/";
-			if(Equals(currentBinderDir, "/"))
-				button2.Enabled = false;
-			else
-				button2.Enabled = true;
-			var currentDirectory = await Session.GetSiteFilesFolders(Session.currentSelectedSite, currentBinderDir);
-			Session.PopulateListViewFromServer(binderList, currentDirectory.Folders, currentDirectory.Files, contextMenu, imageList1);
-			Session.IsReadOnly(label1, currentBinderDir);
+			Session.IsReadOnly(toolStripLabel1, currentBinderDir);
 			Cursor.Current = Cursors.Default;
 		}
 
@@ -215,28 +194,21 @@ namespace Binder.Windows.FileExplorer
 				List<string> selectedItems = new List<string>();
 				foreach (ListViewItem item in localList.SelectedItems)
 					selectedItems.Add(item.Name);
+				cancelTransfer.Enabled = true;
 				Task t = Session.UploadDirectory(currentBinderDir, selectedItems, progressBar1, miniLog);
 				await t;
+				cancelTransfer.Enabled = false;
 				isTransferRunning = false;
+				miniLog.Text = "Ready.";
+				Thread.Sleep(1000);
 				var currentDirectory = await Session.GetSiteFilesFolders(Session.currentSelectedSite, currentBinderDir);
 				Session.PopulateListViewFromServer(binderList, currentDirectory.Folders, currentDirectory.Files, contextMenu, imageList1);
-				Session.IsReadOnly(label1, currentBinderDir);
-				miniLog.Text = "Ready.";
+				Session.IsReadOnly(toolStripLabel1, currentBinderDir);
 				progressBar1.Value = 0;
 				Cursor.Current = Cursors.Default;				
 			}
 			else
 				MessageBox.Show("Please wait until the current file transfer has finished before starting a new one.", "File Transfer in Progress");
-		}
-
-		private async void button4_Click(object sender, EventArgs e)
-		{
-			button4.Enabled = false;
-			var currentDirectory = await Session.GetSiteFilesFolders(Session.currentSelectedSite, currentBinderDir);
-			Session.PopulateListViewFromServer(binderList, currentDirectory.Folders, currentDirectory.Files, contextMenu, imageList1);
-			Session.IsReadOnly(label1, currentBinderDir);
-			Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir), imageList1);
-			button4.Enabled = true;
 		}
 
 		private void signOutToolStripMenuItem_Click(object sender, EventArgs e)
@@ -307,31 +279,6 @@ namespace Binder.Windows.FileExplorer
 			}
 		}
 
-		private async void newFolder_Click(object sender, EventArgs e)
-		{
-			try
-			{
-				if(Equals(currentBinderDir, "/"))
-				{
-					string boxName = Microsoft.VisualBasic.Interaction.InputBox("Enter box name: ", "Create new box", " ");
-					if(boxName.Length > 0) //VB is awful
-						await Session.CreateBox(boxName);
-				}
-				else
-				{
-					string folderName = Microsoft.VisualBasic.Interaction.InputBox("Enter folder name: ", "Create new folder", " ");
-					if(folderName.Length > 0)
-						await Session.CreateBinderFolder(folderName, currentBinderDir);
-				}
-				var currentDirectory = await Session.GetSiteFilesFolders(Session.currentSelectedSite, currentBinderDir);
-				Session.PopulateListViewFromServer(binderList, currentDirectory.Folders, currentDirectory.Files, contextMenu, imageList1);
-			}
-			catch(Exception err)
-			{
-				MessageBox.Show(err.Message);
-			}
-		}
-
 		private void cancelTransfer_Click(object sender, EventArgs e)
 		{
 			Session.CancelTransfer();
@@ -354,11 +301,145 @@ namespace Binder.Windows.FileExplorer
 				{
 					isTransferRunning = false;
 					Session.CancelTransfer();
-					Application.Exit();
+					if(isChangingForms){
+						isChangingForms = false;
+						e.Cancel = true;
+					}
+					else
+						Application.Exit();
 				}
 			}
 			else
-				Application.Exit();
+			{
+				if (isChangingForms)
+				{
+					isChangingForms = false;
+				}
+				else
+					Application.Exit();
+			}
+		}
+
+		private void localList_ColumnClick(object sender, ColumnClickEventArgs e)
+		{
+			// Determine if clicked column is already the column that is being sorted.
+			if (e.Column == lvwColumnSorter.SortColumn)
+			{
+				// Reverse the current sort direction for this column.
+				if (lvwColumnSorter.Order == SortOrder.Ascending)
+				{
+					lvwColumnSorter.Order = SortOrder.Descending;
+				}
+				else
+				{
+					lvwColumnSorter.Order = SortOrder.Ascending;
+				}
+			}
+			else
+			{
+				// Set the column number that is to be sorted; default to ascending.
+				lvwColumnSorter.SortColumn = e.Column;
+				lvwColumnSorter.Order = SortOrder.Ascending;
+			}
+
+			// Perform the sort with these new sort options.
+			this.localList.Sort();
+		}
+
+		private void binderList_ColumnClick(object sender, ColumnClickEventArgs e)
+		{
+			// Determine if clicked column is already the column that is being sorted.
+			if (e.Column == lvwColumnSorter.SortColumn)
+			{
+				// Reverse the current sort direction for this column.
+				if (lvwColumnSorter.Order == SortOrder.Ascending)
+				{
+					lvwColumnSorter.Order = SortOrder.Descending;
+				}
+				else
+				{
+					lvwColumnSorter.Order = SortOrder.Ascending;
+				}
+			}
+			else
+			{
+				// Set the column number that is to be sorted; default to ascending.
+				lvwColumnSorter.SortColumn = e.Column;
+				lvwColumnSorter.Order = SortOrder.Ascending;
+			}
+
+			// Perform the sort with these new sort options.
+			this.binderList.Sort();
+		}
+
+		private async void toolStripButton2_Click(object sender, EventArgs e)
+		{
+			toolStripButton2.Enabled = false;
+			var currentDirectory = await Session.GetSiteFilesFolders(Session.currentSelectedSite, currentBinderDir);
+			Session.PopulateListViewFromServer(binderList, currentDirectory.Folders, currentDirectory.Files, contextMenu, imageList1);
+			Session.IsReadOnly(toolStripLabel1, currentBinderDir);
+			toolStripButton2.Enabled = true;
+		}
+
+		private async void toolStripButton1_Click(object sender, EventArgs e)
+		{
+			toolStripButton1.Enabled = false;
+			var currentDirectory = await Session.GetSiteFilesFolders(Session.currentSelectedSite, currentBinderDir);
+			Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir), imageList1);
+			toolStripButton1.Enabled = true;
+		}
+
+		private async void toolStripButton3_Click(object sender, EventArgs e)
+		{
+			Cursor.Current = Cursors.WaitCursor;
+			int index = currentBinderDir.LastIndexOf("/");
+			currentBinderDir = currentBinderDir.Substring(0, index);
+			if (Equals(currentBinderDir, ""))
+				currentBinderDir = "/";
+			if (Equals(currentBinderDir, "/"))
+				toolStripButton3.Enabled = false;
+			else
+				toolStripButton3.Enabled = true;
+			var currentDirectory = await Session.GetSiteFilesFolders(Session.currentSelectedSite, currentBinderDir);
+			Session.PopulateListViewFromServer(binderList, currentDirectory.Folders, currentDirectory.Files, contextMenu, imageList1);
+			Session.IsReadOnly(toolStripLabel1, currentBinderDir);
+			binderBox.Text = currentBinderDir;
+			Cursor.Current = Cursors.Default;
+		}
+
+		private void toolStripButton4_Click(object sender, EventArgs e)
+		{
+			int index = currentLocalDir.TrimEnd('\\').LastIndexOf("\\");
+			currentLocalDir = currentLocalDir.Substring(0, index) + "\\";
+			if (currentLocalDir.Length == 3)
+				toolStripButton4.Enabled = false;
+			Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir), imageList1);
+			directoryBox.Text = currentLocalDir;
+		}
+
+		private async void toolStripButton5_Click(object sender, EventArgs e)
+		{
+			try
+			{
+				if (Equals(currentBinderDir, "/"))
+				{
+					string boxName = Microsoft.VisualBasic.Interaction.InputBox("Enter box name: ", "Create new box", " ");
+					if (boxName.Length > 0) //VB is awful
+						await Session.CreateBox(boxName);
+				}
+				else
+				{
+					string folderName = Microsoft.VisualBasic.Interaction.InputBox("Enter folder name: ", "Create new folder", " ");
+					if (folderName.Length > 0)
+						await Session.CreateBinderFolder(folderName, currentBinderDir);
+				}
+				var currentDirectory = await Session.GetSiteFilesFolders(Session.currentSelectedSite, currentBinderDir);
+				Session.PopulateListViewFromServer(binderList, currentDirectory.Folders, currentDirectory.Files, contextMenu, imageList1);
+			}
+			catch (Exception err)
+			{
+				MessageBox.Show(err.Message);
+			}
 		}
 	}
 }

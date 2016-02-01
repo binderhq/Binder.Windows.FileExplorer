@@ -38,27 +38,30 @@ namespace Binder.Windows.FileExplorer
 			this.size = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.lastModified = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.imageList1 = new System.Windows.Forms.ImageList(this.components);
-			this.button1 = new System.Windows.Forms.Button();
 			this.binderList = new System.Windows.Forms.ListView();
 			this.name1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.type1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.size1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.lastModified1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
-			this.button2 = new System.Windows.Forms.Button();
-			this.label1 = new System.Windows.Forms.Label();
-			this.newFolder = new System.Windows.Forms.Button();
-			this.progressBar1 = new System.Windows.Forms.ProgressBar();
-			this.browseButton = new System.Windows.Forms.Button();
+			this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
 			this.directoryBox = new System.Windows.Forms.TextBox();
-			this.label3 = new System.Windows.Forms.Label();
+			this.browseButton = new System.Windows.Forms.Button();
+			this.binderBox = new System.Windows.Forms.TextBox();
+			this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+			this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
+			this.toolStripButton3 = new System.Windows.Forms.ToolStripButton();
+			this.toolStripButton5 = new System.Windows.Forms.ToolStripButton();
+			this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
+			this.toolStrip2 = new System.Windows.Forms.ToolStrip();
+			this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
+			this.toolStripButton4 = new System.Windows.Forms.ToolStripButton();
+			this.progressBar1 = new System.Windows.Forms.ProgressBar();
 			this.contextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.downloadMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveFile = new System.Windows.Forms.SaveFileDialog();
 			this.miniLog = new System.Windows.Forms.TextBox();
 			this.openFolder = new System.Windows.Forms.FolderBrowserDialog();
-			this.button4 = new System.Windows.Forms.Button();
 			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
 			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.openSiteInBrowserToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -66,8 +69,11 @@ namespace Binder.Windows.FileExplorer
 			this.signOutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.cancelTransfer = new System.Windows.Forms.Button();
+			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.tableLayoutPanel1.SuspendLayout();
-			this.tableLayoutPanel2.SuspendLayout();
+			this.tableLayoutPanel4.SuspendLayout();
+			this.toolStrip1.SuspendLayout();
+			this.toolStrip2.SuspendLayout();
 			this.contextMenu.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
 			this.SuspendLayout();
@@ -80,15 +86,18 @@ namespace Binder.Windows.FileExplorer
 			this.tableLayoutPanel1.ColumnCount = 2;
 			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
 			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-			this.tableLayoutPanel1.Controls.Add(this.localList, 1, 1);
-			this.tableLayoutPanel1.Controls.Add(this.button1, 1, 0);
-			this.tableLayoutPanel1.Controls.Add(this.binderList, 0, 1);
-			this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel2, 0, 0);
+			this.tableLayoutPanel1.Controls.Add(this.localList, 1, 2);
+			this.tableLayoutPanel1.Controls.Add(this.binderList, 0, 2);
+			this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel4, 1, 0);
+			this.tableLayoutPanel1.Controls.Add(this.binderBox, 0, 0);
+			this.tableLayoutPanel1.Controls.Add(this.toolStrip1, 0, 1);
+			this.tableLayoutPanel1.Controls.Add(this.toolStrip2, 1, 1);
 			this.tableLayoutPanel1.GrowStyle = System.Windows.Forms.TableLayoutPanelGrowStyle.FixedSize;
 			this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 27);
 			this.tableLayoutPanel1.Name = "tableLayoutPanel1";
 			this.tableLayoutPanel1.Padding = new System.Windows.Forms.Padding(5);
-			this.tableLayoutPanel1.RowCount = 2;
+			this.tableLayoutPanel1.RowCount = 3;
+			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
 			this.tableLayoutPanel1.Size = new System.Drawing.Size(984, 488);
@@ -103,13 +112,14 @@ namespace Binder.Windows.FileExplorer
             this.size,
             this.lastModified});
 			this.localList.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.localList.Location = new System.Drawing.Point(495, 38);
+			this.localList.Location = new System.Drawing.Point(495, 68);
 			this.localList.Name = "localList";
-			this.localList.Size = new System.Drawing.Size(481, 442);
+			this.localList.Size = new System.Drawing.Size(481, 412);
 			this.localList.SmallImageList = this.imageList1;
 			this.localList.TabIndex = 4;
 			this.localList.UseCompatibleStateImageBehavior = false;
 			this.localList.View = System.Windows.Forms.View.Details;
+			this.localList.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.localList_ColumnClick);
 			this.localList.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.localList_ItemDrag);
 			this.localList.DragDrop += new System.Windows.Forms.DragEventHandler(this.localList_DragDrop);
 			this.localList.DragEnter += new System.Windows.Forms.DragEventHandler(this.localList_DragEnter);
@@ -140,18 +150,6 @@ namespace Binder.Windows.FileExplorer
 			this.imageList1.Images.SetKeyName(0, "folder.png");
 			this.imageList1.Images.SetKeyName(1, "pTEy9.png");
 			// 
-			// button1
-			// 
-			this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.button1.Location = new System.Drawing.Point(921, 8);
-			this.button1.Name = "button1";
-			this.button1.Size = new System.Drawing.Size(55, 24);
-			this.button1.TabIndex = 3;
-			this.button1.Text = "Up";
-			this.button1.UseVisualStyleBackColor = true;
-			this.button1.Click += new System.EventHandler(this.button1_Click);
-			// 
 			// binderList
 			// 
 			this.binderList.AllowDrop = true;
@@ -162,13 +160,14 @@ namespace Binder.Windows.FileExplorer
             this.lastModified1});
 			this.binderList.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.binderList.ForeColor = System.Drawing.SystemColors.WindowText;
-			this.binderList.Location = new System.Drawing.Point(8, 38);
+			this.binderList.Location = new System.Drawing.Point(8, 68);
 			this.binderList.Name = "binderList";
-			this.binderList.Size = new System.Drawing.Size(481, 442);
+			this.binderList.Size = new System.Drawing.Size(481, 412);
 			this.binderList.SmallImageList = this.imageList1;
 			this.binderList.TabIndex = 2;
 			this.binderList.UseCompatibleStateImageBehavior = false;
 			this.binderList.View = System.Windows.Forms.View.Details;
+			this.binderList.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.binderList_ColumnClick);
 			this.binderList.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.binderList_ItemDrag);
 			this.binderList.DragDrop += new System.Windows.Forms.DragEventHandler(this.binderList_DragDrop);
 			this.binderList.DragEnter += new System.Windows.Forms.DragEventHandler(this.binderList_DragEnter);
@@ -192,100 +191,150 @@ namespace Binder.Windows.FileExplorer
 			this.lastModified1.Text = "Last Modified";
 			this.lastModified1.Width = 81;
 			// 
-			// tableLayoutPanel2
+			// tableLayoutPanel4
 			// 
-			this.tableLayoutPanel2.ColumnCount = 3;
-			this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 61F));
-			this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 155F));
-			this.tableLayoutPanel2.Controls.Add(this.button2, 0, 0);
-			this.tableLayoutPanel2.Controls.Add(this.label1, 2, 0);
-			this.tableLayoutPanel2.Controls.Add(this.newFolder, 1, 0);
-			this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.tableLayoutPanel2.Location = new System.Drawing.Point(5, 5);
-			this.tableLayoutPanel2.Margin = new System.Windows.Forms.Padding(0);
-			this.tableLayoutPanel2.Name = "tableLayoutPanel2";
-			this.tableLayoutPanel2.RowCount = 1;
-			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel2.Size = new System.Drawing.Size(487, 30);
-			this.tableLayoutPanel2.TabIndex = 4;
+			this.tableLayoutPanel4.ColumnCount = 2;
+			this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 83.16222F));
+			this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 16.83778F));
+			this.tableLayoutPanel4.Controls.Add(this.directoryBox, 0, 0);
+			this.tableLayoutPanel4.Controls.Add(this.browseButton, 1, 0);
+			this.tableLayoutPanel4.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.tableLayoutPanel4.Location = new System.Drawing.Point(492, 5);
+			this.tableLayoutPanel4.Margin = new System.Windows.Forms.Padding(0);
+			this.tableLayoutPanel4.Name = "tableLayoutPanel4";
+			this.tableLayoutPanel4.RowCount = 1;
+			this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+			this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+			this.tableLayoutPanel4.Size = new System.Drawing.Size(487, 30);
+			this.tableLayoutPanel4.TabIndex = 9;
 			// 
-			// button2
+			// directoryBox
 			// 
-			this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
-			this.button2.Enabled = false;
-			this.button2.Location = new System.Drawing.Point(3, 3);
-			this.button2.Name = "button2";
-			this.button2.Size = new System.Drawing.Size(55, 24);
-			this.button2.TabIndex = 0;
-			this.button2.Text = "Up";
-			this.button2.UseVisualStyleBackColor = true;
-			this.button2.Click += new System.EventHandler(this.button2_Click_1);
-			// 
-			// label1
-			// 
-			this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.label1.AutoSize = true;
-			this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 13F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label1.ForeColor = System.Drawing.Color.DimGray;
-			this.label1.Location = new System.Drawing.Point(393, 8);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(91, 22);
-			this.label1.TabIndex = 6;
-			this.label1.Text = "Read only";
-			this.label1.Visible = false;
-			// 
-			// newFolder
-			// 
-			this.newFolder.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
-			this.newFolder.Location = new System.Drawing.Point(64, 3);
-			this.newFolder.Name = "newFolder";
-			this.newFolder.Size = new System.Drawing.Size(75, 24);
-			this.newFolder.TabIndex = 1;
-			this.newFolder.Text = "New Folder";
-			this.newFolder.UseVisualStyleBackColor = true;
-			this.newFolder.Click += new System.EventHandler(this.newFolder_Click);
-			// 
-			// progressBar1
-			// 
-			this.progressBar1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.progressBar1.Location = new System.Drawing.Point(12, 521);
-			this.progressBar1.Name = "progressBar1";
-			this.progressBar1.Size = new System.Drawing.Size(399, 23);
-			this.progressBar1.TabIndex = 5;
+			this.directoryBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.directoryBox.Location = new System.Drawing.Point(3, 3);
+			this.directoryBox.Name = "directoryBox";
+			this.directoryBox.Size = new System.Drawing.Size(398, 20);
+			this.directoryBox.TabIndex = 6;
+			this.directoryBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.directoryBox_KeyPress);
 			// 
 			// browseButton
 			// 
-			this.browseButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.browseButton.Location = new System.Drawing.Point(852, 549);
+			this.browseButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.browseButton.Location = new System.Drawing.Point(409, 3);
 			this.browseButton.Name = "browseButton";
-			this.browseButton.Size = new System.Drawing.Size(120, 23);
+			this.browseButton.Size = new System.Drawing.Size(75, 24);
 			this.browseButton.TabIndex = 8;
 			this.browseButton.Text = "Browse";
 			this.browseButton.UseVisualStyleBackColor = true;
 			this.browseButton.Click += new System.EventHandler(this.browseButton_Click);
 			// 
-			// directoryBox
+			// binderBox
 			// 
-			this.directoryBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+			this.binderBox.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.binderBox.Location = new System.Drawing.Point(8, 8);
+			this.binderBox.Name = "binderBox";
+			this.binderBox.Size = new System.Drawing.Size(481, 20);
+			this.binderBox.TabIndex = 7;
+			// 
+			// toolStrip1
+			// 
+			this.toolStrip1.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.toolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
+			this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripButton2,
+            this.toolStripButton3,
+            this.toolStripButton5,
+            this.toolStripSeparator1,
+            this.toolStripLabel1});
+			this.toolStrip1.Location = new System.Drawing.Point(5, 35);
+			this.toolStrip1.Name = "toolStrip1";
+			this.toolStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
+			this.toolStrip1.Size = new System.Drawing.Size(487, 30);
+			this.toolStrip1.TabIndex = 10;
+			this.toolStrip1.Text = "toolStrip1";
+			// 
+			// toolStripButton2
+			// 
+			this.toolStripButton2.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.toolStripButton2.Image = global::Binder.Windows.FileExplorer.Properties.Resources.refresh_16xLG;
+			this.toolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.toolStripButton2.Name = "toolStripButton2";
+			this.toolStripButton2.Size = new System.Drawing.Size(23, 27);
+			this.toolStripButton2.Text = "Refresh";
+			this.toolStripButton2.Click += new System.EventHandler(this.toolStripButton2_Click);
+			// 
+			// toolStripButton3
+			// 
+			this.toolStripButton3.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.toolStripButton3.Image = global::Binder.Windows.FileExplorer.Properties.Resources.OneLevelUp_5834;
+			this.toolStripButton3.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.toolStripButton3.Name = "toolStripButton3";
+			this.toolStripButton3.Size = new System.Drawing.Size(23, 27);
+			this.toolStripButton3.Text = "Up one level";
+			this.toolStripButton3.Click += new System.EventHandler(this.toolStripButton3_Click);
+			// 
+			// toolStripButton5
+			// 
+			this.toolStripButton5.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.toolStripButton5.Image = global::Binder.Windows.FileExplorer.Properties.Resources.Folder_special__5843_16x;
+			this.toolStripButton5.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.toolStripButton5.Name = "toolStripButton5";
+			this.toolStripButton5.Size = new System.Drawing.Size(23, 27);
+			this.toolStripButton5.Text = "New Folder";
+			this.toolStripButton5.Click += new System.EventHandler(this.toolStripButton5_Click);
+			// 
+			// toolStripLabel1
+			// 
+			this.toolStripLabel1.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
+			this.toolStripLabel1.Name = "toolStripLabel1";
+			this.toolStripLabel1.Size = new System.Drawing.Size(61, 27);
+			this.toolStripLabel1.Text = "Read Only";
+			this.toolStripLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			// 
+			// toolStrip2
+			// 
+			this.toolStrip2.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.toolStrip2.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
+			this.toolStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripButton1,
+            this.toolStripButton4});
+			this.toolStrip2.Location = new System.Drawing.Point(492, 35);
+			this.toolStrip2.Name = "toolStrip2";
+			this.toolStrip2.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
+			this.toolStrip2.Size = new System.Drawing.Size(487, 30);
+			this.toolStrip2.TabIndex = 11;
+			this.toolStrip2.Text = "toolStrip2";
+			// 
+			// toolStripButton1
+			// 
+			this.toolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.toolStripButton1.Image = global::Binder.Windows.FileExplorer.Properties.Resources.refresh_16xLG;
+			this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.toolStripButton1.Name = "toolStripButton1";
+			this.toolStripButton1.Size = new System.Drawing.Size(23, 27);
+			this.toolStripButton1.Text = "Refresh";
+			this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click);
+			// 
+			// toolStripButton4
+			// 
+			this.toolStripButton4.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.toolStripButton4.Image = global::Binder.Windows.FileExplorer.Properties.Resources.OneLevelUp_5834;
+			this.toolStripButton4.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.toolStripButton4.Name = "toolStripButton4";
+			this.toolStripButton4.Size = new System.Drawing.Size(23, 27);
+			this.toolStripButton4.Text = "Up one level";
+			this.toolStripButton4.Click += new System.EventHandler(this.toolStripButton4_Click);
+			// 
+			// progressBar1
+			// 
+			this.progressBar1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.directoryBox.Location = new System.Drawing.Point(569, 551);
-			this.directoryBox.Name = "directoryBox";
-			this.directoryBox.Size = new System.Drawing.Size(277, 20);
-			this.directoryBox.TabIndex = 6;
-			this.directoryBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.directoryBox_KeyPress);
-			// 
-			// label3
-			// 
-			this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(515, 554);
-			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(48, 13);
-			this.label3.TabIndex = 8;
-			this.label3.Text = "Location";
+			this.progressBar1.Location = new System.Drawing.Point(12, 524);
+			this.progressBar1.Name = "progressBar1";
+			this.progressBar1.Size = new System.Drawing.Size(834, 20);
+			this.progressBar1.TabIndex = 5;
 			// 
 			// contextMenu
 			// 
@@ -314,24 +363,14 @@ namespace Binder.Windows.FileExplorer
 			// 
 			// miniLog
 			// 
-			this.miniLog.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.miniLog.Location = new System.Drawing.Point(12, 551);
+			this.miniLog.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.miniLog.Location = new System.Drawing.Point(12, 550);
 			this.miniLog.Name = "miniLog";
 			this.miniLog.ReadOnly = true;
-			this.miniLog.Size = new System.Drawing.Size(477, 20);
+			this.miniLog.Size = new System.Drawing.Size(960, 20);
 			this.miniLog.TabIndex = 5;
 			this.miniLog.Text = "Ready.";
-			// 
-			// button4
-			// 
-			this.button4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.button4.Location = new System.Drawing.Point(852, 520);
-			this.button4.Name = "button4";
-			this.button4.Size = new System.Drawing.Size(120, 23);
-			this.button4.TabIndex = 7;
-			this.button4.Text = "Refresh";
-			this.button4.UseVisualStyleBackColor = true;
-			this.button4.Click += new System.EventHandler(this.button4_Click);
 			// 
 			// menuStrip1
 			// 
@@ -386,14 +425,20 @@ namespace Binder.Windows.FileExplorer
 			// 
 			// cancelTransfer
 			// 
-			this.cancelTransfer.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.cancelTransfer.Location = new System.Drawing.Point(417, 520);
+			this.cancelTransfer.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.cancelTransfer.Enabled = false;
+			this.cancelTransfer.Location = new System.Drawing.Point(852, 521);
 			this.cancelTransfer.Name = "cancelTransfer";
-			this.cancelTransfer.Size = new System.Drawing.Size(75, 23);
+			this.cancelTransfer.Size = new System.Drawing.Size(120, 23);
 			this.cancelTransfer.TabIndex = 13;
 			this.cancelTransfer.Text = "Cancel";
 			this.cancelTransfer.UseVisualStyleBackColor = true;
 			this.cancelTransfer.Click += new System.EventHandler(this.cancelTransfer_Click);
+			// 
+			// toolStripSeparator1
+			// 
+			this.toolStripSeparator1.Name = "toolStripSeparator1";
+			this.toolStripSeparator1.Size = new System.Drawing.Size(6, 30);
 			// 
 			// SyncPage
 			// 
@@ -402,11 +447,7 @@ namespace Binder.Windows.FileExplorer
 			this.ClientSize = new System.Drawing.Size(984, 584);
 			this.Controls.Add(this.cancelTransfer);
 			this.Controls.Add(this.menuStrip1);
-			this.Controls.Add(this.button4);
 			this.Controls.Add(this.miniLog);
-			this.Controls.Add(this.label3);
-			this.Controls.Add(this.directoryBox);
-			this.Controls.Add(this.browseButton);
 			this.Controls.Add(this.progressBar1);
 			this.Controls.Add(this.tableLayoutPanel1);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -417,8 +458,13 @@ namespace Binder.Windows.FileExplorer
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SyncPage_FormClosing);
 			this.Load += new System.EventHandler(this.SyncPage_Load);
 			this.tableLayoutPanel1.ResumeLayout(false);
-			this.tableLayoutPanel2.ResumeLayout(false);
-			this.tableLayoutPanel2.PerformLayout();
+			this.tableLayoutPanel1.PerformLayout();
+			this.tableLayoutPanel4.ResumeLayout(false);
+			this.tableLayoutPanel4.PerformLayout();
+			this.toolStrip1.ResumeLayout(false);
+			this.toolStrip1.PerformLayout();
+			this.toolStrip2.ResumeLayout(false);
+			this.toolStrip2.PerformLayout();
 			this.contextMenu.ResumeLayout(false);
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();
@@ -433,7 +479,6 @@ namespace Binder.Windows.FileExplorer
 		private System.Windows.Forms.ProgressBar progressBar1;
 		private System.Windows.Forms.Button browseButton;
 		private System.Windows.Forms.TextBox directoryBox;
-		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.ImageList imageList1;
 		private System.Windows.Forms.ContextMenuStrip contextMenu;
 		private System.Windows.Forms.ToolStripMenuItem downloadMenu;
@@ -445,25 +490,30 @@ namespace Binder.Windows.FileExplorer
 		private System.Windows.Forms.ColumnHeader name;
 		private System.Windows.Forms.ColumnHeader type;
 		private System.Windows.Forms.ColumnHeader lastModified;
-		private System.Windows.Forms.Button button1;
 		private System.Windows.Forms.ColumnHeader size;
 		private System.Windows.Forms.ListView binderList;
 		private System.Windows.Forms.ColumnHeader name1;
 		private System.Windows.Forms.ColumnHeader type1;
 		private System.Windows.Forms.ColumnHeader size1;
 		private System.Windows.Forms.ColumnHeader lastModified1;
-		private System.Windows.Forms.Button button4;
 		private System.Windows.Forms.MenuStrip menuStrip1;
 		private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem signOutToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem selectSiteToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
-		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
-		private System.Windows.Forms.Button button2;
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.Button newFolder;
 		private System.Windows.Forms.Button cancelTransfer;
 		private System.Windows.Forms.ToolStripMenuItem openSiteInBrowserToolStripMenuItem;
+		private System.Windows.Forms.TextBox binderBox;
+		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel4;
+		private System.Windows.Forms.ToolStrip toolStrip1;
+		private System.Windows.Forms.ToolStripButton toolStripButton2;
+		private System.Windows.Forms.ToolStrip toolStrip2;
+		private System.Windows.Forms.ToolStripButton toolStripButton1;
+		private System.Windows.Forms.ToolStripButton toolStripButton3;
+		private System.Windows.Forms.ToolStripButton toolStripButton4;
+		private System.Windows.Forms.ToolStripButton toolStripButton5;
+		private System.Windows.Forms.ToolStripLabel toolStripLabel1;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
 
 	}
 }
