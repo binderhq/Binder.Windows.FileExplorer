@@ -43,6 +43,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Binder.APIMatic.Client.0.1.5854.22577\lib\portable-net40+win+wpa81\Binder.APIMatic.Client.dll</HintPath>
     </Reference>
+    <Reference Include="Binder.Client.StorageEngine">
+      <HintPath>..\packages\Binder.Client.StorageEngine.0.1.5875.20435\lib\net45\Binder.Client.StorageEngine.dll</HintPath>
+    </Reference>
     <Reference Include="Flurl">
       <HintPath>..\packages\Flurl.1.0.10\lib\portable-net40+sl50+win+wpa81+wp80+MonoAndroid10+MonoTouch10\Flurl.dll</HintPath>
     </Reference>
@@ -87,17 +90,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FileAccess\HiggsClient.cs" />
-    <Compile Include="FileAccess\IHiggsClient.cs" />
-    <Compile Include="FileAccess\ILocalPieceCache.cs" />
-    <Compile Include="FileAccess\NullPieceCache.cs" />
-    <Compile Include="FileAccess\RequestClasses\CheckPieceRequest.cs" />
-    <Compile Include="FileAccess\RequestClasses\DownloadPieceRequest.cs" />
-    <Compile Include="FileAccess\RequestClasses\IHiggsRequest.cs" />
-    <Compile Include="FileAccess\RequestClasses\RequestDefault.cs" />
-    <Compile Include="FileAccess\RequestClasses\UploadPieceRequest.cs" />
-    <Compile Include="FileAccess\StorageEngine.cs" />
-    <Compile Include="FileAccess\StorageEngineFactory.cs" />
     <Compile Include="Forms\LoginPage.cs">
       <SubType>Form</SubType>
     </Compile>

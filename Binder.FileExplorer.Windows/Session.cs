@@ -266,7 +266,7 @@ namespace Binder.Windows.FileExplorer
 				storageZoneId);
 
 			var fileInfo = await new Binder.APIMatic.Client.Controllers.RegionSiteNavigatorController().GetSiteNavigatorGetFileAsync(path, currentSelectedSite);
-			using(var outputStream = new FileStream(savePath, FileMode.Create, FileAccess.Write))
+			using(var outputStream = new FileStream(savePath + ".!binder", FileMode.Create, FileAccess.Write))
 			{
 
 				Action<long> progress = (n) => {
@@ -284,6 +284,8 @@ namespace Binder.Windows.FileExplorer
 				}, cts.Token);
 
 				await t;
+
+
 			//	var downloadFile = await new Binder.APIMatic.Client.Controllers.RegionStorageZonesController().GetStorageZonesGetNamedHiggsFileAsync(filename, request.HiggsFileId, storageZoneId.ToString());
 			}
 		}
@@ -316,7 +318,13 @@ namespace Binder.Windows.FileExplorer
 					{
 						MessageBox.Show(e.Message + " - Skipping download");
 					}
+					if(cts.Token.IsCancellationRequested)
+						break;
 					await DownloadDirectory(newDownloadTo, newDownloadFromFoldersPaths, newDownloadFromFilesPaths, progressBar, log);
+				}
+				catch(TaskCanceledException)
+				{
+					log.Text = "Cancelling...";
 				}
 				catch(Exception e)
 				{
@@ -326,7 +334,15 @@ namespace Binder.Windows.FileExplorer
 			foreach(string file in downloadFromFiles)
 			{
 				var info = await new Binder.APIMatic.Client.Controllers.RegionSiteNavigatorController().GetSiteNavigatorGetFileAsync(file, currentSelectedSite);
-				await GetFile(file, downloadTo + "\\" + info.Name, progressBar, log);
+				string fullPath = downloadTo + "\\" + info.Name;
+				if(!cts.Token.IsCancellationRequested)
+					await GetFile(file, fullPath, progressBar, log);
+				if(File.Exists(fullPath))
+					File.Delete(fullPath);
+				if(!cts.Token.IsCancellationRequested)
+					File.Move(fullPath + ".!binder", fullPath);
+				else
+					break;
 			}
 			isTransferRunning = false;
 		}
@@ -426,6 +442,8 @@ namespace Binder.Windows.FileExplorer
 					}
 					try
 					{
+						if(cts.Token.IsCancellationRequested)
+							break;
 						await UploadDirectory(newUploadTo, newUploadFrom, progressBar, log);
 					}
 					catch (Exception e)
@@ -437,7 +455,16 @@ namespace Binder.Windows.FileExplorer
 				{
 					try
 					{
-						await UploadFiles(uploadTo, item, progressBar, log);
+						if(!cts.Token.IsCancellationRequested)
+							await UploadFiles(uploadTo, item, progressBar, log);
+//						if(cts.Token.IsCancellationRequested)
+//						{
+//							log.Text = "Cancelling...";
+//							Thread.Sleep(2000);
+//							DirectoryInfo info = new DirectoryInfo(item);
+//							await new Binder.APIMatic.Client.Controllers.RegionSiteNavigatorController().DeleteSiteNavigatorDeleteFileAsync(uploadTo + "/" + info.Name, currentSelectedSite);
+//							//This is probably a REALLY BAD idea since it will delete the file even if the user wanted to keep an old version
+//						}
 					}
 					catch (Exception e)
 					{
