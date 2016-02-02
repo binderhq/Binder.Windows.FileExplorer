@@ -501,8 +501,7 @@ namespace Binder.Windows.FileExplorer
 
 		private async void toolStripButton7_Click(object sender, EventArgs e)
 		{
-			//VERY DANGEROUS!!!! For some reason you can only PERMANENTLY delete files, not just send them to the recycling bin.
-			if(MessageBox.Show("Are you sure you want to delete the selected item(s)? This action cannot be undone.", "Confirm deletion", MessageBoxButtons.YesNo) == DialogResult.Yes)
+			if(MessageBox.Show("Are you sure you want to delete the selected item(s)? The item(s) will be sent to the recycling bin.", "Confirm deletion", MessageBoxButtons.YesNo) == DialogResult.Yes)
 			{
 				List<string> items = new List<string>();
 				foreach(ListViewItem item in localList.SelectedItems)

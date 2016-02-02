@@ -15,6 +15,7 @@ using System.Drawing;
 using Binder.APIMatic.Client;
 using Binder.Client.StorageEngine;
 using System.Threading;
+using Microsoft.VisualBasic.FileIO;
 //using Binder.API.Region.Foundation.FileAccess;
 
 namespace Binder.Windows.FileExplorer
@@ -559,9 +560,9 @@ namespace Binder.Windows.FileExplorer
 				{
 					FileAttributes info = File.GetAttributes(item);
 					if(info.HasFlag(FileAttributes.Directory))
-						Directory.Delete(item, true);
+						FileSystem.DeleteDirectory(item, UIOption.AllDialogs, RecycleOption.SendToRecycleBin, UICancelOption.DoNothing);
 					else
-						File.Delete(item);
+						FileSystem.DeleteFile(item, UIOption.AllDialogs, RecycleOption.SendToRecycleBin, UICancelOption.DoNothing);
 				}
 			});
 			await t;
