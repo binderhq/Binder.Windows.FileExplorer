@@ -58,36 +58,29 @@ namespace Binder.Windows.FileExplorer
 			list.Items.Clear();
 			ListViewItem.ListViewSubItem[] subItems;
 			ListViewItem item = null;
-			try
+			foreach (Binder.APIMatic.Client.Models.SubFolder folder in folders)
 			{
-				foreach (Binder.APIMatic.Client.Models.SubFolder folder in folders)
-				{
-					item = new ListViewItem(folder.Name, 0);
-					subItems = new ListViewItem.ListViewSubItem[]
-						{new ListViewItem.ListViewSubItem(item, "File folder"),
-						new ListViewItem.ListViewSubItem(item, ""), 
-						new ListViewItem.ListViewSubItem(item, "")};
+				item = new ListViewItem(folder.Name, 0);
+				subItems = new ListViewItem.ListViewSubItem[]
+					{new ListViewItem.ListViewSubItem(item, "File folder"),
+					new ListViewItem.ListViewSubItem(item, ""), 
+					new ListViewItem.ListViewSubItem(item, "")};
 
-					item.Name = folder.Path;
-					item.SubItems.AddRange(subItems);
-					list.Items.Add(item);
-				}
-				foreach (Binder.APIMatic.Client.Models.SiteFileModel file in files)
-				{
-					item = new ListViewItem(file.Name, 1);
-					subItems = new ListViewItem.ListViewSubItem[]
-						{new ListViewItem.ListViewSubItem(item, ExtensionNamer(Path.GetExtension(file.Name))), 
-						new ListViewItem.ListViewSubItem(item, GetSizeReadable((int) file.Length)), 
-						new ListViewItem.ListViewSubItem(item, file.LastWriteTimeUtc.ToString())};
-
-					item.SubItems.AddRange(subItems);
-					list.Items.Add(item);
-					item.Name = file.Path;
-				}
+				item.Name = folder.Path;
+				item.SubItems.AddRange(subItems);
+				list.Items.Add(item);
 			}
-			catch (Exception e)
+			foreach (Binder.APIMatic.Client.Models.SiteFileModel file in files)
 			{
-				MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				item = new ListViewItem(file.Name, 1);
+				subItems = new ListViewItem.ListViewSubItem[]
+					{new ListViewItem.ListViewSubItem(item, ExtensionNamer(Path.GetExtension(file.Name))), 
+					new ListViewItem.ListViewSubItem(item, GetSizeReadable((int) file.Length)), 
+					new ListViewItem.ListViewSubItem(item, file.LastWriteTimeUtc.ToString())};
+
+				item.SubItems.AddRange(subItems);
+				list.Items.Add(item);
+				item.Name = file.Path;
 			}
 
 			list.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
@@ -98,45 +91,38 @@ namespace Binder.Windows.FileExplorer
 			list.Items.Clear();
 			ListViewItem.ListViewSubItem[] subItems;
 			ListViewItem item = null;
-			try
+			foreach (DirectoryInfo dir in directory.GetDirectories())
 			{
-				foreach (DirectoryInfo dir in directory.GetDirectories())
-				{
-					item = new ListViewItem(dir.Name, 0);
-					subItems = new ListViewItem.ListViewSubItem[]
-						{new ListViewItem.ListViewSubItem(item, "File folder"),
-						new ListViewItem.ListViewSubItem(item, ""), 
-						new ListViewItem.ListViewSubItem(item, dir.LastAccessTime.ToShortDateString())};
-					
-					item.Name = dir.FullName;
-					item.SubItems.AddRange(subItems);
-					list.Items.Add(item);
-				}
-				foreach (FileInfo file in directory.GetFiles())
-				{
-					Icon iconForFile = SystemIcons.WinLogo;
-					item = new ListViewItem(file.Name, 1);
-					iconForFile = Icon.ExtractAssociatedIcon(file.FullName);
-					subItems = new ListViewItem.ListViewSubItem[]
-						{new ListViewItem.ListViewSubItem(item, ExtensionNamer(file.Extension)), 
-						new ListViewItem.ListViewSubItem(item, GetSizeReadable(file.Length)), 
-						new ListViewItem.ListViewSubItem(item, file.LastAccessTime.ToString())};
-
-					item.SubItems.AddRange(subItems);
-					if (!imageList.Images.ContainsKey(file.Extension))
-					{
-						// If not, add the image to the image list.
-						iconForFile = Icon.ExtractAssociatedIcon(file.FullName);
-						imageList.Images.Add(file.Extension, iconForFile);
-					}
-					item.ImageKey = file.Extension;
-					item.Name = file.FullName;
-					list.Items.Add(item);
-				}
+				item = new ListViewItem(dir.Name, 0);
+				subItems = new ListViewItem.ListViewSubItem[]
+					{new ListViewItem.ListViewSubItem(item, "File folder"),
+					new ListViewItem.ListViewSubItem(item, ""), 
+					new ListViewItem.ListViewSubItem(item, dir.LastAccessTime.ToShortDateString())};
+				
+				item.Name = dir.FullName;
+				item.SubItems.AddRange(subItems);
+				list.Items.Add(item);
 			}
-			catch(Exception e)
+			foreach (FileInfo file in directory.GetFiles())
 			{
-				MessageBox.Show(e.Message,"Error",MessageBoxButtons.OK,MessageBoxIcon.Error);
+				Icon iconForFile = SystemIcons.WinLogo;
+				item = new ListViewItem(file.Name, 1);
+				iconForFile = Icon.ExtractAssociatedIcon(file.FullName);
+				subItems = new ListViewItem.ListViewSubItem[]
+					{new ListViewItem.ListViewSubItem(item, ExtensionNamer(file.Extension)), 
+					new ListViewItem.ListViewSubItem(item, GetSizeReadable(file.Length)), 
+					new ListViewItem.ListViewSubItem(item, file.LastAccessTime.ToString())};
+
+				item.SubItems.AddRange(subItems);
+				if (!imageList.Images.ContainsKey(file.Extension))
+				{
+					// If not, add the image to the image list.
+					iconForFile = Icon.ExtractAssociatedIcon(file.FullName);
+					imageList.Images.Add(file.Extension, iconForFile);
+				}
+				item.ImageKey = file.Extension;
+				item.Name = file.FullName;
+				list.Items.Add(item);
 			}
 
 			list.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
@@ -540,6 +526,45 @@ namespace Binder.Windows.FileExplorer
 			string siteUserId = userSiteInfo.Where(x=>x.UserId == userInfo.Id).First().Id;
 			var permissionRequest = new Binder.APIMatic.Client.Models.CreateBoxUserRequest(){ SiteUserId = siteUserId, CanWrite = true };
 			var setUser = await new Binder.APIMatic.Client.Controllers.RegionBoxesController().CreateBoxesAddBoxUserAsync(createBox.Id, permissionRequest);
+		}
+
+		public async static Task DeleteFilesOnBider(List<ListViewItem> items)
+		{
+			foreach(ListViewItem item in items)
+			{
+				if(item.ImageIndex == 0)
+				{
+				//	await new Binder.APIMatic.Client.Controllers.RegionSiteNavigatorController().DeleteSiteNavigatorDeleteFolderAsync(item.Name, currentSelectedSite);
+					string url = Binder.APIMatic.Client.Configuration.BaseUri + "region/SiteNavigator/" + currentSelectedSite + "/Folder";
+					var msg = await url.SetQueryParams(new { api_key = Binder.APIMatic.Client.Configuration.ApiKey, path = item.Name}).DeleteAsync();
+					if(!msg.IsSuccessStatusCode)
+						MessageBox.Show("Unable to delete folder.");
+				}
+				else
+				{
+				//	await new Binder.APIMatic.Client.Controllers.RegionSiteNavigatorController().DeleteSiteNavigatorDeleteFileAsync(item.Name, currentSelectedSite);
+					string url = Binder.APIMatic.Client.Configuration.BaseUri + "region/SiteNavigator/" + currentSelectedSite + "/File";
+					var msg = await url.SetQueryParams(new { api_key = Binder.APIMatic.Client.Configuration.ApiKey, path = item.Name}).DeleteAsync();
+					if(!msg.IsSuccessStatusCode)
+						MessageBox.Show("Unable to delete file");
+				}
+			}
+		}
+
+		public async static Task DeleteFilesOnLocal(List<string> items)
+		{
+			Task t = Task.Run( () => 
+			{
+				foreach(string item in items)
+				{
+					FileAttributes info = File.GetAttributes(item);
+					if(info.HasFlag(FileAttributes.Directory))
+						Directory.Delete(item, true);
+					else
+						File.Delete(item);
+				}
+			});
+			await t;
 		}
 
 		public class KonamiSequence

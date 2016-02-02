@@ -51,6 +51,8 @@ namespace Binder.Windows.FileExplorer
 			this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
 			this.toolStripButton3 = new System.Windows.Forms.ToolStripButton();
 			this.toolStripButton5 = new System.Windows.Forms.ToolStripButton();
+			this.toolStripButton6 = new System.Windows.Forms.ToolStripButton();
+			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
 			this.toolStrip2 = new System.Windows.Forms.ToolStrip();
 			this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
@@ -69,7 +71,7 @@ namespace Binder.Windows.FileExplorer
 			this.signOutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.cancelTransfer = new System.Windows.Forms.Button();
-			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+			this.toolStripButton7 = new System.Windows.Forms.ToolStripButton();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.tableLayoutPanel4.SuspendLayout();
 			this.toolStrip1.SuspendLayout();
@@ -237,6 +239,7 @@ namespace Binder.Windows.FileExplorer
 			this.binderBox.Name = "binderBox";
 			this.binderBox.Size = new System.Drawing.Size(481, 20);
 			this.binderBox.TabIndex = 7;
+			this.binderBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.binderBox_KeyPress);
 			// 
 			// toolStrip1
 			// 
@@ -246,6 +249,7 @@ namespace Binder.Windows.FileExplorer
             this.toolStripButton2,
             this.toolStripButton3,
             this.toolStripButton5,
+            this.toolStripButton6,
             this.toolStripSeparator1,
             this.toolStripLabel1});
 			this.toolStrip1.Location = new System.Drawing.Point(5, 35);
@@ -285,6 +289,21 @@ namespace Binder.Windows.FileExplorer
 			this.toolStripButton5.Text = "New Folder";
 			this.toolStripButton5.Click += new System.EventHandler(this.toolStripButton5_Click);
 			// 
+			// toolStripButton6
+			// 
+			this.toolStripButton6.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.toolStripButton6.Image = global::Binder.Windows.FileExplorer.Properties.Resources.delete;
+			this.toolStripButton6.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.toolStripButton6.Name = "toolStripButton6";
+			this.toolStripButton6.Size = new System.Drawing.Size(23, 27);
+			this.toolStripButton6.Text = "Delete";
+			this.toolStripButton6.Click += new System.EventHandler(this.toolStripButton6_Click);
+			// 
+			// toolStripSeparator1
+			// 
+			this.toolStripSeparator1.Name = "toolStripSeparator1";
+			this.toolStripSeparator1.Size = new System.Drawing.Size(6, 30);
+			// 
 			// toolStripLabel1
 			// 
 			this.toolStripLabel1.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
@@ -299,7 +318,8 @@ namespace Binder.Windows.FileExplorer
 			this.toolStrip2.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
 			this.toolStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripButton1,
-            this.toolStripButton4});
+            this.toolStripButton4,
+            this.toolStripButton7});
 			this.toolStrip2.Location = new System.Drawing.Point(492, 35);
 			this.toolStrip2.Name = "toolStrip2";
 			this.toolStrip2.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
@@ -435,10 +455,15 @@ namespace Binder.Windows.FileExplorer
 			this.cancelTransfer.UseVisualStyleBackColor = true;
 			this.cancelTransfer.Click += new System.EventHandler(this.cancelTransfer_Click);
 			// 
-			// toolStripSeparator1
+			// toolStripButton7
 			// 
-			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(6, 30);
+			this.toolStripButton7.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.toolStripButton7.Image = global::Binder.Windows.FileExplorer.Properties.Resources.delete;
+			this.toolStripButton7.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.toolStripButton7.Name = "toolStripButton7";
+			this.toolStripButton7.Size = new System.Drawing.Size(23, 27);
+			this.toolStripButton7.Text = "toolStripButton7";
+			this.toolStripButton7.Click += new System.EventHandler(this.toolStripButton7_Click);
 			// 
 			// SyncPage
 			// 
@@ -514,6 +539,8 @@ namespace Binder.Windows.FileExplorer
 		private System.Windows.Forms.ToolStripButton toolStripButton5;
 		private System.Windows.Forms.ToolStripLabel toolStripLabel1;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+		private System.Windows.Forms.ToolStripButton toolStripButton6;
+		private System.Windows.Forms.ToolStripButton toolStripButton7;
 
 	}
 }

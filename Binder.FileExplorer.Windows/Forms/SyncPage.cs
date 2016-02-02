@@ -74,15 +74,28 @@ namespace Binder.Windows.FileExplorer
 			if (e.KeyChar == (char)Keys.Return)
 			{
 				Cursor.Current = Cursors.WaitCursor;
+				string oldLocalDir = currentLocalDir;
 				currentLocalDir = directoryBox.Text;
-				if(!currentLocalDir.EndsWith("\\"))
+				try
 				{
-					currentLocalDir = currentLocalDir + "\\";
-					directoryBox.Text = currentLocalDir;
+					if(!currentLocalDir.EndsWith("\\"))
+					{
+						currentLocalDir = currentLocalDir + "\\";
+						directoryBox.Text = currentLocalDir;
+					}
+					Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir), imageList1);
+					if(directoryBox.Text.Length > 3)
+						toolStripButton4.Enabled = true;
+					else
+						toolStripButton3.Enabled = false;
 				}
-				Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir), imageList1);
-				if(directoryBox.Text.Length > 3)
-					toolStripButton4.Enabled = true;
+				catch(Exception err)
+				{
+					MessageBox.Show(err.Message);
+					currentLocalDir = oldLocalDir;
+					directoryBox.Text = oldLocalDir;
+					Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir), imageList1);
+				}
 				Cursor.Current = Cursors.Default;
 			}
 		}
@@ -439,6 +452,63 @@ namespace Binder.Windows.FileExplorer
 			catch (Exception err)
 			{
 				MessageBox.Show(err.Message);
+			}
+		}
+
+		private async void toolStripButton6_Click(object sender, EventArgs e)
+		{
+			if(Equals(currentBinderDir, "/"))
+				MessageBox.Show("Boxes cannot be deleted from this application. Please use the control centre on http://app.binder.works/");
+			else
+			{
+				if(MessageBox.Show("Are you sure you want to delete the selected item(s)? This action cannot be undone.", "Confirm deletion", MessageBoxButtons.YesNo) == DialogResult.Yes)
+				{
+					List<ListViewItem> items = new List<ListViewItem>();
+					foreach(ListViewItem item in binderList.SelectedItems)
+						items.Add(item);
+					await Session.DeleteFilesOnBider(items);
+					var currentDirectory = await Session.GetSiteFilesFolders(Session.currentSelectedSite, currentBinderDir);
+					Session.PopulateListViewFromServer(binderList, currentDirectory.Folders, currentDirectory.Files, contextMenu, imageList1);
+				}
+			}
+		}
+
+		private async void binderBox_KeyPress(object sender, KeyPressEventArgs e)
+		{
+			if (e.KeyChar == (char)Keys.Return)
+			{
+				Cursor.Current = Cursors.WaitCursor;
+				string oldBinderDir = currentBinderDir;
+				currentBinderDir = binderBox.Text;
+				try
+				{
+					var currentDirectory = await Session.GetSiteFilesFolders(Session.currentSelectedSite, currentBinderDir);
+					Session.PopulateListViewFromServer(binderList, currentDirectory.Folders, currentDirectory.Files, contextMenu, imageList1);
+					if(directoryBox.Text.Length == 1)
+						toolStripButton3.Enabled = false;
+					else
+						toolStripButton3.Enabled = true;
+				}
+				catch(Exception err)
+				{
+					MessageBox.Show(err.Message);
+					currentBinderDir = oldBinderDir;
+					binderBox.Text = oldBinderDir;
+				}
+				Cursor.Current = Cursors.Default;
+			}
+		}
+
+		private async void toolStripButton7_Click(object sender, EventArgs e)
+		{
+			//VERY DANGEROUS!!!! For some reason you can only PERMANENTLY delete files, not just send them to the recycling bin.
+			if(MessageBox.Show("Are you sure you want to delete the selected item(s)? This action cannot be undone.", "Confirm deletion", MessageBoxButtons.YesNo) == DialogResult.Yes)
+			{
+				List<string> items = new List<string>();
+				foreach(ListViewItem item in localList.SelectedItems)
+					items.Add(item.Name);
+				await Session.DeleteFilesOnLocal(items);
+				Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir), imageList1);
 			}
 		}
 	}

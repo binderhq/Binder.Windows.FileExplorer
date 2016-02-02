@@ -149,6 +149,7 @@
   <ItemGroup>
     <Content Include="binder_RGB_glyph_white_aqua_512x512_ico.ico" />
     <Content Include="output.ico" />
+    <None Include="Resources\delete.png" />
     <None Include="Resources\Folder%28special%29_5843_16x.png" />
     <None Include="Resources\NewSolutionFolder_6289_32.bmp" />
     <None Include="Resources\folder_Open_32xLG.png" />
