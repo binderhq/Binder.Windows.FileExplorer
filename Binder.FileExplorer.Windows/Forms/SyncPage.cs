@@ -518,7 +518,7 @@ namespace Binder.Windows.FileExplorer
 				if (binderList.FocusedItem.ImageIndex == 1)
 				{
 					string newFilename = Microsoft.VisualBasic.Interaction.InputBox("Enter new file name: ", "Rename file", binderList.FocusedItem.Text);
-					if (newFilename.Length > 0) //VB is awful
+					if (newFilename.Length > 0) //VB is still awful
 						await Session.RenameFileOnBinder(binderList.FocusedItem.Name, newFilename);
 				}
 				else
@@ -530,6 +530,10 @@ namespace Binder.Windows.FileExplorer
 				var currentDirectory = await Session.GetSiteFilesFolders(Session.currentSelectedSite, currentBinderDir);
 				Session.PopulateListViewFromServer(binderList, currentDirectory.Folders, currentDirectory.Files, contextMenu, imageList1);
 			}
+			catch (NullReferenceException)
+			{
+				MessageBox.Show("Please select a file or folder to rename.", "No file or folder selected");
+			}
 			catch (Exception err)
 			{
 				MessageBox.Show(err.Message);
@@ -538,10 +542,32 @@ namespace Binder.Windows.FileExplorer
 
 		private async void toolStripButton9_Click(object sender, EventArgs e)
 		{
-			string newName = Microsoft.VisualBasic.Interaction.InputBox("Enter new name: ", "Rename", localList.FocusedItem.Text);
-			if(newName.Length > 0)
-				await Session.RenameOnLocal(currentLocalDir, localList.FocusedItem.Text, newName);
-			Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir), imageList1);
+			try
+			{
+				string newName = Microsoft.VisualBasic.Interaction.InputBox("Enter new name: ", "Rename", localList.FocusedItem.Text);
+				if(newName.Length > 0)
+					await Session.RenameOnLocal(currentLocalDir, localList.FocusedItem.Text, newName);
+				Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir), imageList1);
+			}
+			catch(NullReferenceException)
+			{
+				MessageBox.Show("Please select a file or folder to rename.", "No file or folder selected");
+			}
+		}
+
+		private void toolStripButton10_Click(object sender, EventArgs e)
+		{
+			string folderName = Microsoft.VisualBasic.Interaction.InputBox("Enter folder name: ", "Create new folder", " ");
+			try
+			{
+				if (folderName.Length > 0)
+					Directory.CreateDirectory(currentLocalDir + "\\" + folderName);
+				Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir), imageList1);
+			}
+			catch(Exception err)
+			{
+				MessageBox.Show(err.Message);
+			}
 		}
 	}
 }

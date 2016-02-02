@@ -74,6 +74,7 @@ namespace Binder.Windows.FileExplorer
 			this.signOutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.cancelTransfer = new System.Windows.Forms.Button();
+			this.toolStripButton10 = new System.Windows.Forms.ToolStripButton();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.tableLayoutPanel4.SuspendLayout();
 			this.toolStrip1.SuspendLayout();
@@ -333,6 +334,7 @@ namespace Binder.Windows.FileExplorer
             this.toolStripButton1,
             this.toolStripButton4,
             this.toolStripButton9,
+            this.toolStripButton10,
             this.toolStripButton7});
 			this.toolStrip2.Location = new System.Drawing.Point(492, 35);
 			this.toolStrip2.Name = "toolStrip2";
@@ -378,7 +380,7 @@ namespace Binder.Windows.FileExplorer
 			this.toolStripButton7.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.toolStripButton7.Name = "toolStripButton7";
 			this.toolStripButton7.Size = new System.Drawing.Size(23, 27);
-			this.toolStripButton7.Text = "toolStripButton7";
+			this.toolStripButton7.Text = "Delete";
 			this.toolStripButton7.Click += new System.EventHandler(this.toolStripButton7_Click);
 			// 
 			// progressBar1
@@ -489,6 +491,16 @@ namespace Binder.Windows.FileExplorer
 			this.cancelTransfer.UseVisualStyleBackColor = true;
 			this.cancelTransfer.Click += new System.EventHandler(this.cancelTransfer_Click);
 			// 
+			// toolStripButton10
+			// 
+			this.toolStripButton10.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.toolStripButton10.Image = global::Binder.Windows.FileExplorer.Properties.Resources.Folder_special__5843_16x;
+			this.toolStripButton10.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.toolStripButton10.Name = "toolStripButton10";
+			this.toolStripButton10.Size = new System.Drawing.Size(23, 27);
+			this.toolStripButton10.Text = "New Folder";
+			this.toolStripButton10.Click += new System.EventHandler(this.toolStripButton10_Click);
+			// 
 			// SyncPage
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -567,6 +579,7 @@ namespace Binder.Windows.FileExplorer
 		private System.Windows.Forms.ToolStripButton toolStripButton7;
 		private System.Windows.Forms.ToolStripButton toolStripButton8;
 		private System.Windows.Forms.ToolStripButton toolStripButton9;
+		private System.Windows.Forms.ToolStripButton toolStripButton10;
 
 	}
 }
