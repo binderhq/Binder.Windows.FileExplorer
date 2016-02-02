@@ -568,6 +568,18 @@ namespace Binder.Windows.FileExplorer
 			await t;
 		}
 
+		public async static Task RenameFileOnBinder(string path, string newFilename)
+		{
+			var request = new Binder.APIMatic.Client.Models.PatchFileRequest(){NewFileName = newFilename};
+			var rename = await new Binder.APIMatic.Client.Controllers.RegionSiteNavigatorController().UpdateSiteNavigatorRenameFileAsync(request, path, currentSelectedSite);
+		}
+
+		public async static Task RenameFolderOnBinder(string path, string newFolderName)
+		{
+			var request = new Binder.APIMatic.Client.Models.RenameFolderRequest(){NewFolderName = newFolderName};
+			var rename = await new Binder.APIMatic.Client.Controllers.RegionSiteNavigatorController().UpdateSiteNavigatorRenameFolderAsync(path, request, currentSelectedSite);
+		}
+
 		public class KonamiSequence
 		{
 			List<Keys> Keys = new List<Keys>{System.Windows.Forms.Keys.Up, System.Windows.Forms.Keys.Up,

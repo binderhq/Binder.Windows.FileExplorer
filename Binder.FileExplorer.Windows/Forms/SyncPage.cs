@@ -510,5 +510,30 @@ namespace Binder.Windows.FileExplorer
 				Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir), imageList1);
 			}
 		}
+
+		private async void toolStripButton8_Click(object sender, EventArgs e)
+		{
+			try
+			{
+				if (binderList.FocusedItem.ImageIndex == 1)
+				{
+					string newFilename = Microsoft.VisualBasic.Interaction.InputBox("Enter new file name: ", "Rename file", binderList.FocusedItem.Text);
+					if (newFilename.Length > 0) //VB is awful
+						await Session.RenameFileOnBinder(binderList.FocusedItem.Name, newFilename);
+				}
+				else
+				{
+					string newFolderName = Microsoft.VisualBasic.Interaction.InputBox("Enter new folder name: ", "Create new folder", binderList.FocusedItem.Text);
+					if (newFolderName.Length > 0)
+						await Session.RenameFolderOnBinder(binderList.FocusedItem.Name, newFolderName);
+				}
+				var currentDirectory = await Session.GetSiteFilesFolders(Session.currentSelectedSite, currentBinderDir);
+				Session.PopulateListViewFromServer(binderList, currentDirectory.Folders, currentDirectory.Files, contextMenu, imageList1);
+			}
+			catch (Exception err)
+			{
+				MessageBox.Show(err.Message);
+			}
+		}
 	}
 }
