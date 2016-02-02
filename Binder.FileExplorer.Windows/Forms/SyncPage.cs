@@ -535,5 +535,13 @@ namespace Binder.Windows.FileExplorer
 				MessageBox.Show(err.Message);
 			}
 		}
+
+		private async void toolStripButton9_Click(object sender, EventArgs e)
+		{
+			string newName = Microsoft.VisualBasic.Interaction.InputBox("Enter new name: ", "Rename", localList.FocusedItem.Text);
+			if(newName.Length > 0)
+				await Session.RenameOnLocal(currentLocalDir, localList.FocusedItem.Text, newName);
+			Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir), imageList1);
+		}
 	}
 }

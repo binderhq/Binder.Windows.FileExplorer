@@ -559,10 +559,17 @@ namespace Binder.Windows.FileExplorer
 				foreach(string item in items)
 				{
 					FileAttributes info = File.GetAttributes(item);
-					if(info.HasFlag(FileAttributes.Directory))
-						FileSystem.DeleteDirectory(item, UIOption.AllDialogs, RecycleOption.SendToRecycleBin, UICancelOption.DoNothing);
-					else
-						FileSystem.DeleteFile(item, UIOption.AllDialogs, RecycleOption.SendToRecycleBin, UICancelOption.DoNothing);
+					try
+					{
+						if(info.HasFlag(FileAttributes.Directory))
+							FileSystem.DeleteDirectory(item, UIOption.AllDialogs, RecycleOption.SendToRecycleBin, UICancelOption.DoNothing);
+						else
+							FileSystem.DeleteFile(item, UIOption.AllDialogs, RecycleOption.SendToRecycleBin, UICancelOption.DoNothing);
+					}
+					catch(Exception err)
+					{
+						MessageBox.Show(err.Message, "Error");
+					}
 				}
 			});
 			await t;
@@ -578,6 +585,41 @@ namespace Binder.Windows.FileExplorer
 		{
 			var request = new Binder.APIMatic.Client.Models.RenameFolderRequest(){NewFolderName = newFolderName};
 			var rename = await new Binder.APIMatic.Client.Controllers.RegionSiteNavigatorController().UpdateSiteNavigatorRenameFolderAsync(path, request, currentSelectedSite);
+		}
+
+		public async static Task RenameOnLocal(string path, string oldName, string newName)
+		{
+			FileAttributes info = File.GetAttributes(path + "\\" + oldName);
+			if(info.HasFlag(FileAttributes.Directory))
+			{
+				Task t = Task.Run( () =>
+				{
+					try
+					{
+						Directory.Move(path + "\\" + oldName, path + "\\" + newName);
+					}
+					catch(Exception err)
+					{
+						MessageBox.Show(err.Message, "Error");
+					}
+				});
+				await t;
+			}
+			else
+			{
+				Task t = Task.Run( () =>
+				{
+					try
+					{
+						File.Move(path + "\\" + oldName, path + "\\" + newName);
+					}
+					catch(Exception err)
+					{
+						MessageBox.Show(err.Message, "Error");
+					}
+				});
+				await t;
+			}
 		}
 
 		public class KonamiSequence
