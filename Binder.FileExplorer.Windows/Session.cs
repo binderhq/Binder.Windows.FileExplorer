@@ -54,6 +54,12 @@ namespace Binder.Windows.FileExplorer
 			Cursor.Current = Cursors.Default;
 		}
 
+		public async static Task<Binder.APIMatic.Client.Models.CurrentUserModel> GetCurrentUser()
+		{
+			var user = await new Binder.APIMatic.Client.Controllers.AuthenticationCurrentUserController().GetCurrentUserGetAsync();
+			return user;
+		}
+		
 		public static void PopulateListViewFromServer(ListView list, List<Binder.APIMatic.Client.Models.SubFolder> folders, List<Binder.APIMatic.Client.Models.SiteFileModel> files, ContextMenuStrip menu, ImageList imageList)
 		{
 			Cursor.Current = Cursors.WaitCursor;
@@ -74,6 +80,7 @@ namespace Binder.Windows.FileExplorer
 			}
 			foreach (Binder.APIMatic.Client.Models.SiteFileModel file in files)
 			{
+				Icon iconForFile = SystemIcons.WinLogo;
 				item = new ListViewItem(file.Name, 1);
 				subItems = new ListViewItem.ListViewSubItem[]
 					{new ListViewItem.ListViewSubItem(item, ExtensionNamer(Path.GetExtension(file.Name))), 
@@ -81,8 +88,19 @@ namespace Binder.Windows.FileExplorer
 					new ListViewItem.ListViewSubItem(item, file.LastWriteTimeUtc.ToString())};
 
 				item.SubItems.AddRange(subItems);
-				list.Items.Add(item);
+				string fileExtension = Path.GetExtension(file.Name);
+				if (!imageList.Images.ContainsKey(fileExtension))
+				{
+					try
+					{
+						iconForFile = IconTools.GetIconForExtension(fileExtension, ShellIconSize.SmallIcon);
+						imageList.Images.Add(fileExtension, iconForFile);
+					}
+					catch { }
+				}
+				item.ImageKey = fileExtension;
 				item.Name = file.Path;
+				list.Items.Add(item);
 			}
 			list.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
 			Cursor.Current = Cursors.Default;
@@ -100,7 +118,7 @@ namespace Binder.Windows.FileExplorer
 				subItems = new ListViewItem.ListViewSubItem[]
 					{new ListViewItem.ListViewSubItem(item, "File folder"),
 					new ListViewItem.ListViewSubItem(item, ""), 
-					new ListViewItem.ListViewSubItem(item, dir.LastAccessTime.ToShortDateString())};
+					new ListViewItem.ListViewSubItem(item, dir.LastAccessTime.ToString())};
 				
 				item.Name = dir.FullName;
 				item.SubItems.AddRange(subItems);
@@ -110,7 +128,6 @@ namespace Binder.Windows.FileExplorer
 			{
 				Icon iconForFile = SystemIcons.WinLogo;
 				item = new ListViewItem(file.Name, 1);
-				iconForFile = Icon.ExtractAssociatedIcon(file.FullName);
 				subItems = new ListViewItem.ListViewSubItem[]
 					{new ListViewItem.ListViewSubItem(item, ExtensionNamer(file.Extension)), 
 					new ListViewItem.ListViewSubItem(item, GetSizeReadable(file.Length)), 
@@ -119,9 +136,14 @@ namespace Binder.Windows.FileExplorer
 				item.SubItems.AddRange(subItems);
 				if (!imageList.Images.ContainsKey(file.Extension))
 				{
-					// If not, add the image to the image list.
-					iconForFile = Icon.ExtractAssociatedIcon(file.FullName);
-					imageList.Images.Add(file.Extension, iconForFile);
+					try
+					{
+						// If not, add the image to the image list.
+					//	iconForFile = Icon.ExtractAssociatedIcon(file.FullName);
+						iconForFile = IconTools.GetIconForFile(file.FullName, ShellIconSize.SmallIcon);
+						imageList.Images.Add(file.Extension, iconForFile);
+					}
+					catch { }
 				}
 				item.ImageKey = file.Extension;
 				item.Name = file.FullName;

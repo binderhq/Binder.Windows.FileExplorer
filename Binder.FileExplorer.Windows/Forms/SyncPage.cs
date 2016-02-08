@@ -45,6 +45,8 @@ namespace Binder.Windows.FileExplorer
 			directoryBox.Text = currentLocalDir;
 			binderBox.Text = currentBinderDir;
 			Session.IsReadOnly(toolStripLabel1, currentBinderDir);
+			var user = await Session.GetCurrentUser();
+			loggedInAsLabel.Text = "Logged in as: " + user.Name + " (" + user.Username + ")";
 		}
 
 		private void backButton_Click(object sender, EventArgs e)
@@ -58,16 +60,22 @@ namespace Binder.Windows.FileExplorer
 		{
 			if (e.KeyChar == (char)Keys.Return)
 			{
+				directoryBox.Enabled = false;
+				directoryBox.ReadOnly = true;
 				string oldLocalDir = currentLocalDir;
 				currentLocalDir = directoryBox.Text;
 				try
 				{
+					if(Equals(currentLocalDir, "") || Equals(currentLocalDir, "\\"))
+					{
+						throw new DirectoryNotFoundException();
+					}
 					if(!currentLocalDir.EndsWith("\\"))
 					{
 						currentLocalDir = currentLocalDir + "\\";
 						directoryBox.Text = currentLocalDir;
-						Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir), imageList1);
 					}
+					Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir), imageList1);
 				}
 				catch(Exception err)
 				{
@@ -80,22 +88,35 @@ namespace Binder.Windows.FileExplorer
 					toolStripButton4.Enabled = true;
 				else
 					toolStripButton3.Enabled = false;
+				directoryBox.Enabled = true;
+				directoryBox.ReadOnly = false;
 			}
 		}
 
 		private void localList_MouseDoubleClick(object sender, MouseEventArgs e)
 		{
-			if(localList.FocusedItem.ImageIndex == 0)
-			{
-				currentLocalDir = currentLocalDir.TrimEnd('\\') + "\\" + localList.FocusedItem.Text.ToString() + "\\";
-				Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir), imageList1);
-				directoryBox.Text = currentLocalDir;
-				if (directoryBox.Text.Length > 3)
-					toolStripButton4.Enabled = true;
+			string oldLocalDir = currentLocalDir;
+			try
+			{	
+				if(localList.FocusedItem.ImageIndex == 0)
+				{
+					currentLocalDir = currentLocalDir.TrimEnd('\\') + "\\" + localList.FocusedItem.Text.ToString() + "\\";
+					Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir), imageList1);
+					directoryBox.Text = currentLocalDir;
+					if (directoryBox.Text.Length > 3)
+						toolStripButton4.Enabled = true;
+				}
+				else
+				{
+					Process.Start(currentLocalDir.TrimEnd('\\') + "\\" + localList.FocusedItem.Text.ToString());
+				}
 			}
-			else
+			catch(Exception err)
 			{
-				Process.Start(currentLocalDir.TrimEnd('\\') + "\\" + localList.FocusedItem.Text.ToString());
+				MessageBox.Show(err.Message);
+				currentLocalDir = oldLocalDir;
+				directoryBox.Text = oldLocalDir;
+				Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir), imageList1);
 			}
 		}
 

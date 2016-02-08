@@ -79,6 +79,8 @@ namespace Binder.Windows.FileExplorer
 			this.signOutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.cancelTransfer = new System.Windows.Forms.Button();
+			this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+			this.loggedInAsLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.tableLayoutPanel4.SuspendLayout();
 			this.toolStrip3.SuspendLayout();
@@ -86,6 +88,7 @@ namespace Binder.Windows.FileExplorer
 			this.toolStrip2.SuspendLayout();
 			this.contextMenu.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
+			this.statusStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// tableLayoutPanel1
@@ -110,7 +113,7 @@ namespace Binder.Windows.FileExplorer
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel1.Size = new System.Drawing.Size(984, 488);
+			this.tableLayoutPanel1.Size = new System.Drawing.Size(984, 476);
 			this.tableLayoutPanel1.TabIndex = 0;
 			// 
 			// localList
@@ -124,7 +127,7 @@ namespace Binder.Windows.FileExplorer
 			this.localList.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.localList.Location = new System.Drawing.Point(495, 68);
 			this.localList.Name = "localList";
-			this.localList.Size = new System.Drawing.Size(481, 412);
+			this.localList.Size = new System.Drawing.Size(481, 400);
 			this.localList.SmallImageList = this.imageList1;
 			this.localList.TabIndex = 4;
 			this.localList.UseCompatibleStateImageBehavior = false;
@@ -172,7 +175,7 @@ namespace Binder.Windows.FileExplorer
 			this.binderList.ForeColor = System.Drawing.SystemColors.WindowText;
 			this.binderList.Location = new System.Drawing.Point(8, 68);
 			this.binderList.Name = "binderList";
-			this.binderList.Size = new System.Drawing.Size(481, 412);
+			this.binderList.Size = new System.Drawing.Size(481, 400);
 			this.binderList.SmallImageList = this.imageList1;
 			this.binderList.TabIndex = 2;
 			this.binderList.UseCompatibleStateImageBehavior = false;
@@ -229,6 +232,7 @@ namespace Binder.Windows.FileExplorer
 			// 
 			// toolStrip3
 			// 
+			this.toolStrip3.BackColor = System.Drawing.SystemColors.Control;
 			this.toolStrip3.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
 			this.toolStrip3.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripButton11});
@@ -429,7 +433,7 @@ namespace Binder.Windows.FileExplorer
 			// 
 			this.progressBar1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.progressBar1.Location = new System.Drawing.Point(12, 524);
+			this.progressBar1.Location = new System.Drawing.Point(12, 509);
 			this.progressBar1.Name = "progressBar1";
 			this.progressBar1.Size = new System.Drawing.Size(834, 20);
 			this.progressBar1.TabIndex = 5;
@@ -463,7 +467,7 @@ namespace Binder.Windows.FileExplorer
 			// 
 			this.miniLog.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.miniLog.Location = new System.Drawing.Point(12, 550);
+			this.miniLog.Location = new System.Drawing.Point(12, 535);
 			this.miniLog.Name = "miniLog";
 			this.miniLog.ReadOnly = true;
 			this.miniLog.Size = new System.Drawing.Size(960, 20);
@@ -525,7 +529,7 @@ namespace Binder.Windows.FileExplorer
 			// 
 			this.cancelTransfer.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.cancelTransfer.Enabled = false;
-			this.cancelTransfer.Location = new System.Drawing.Point(852, 521);
+			this.cancelTransfer.Location = new System.Drawing.Point(852, 506);
 			this.cancelTransfer.Name = "cancelTransfer";
 			this.cancelTransfer.Size = new System.Drawing.Size(120, 23);
 			this.cancelTransfer.TabIndex = 13;
@@ -533,11 +537,28 @@ namespace Binder.Windows.FileExplorer
 			this.cancelTransfer.UseVisualStyleBackColor = true;
 			this.cancelTransfer.Click += new System.EventHandler(this.cancelTransfer_Click);
 			// 
+			// statusStrip1
+			// 
+			this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.loggedInAsLabel});
+			this.statusStrip1.Location = new System.Drawing.Point(0, 562);
+			this.statusStrip1.Name = "statusStrip1";
+			this.statusStrip1.Size = new System.Drawing.Size(984, 22);
+			this.statusStrip1.TabIndex = 14;
+			this.statusStrip1.Text = "statusStrip1";
+			// 
+			// loggedInAsLabel
+			// 
+			this.loggedInAsLabel.Name = "loggedInAsLabel";
+			this.loggedInAsLabel.Size = new System.Drawing.Size(80, 17);
+			this.loggedInAsLabel.Text = "Logged in as: ";
+			// 
 			// SyncPage
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(984, 584);
+			this.Controls.Add(this.statusStrip1);
 			this.Controls.Add(this.cancelTransfer);
 			this.Controls.Add(this.menuStrip1);
 			this.Controls.Add(this.miniLog);
@@ -563,6 +584,8 @@ namespace Binder.Windows.FileExplorer
 			this.contextMenu.ResumeLayout(false);
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();
+			this.statusStrip1.ResumeLayout(false);
+			this.statusStrip1.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -618,6 +641,8 @@ namespace Binder.Windows.FileExplorer
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+		private System.Windows.Forms.StatusStrip statusStrip1;
+		private System.Windows.Forms.ToolStripStatusLabel loggedInAsLabel;
 
 	}
 }
