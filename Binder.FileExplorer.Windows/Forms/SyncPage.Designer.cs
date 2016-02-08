@@ -45,9 +45,11 @@ namespace Binder.Windows.FileExplorer
 			this.lastModified1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
 			this.directoryBox = new System.Windows.Forms.TextBox();
-			this.browseButton = new System.Windows.Forms.Button();
+			this.toolStrip3 = new System.Windows.Forms.ToolStrip();
+			this.toolStripButton11 = new System.Windows.Forms.ToolStripButton();
 			this.binderBox = new System.Windows.Forms.TextBox();
 			this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+			this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
 			this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
 			this.toolStripButton3 = new System.Windows.Forms.ToolStripButton();
 			this.toolStripButton8 = new System.Windows.Forms.ToolStripButton();
@@ -56,10 +58,13 @@ namespace Binder.Windows.FileExplorer
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
 			this.toolStrip2 = new System.Windows.Forms.ToolStrip();
+			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
 			this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
 			this.toolStripButton4 = new System.Windows.Forms.ToolStripButton();
 			this.toolStripButton9 = new System.Windows.Forms.ToolStripButton();
+			this.toolStripButton10 = new System.Windows.Forms.ToolStripButton();
 			this.toolStripButton7 = new System.Windows.Forms.ToolStripButton();
+			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
 			this.progressBar1 = new System.Windows.Forms.ProgressBar();
 			this.contextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.downloadMenu = new System.Windows.Forms.ToolStripMenuItem();
@@ -74,9 +79,9 @@ namespace Binder.Windows.FileExplorer
 			this.signOutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.cancelTransfer = new System.Windows.Forms.Button();
-			this.toolStripButton10 = new System.Windows.Forms.ToolStripButton();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.tableLayoutPanel4.SuspendLayout();
+			this.toolStrip3.SuspendLayout();
 			this.toolStrip1.SuspendLayout();
 			this.toolStrip2.SuspendLayout();
 			this.contextMenu.SuspendLayout();
@@ -199,17 +204,16 @@ namespace Binder.Windows.FileExplorer
 			// tableLayoutPanel4
 			// 
 			this.tableLayoutPanel4.ColumnCount = 2;
-			this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 83.16222F));
-			this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 16.83778F));
+			this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 25F));
 			this.tableLayoutPanel4.Controls.Add(this.directoryBox, 0, 0);
-			this.tableLayoutPanel4.Controls.Add(this.browseButton, 1, 0);
+			this.tableLayoutPanel4.Controls.Add(this.toolStrip3, 1, 0);
 			this.tableLayoutPanel4.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.tableLayoutPanel4.Location = new System.Drawing.Point(492, 5);
 			this.tableLayoutPanel4.Margin = new System.Windows.Forms.Padding(0);
 			this.tableLayoutPanel4.Name = "tableLayoutPanel4";
 			this.tableLayoutPanel4.RowCount = 1;
-			this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-			this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+			this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
 			this.tableLayoutPanel4.Size = new System.Drawing.Size(487, 30);
 			this.tableLayoutPanel4.TabIndex = 9;
 			// 
@@ -219,21 +223,31 @@ namespace Binder.Windows.FileExplorer
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.directoryBox.Location = new System.Drawing.Point(3, 3);
 			this.directoryBox.Name = "directoryBox";
-			this.directoryBox.Size = new System.Drawing.Size(398, 20);
+			this.directoryBox.Size = new System.Drawing.Size(456, 20);
 			this.directoryBox.TabIndex = 6;
 			this.directoryBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.directoryBox_KeyPress);
 			// 
-			// browseButton
+			// toolStrip3
 			// 
-			this.browseButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.browseButton.Location = new System.Drawing.Point(409, 3);
-			this.browseButton.Name = "browseButton";
-			this.browseButton.Size = new System.Drawing.Size(75, 24);
-			this.browseButton.TabIndex = 8;
-			this.browseButton.Text = "Browse";
-			this.browseButton.UseVisualStyleBackColor = true;
-			this.browseButton.Click += new System.EventHandler(this.browseButton_Click);
+			this.toolStrip3.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
+			this.toolStrip3.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripButton11});
+			this.toolStrip3.Location = new System.Drawing.Point(462, 0);
+			this.toolStrip3.Name = "toolStrip3";
+			this.toolStrip3.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
+			this.toolStrip3.Size = new System.Drawing.Size(25, 25);
+			this.toolStrip3.TabIndex = 7;
+			this.toolStrip3.Text = "toolStrip3";
+			// 
+			// toolStripButton11
+			// 
+			this.toolStripButton11.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.toolStripButton11.Image = global::Binder.Windows.FileExplorer.Properties.Resources.folder_Open_32xLG;
+			this.toolStripButton11.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.toolStripButton11.Name = "toolStripButton11";
+			this.toolStripButton11.Size = new System.Drawing.Size(23, 22);
+			this.toolStripButton11.Text = "Browse";
+			this.toolStripButton11.Click += new System.EventHandler(this.toolStripButton11_Click);
 			// 
 			// binderBox
 			// 
@@ -249,6 +263,7 @@ namespace Binder.Windows.FileExplorer
 			this.toolStrip1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.toolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
 			this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripSeparator3,
             this.toolStripButton2,
             this.toolStripButton3,
             this.toolStripButton8,
@@ -262,6 +277,11 @@ namespace Binder.Windows.FileExplorer
 			this.toolStrip1.Size = new System.Drawing.Size(487, 30);
 			this.toolStrip1.TabIndex = 10;
 			this.toolStrip1.Text = "toolStrip1";
+			// 
+			// toolStripSeparator3
+			// 
+			this.toolStripSeparator3.Name = "toolStripSeparator3";
+			this.toolStripSeparator3.Size = new System.Drawing.Size(6, 30);
 			// 
 			// toolStripButton2
 			// 
@@ -331,17 +351,24 @@ namespace Binder.Windows.FileExplorer
 			this.toolStrip2.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.toolStrip2.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
 			this.toolStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripSeparator4,
             this.toolStripButton1,
             this.toolStripButton4,
             this.toolStripButton9,
             this.toolStripButton10,
-            this.toolStripButton7});
+            this.toolStripButton7,
+            this.toolStripSeparator2});
 			this.toolStrip2.Location = new System.Drawing.Point(492, 35);
 			this.toolStrip2.Name = "toolStrip2";
 			this.toolStrip2.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
 			this.toolStrip2.Size = new System.Drawing.Size(487, 30);
 			this.toolStrip2.TabIndex = 11;
 			this.toolStrip2.Text = "toolStrip2";
+			// 
+			// toolStripSeparator4
+			// 
+			this.toolStripSeparator4.Name = "toolStripSeparator4";
+			this.toolStripSeparator4.Size = new System.Drawing.Size(6, 30);
 			// 
 			// toolStripButton1
 			// 
@@ -373,6 +400,16 @@ namespace Binder.Windows.FileExplorer
 			this.toolStripButton9.Text = "Rename";
 			this.toolStripButton9.Click += new System.EventHandler(this.toolStripButton9_Click);
 			// 
+			// toolStripButton10
+			// 
+			this.toolStripButton10.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.toolStripButton10.Image = global::Binder.Windows.FileExplorer.Properties.Resources.Folder_special__5843_16x;
+			this.toolStripButton10.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.toolStripButton10.Name = "toolStripButton10";
+			this.toolStripButton10.Size = new System.Drawing.Size(23, 27);
+			this.toolStripButton10.Text = "New Folder";
+			this.toolStripButton10.Click += new System.EventHandler(this.toolStripButton10_Click);
+			// 
 			// toolStripButton7
 			// 
 			this.toolStripButton7.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -382,6 +419,11 @@ namespace Binder.Windows.FileExplorer
 			this.toolStripButton7.Size = new System.Drawing.Size(23, 27);
 			this.toolStripButton7.Text = "Delete";
 			this.toolStripButton7.Click += new System.EventHandler(this.toolStripButton7_Click);
+			// 
+			// toolStripSeparator2
+			// 
+			this.toolStripSeparator2.Name = "toolStripSeparator2";
+			this.toolStripSeparator2.Size = new System.Drawing.Size(6, 30);
 			// 
 			// progressBar1
 			// 
@@ -491,16 +533,6 @@ namespace Binder.Windows.FileExplorer
 			this.cancelTransfer.UseVisualStyleBackColor = true;
 			this.cancelTransfer.Click += new System.EventHandler(this.cancelTransfer_Click);
 			// 
-			// toolStripButton10
-			// 
-			this.toolStripButton10.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.toolStripButton10.Image = global::Binder.Windows.FileExplorer.Properties.Resources.Folder_special__5843_16x;
-			this.toolStripButton10.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.toolStripButton10.Name = "toolStripButton10";
-			this.toolStripButton10.Size = new System.Drawing.Size(23, 27);
-			this.toolStripButton10.Text = "New Folder";
-			this.toolStripButton10.Click += new System.EventHandler(this.toolStripButton10_Click);
-			// 
 			// SyncPage
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -522,6 +554,8 @@ namespace Binder.Windows.FileExplorer
 			this.tableLayoutPanel1.PerformLayout();
 			this.tableLayoutPanel4.ResumeLayout(false);
 			this.tableLayoutPanel4.PerformLayout();
+			this.toolStrip3.ResumeLayout(false);
+			this.toolStrip3.PerformLayout();
 			this.toolStrip1.ResumeLayout(false);
 			this.toolStrip1.PerformLayout();
 			this.toolStrip2.ResumeLayout(false);
@@ -538,7 +572,6 @@ namespace Binder.Windows.FileExplorer
 
 		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
 		private System.Windows.Forms.ProgressBar progressBar1;
-		private System.Windows.Forms.Button browseButton;
 		private System.Windows.Forms.TextBox directoryBox;
 		private System.Windows.Forms.ImageList imageList1;
 		private System.Windows.Forms.ContextMenuStrip contextMenu;
@@ -580,6 +613,11 @@ namespace Binder.Windows.FileExplorer
 		private System.Windows.Forms.ToolStripButton toolStripButton8;
 		private System.Windows.Forms.ToolStripButton toolStripButton9;
 		private System.Windows.Forms.ToolStripButton toolStripButton10;
+		private System.Windows.Forms.ToolStrip toolStrip3;
+		private System.Windows.Forms.ToolStripButton toolStripButton11;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
 
 	}
 }

@@ -56,6 +56,7 @@ namespace Binder.Windows.FileExplorer
 
 		public static void PopulateListViewFromServer(ListView list, List<Binder.APIMatic.Client.Models.SubFolder> folders, List<Binder.APIMatic.Client.Models.SiteFileModel> files, ContextMenuStrip menu, ImageList imageList)
 		{
+			Cursor.Current = Cursors.WaitCursor;
 			list.Items.Clear();
 			ListViewItem.ListViewSubItem[] subItems;
 			ListViewItem item = null;
@@ -83,12 +84,13 @@ namespace Binder.Windows.FileExplorer
 				list.Items.Add(item);
 				item.Name = file.Path;
 			}
-
 			list.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+			Cursor.Current = Cursors.Default;
 		}
 
 		public static void PopulateListViewFromLocal(ListView list, DirectoryInfo directory, ImageList imageList)
 		{
+			Cursor.Current = Cursors.WaitCursor;
 			list.Items.Clear();
 			ListViewItem.ListViewSubItem[] subItems;
 			ListViewItem item = null;
@@ -125,8 +127,8 @@ namespace Binder.Windows.FileExplorer
 				item.Name = file.FullName;
 				list.Items.Add(item);
 			}
-
 			list.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+			Cursor.Current = Cursors.WaitCursor;
 		}
 
 		private static string ExtensionNamer(string ext)
@@ -231,6 +233,16 @@ namespace Binder.Windows.FileExplorer
 			cts.Cancel();
 		}
 
+		public async static void CloseSession()
+		{
+			if(!Equals(_sessionToken, null))
+			{
+				await new Binder.APIMatic.Client.Controllers.AuthenticationSessionsController().DeleteSessionsDeleteAsync(_sessionToken);
+				Binder.APIMatic.Client.Configuration.ApiKey = null;
+				_sessionToken = null;
+			}
+		}
+		
 		public async static Task GetFile(string path, string savePath, ProgressBar progressBar, TextBox log)
 		{
 			long storageZoneId = 1;
@@ -328,22 +340,23 @@ namespace Binder.Windows.FileExplorer
 			isTransferRunning = false;
 		}
 
-		public async static void CloseSession()
-		{
-			if(!Equals(_sessionToken, null))
-			{
-				await new Binder.APIMatic.Client.Controllers.AuthenticationSessionsController().DeleteSessionsDeleteAsync(_sessionToken);
-				Binder.APIMatic.Client.Configuration.ApiKey = null;
-				_sessionToken = null;
-			}
-		}
-
 		public async static Task UploadFiles(string uploadTo, string uploadFrom, ProgressBar progressBar, TextBox log)
 		{
 			long storageZoneId = 1;
 			var fileInfo = new FileInfo(uploadFrom);
 			log.Text = "Preparing to upload " + fileInfo.Name;
 			
+			try
+			{
+				var binderFileInfo = await new Binder.APIMatic.Client.Controllers.RegionSiteNavigatorController().GetSiteNavigatorGetFileAsync(uploadTo + "/" + fileInfo.Name, currentSelectedSite);
+				if(binderFileInfo.CheckedOutInfo != null)
+				{
+					MessageBox.Show("File " + binderFileInfo.Path + " is currently checked out. Please use http://app.binder.works/ to check in the file.");
+					return;
+				}
+			}
+			catch{}
+
 			var region = await new Binder.APIMatic.Client.Controllers.RegionCurrentRegionController().GetCurrentRegionGetAsync();
 			var storageZone = await new Binder.APIMatic.Client.Controllers.RegionStorageZonesController().GetStorageZonesGetAsync(storageZoneId.ToString());
 
@@ -598,6 +611,7 @@ namespace Binder.Windows.FileExplorer
 					{
 						Directory.Move(path + "\\" + oldName, path + "\\" + newName);
 					}
+					catch(IOException){}
 					catch(Exception err)
 					{
 						MessageBox.Show(err.Message, "Error");
@@ -613,6 +627,7 @@ namespace Binder.Windows.FileExplorer
 					{
 						File.Move(path + "\\" + oldName, path + "\\" + newName);
 					}
+					catch(IOException){}
 					catch(Exception err)
 					{
 						MessageBox.Show(err.Message, "Error");
