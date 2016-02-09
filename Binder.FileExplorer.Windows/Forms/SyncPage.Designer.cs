@@ -125,6 +125,7 @@ namespace Binder.Windows.FileExplorer
             this.size,
             this.lastModified});
 			this.localList.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.localList.HideSelection = false;
 			this.localList.Location = new System.Drawing.Point(495, 68);
 			this.localList.Name = "localList";
 			this.localList.Size = new System.Drawing.Size(481, 400);
@@ -136,6 +137,8 @@ namespace Binder.Windows.FileExplorer
 			this.localList.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.localList_ItemDrag);
 			this.localList.DragDrop += new System.Windows.Forms.DragEventHandler(this.localList_DragDrop);
 			this.localList.DragEnter += new System.Windows.Forms.DragEventHandler(this.localList_DragEnter);
+			this.localList.DragOver += new System.Windows.Forms.DragEventHandler(this.localList_DragOver);
+			this.localList.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.localList_KeyPress);
 			this.localList.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.localList_MouseDoubleClick);
 			// 
 			// name
@@ -173,6 +176,7 @@ namespace Binder.Windows.FileExplorer
             this.lastModified1});
 			this.binderList.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.binderList.ForeColor = System.Drawing.SystemColors.WindowText;
+			this.binderList.HideSelection = false;
 			this.binderList.Location = new System.Drawing.Point(8, 68);
 			this.binderList.Name = "binderList";
 			this.binderList.Size = new System.Drawing.Size(481, 400);
@@ -184,6 +188,8 @@ namespace Binder.Windows.FileExplorer
 			this.binderList.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.binderList_ItemDrag);
 			this.binderList.DragDrop += new System.Windows.Forms.DragEventHandler(this.binderList_DragDrop);
 			this.binderList.DragEnter += new System.Windows.Forms.DragEventHandler(this.binderList_DragEnter);
+			this.binderList.DragOver += new System.Windows.Forms.DragEventHandler(this.binderList_DragOver);
+			this.binderList.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.binderList_KeyPress);
 			this.binderList.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.binderList_MouseDoubleClick);
 			// 
 			// name1

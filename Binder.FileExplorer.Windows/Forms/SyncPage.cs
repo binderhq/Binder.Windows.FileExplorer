@@ -207,7 +207,12 @@ namespace Binder.Windows.FileExplorer
 				foreach (ListViewItem item in localList.SelectedItems)
 					selectedItems.Add(item.Name);
 				cancelTransfer.Enabled = true;
-				Task t = Session.UploadDirectory(currentBinderDir, selectedItems, progressBar1, miniLog);
+				string uploadToDir;
+				if(binderList.FocusedItem != null)
+					uploadToDir = binderList.FocusedItem.Name;
+				else
+					uploadToDir = currentBinderDir;
+				Task t = Session.UploadDirectory(uploadToDir, selectedItems, progressBar1, miniLog);
 				await t;
 				cancelTransfer.Enabled = false;
 				isTransferRunning = false;
@@ -457,14 +462,19 @@ namespace Binder.Windows.FileExplorer
 				MessageBox.Show("Boxes cannot be deleted from this application. Please use the control centre on http://app.binder.works/");
 			else
 			{
-				if(MessageBox.Show("Are you sure you want to delete the selected item(s)? This action cannot be undone.", "Confirm deletion", MessageBoxButtons.YesNo) == DialogResult.Yes)
+				if(binderList.SelectedItems.Count == 0)
+					MessageBox.Show("Please select an item to delete.", "No item selected");
+				else
 				{
-					List<ListViewItem> items = new List<ListViewItem>();
-					foreach(ListViewItem item in binderList.SelectedItems)
-						items.Add(item);
-					await Session.DeleteFilesOnBider(items);
-					var currentDirectory = await Session.GetSiteFilesFolders(Session.currentSelectedSite, currentBinderDir);
-					Session.PopulateListViewFromServer(binderList, currentDirectory.Folders, currentDirectory.Files, contextMenu, imageList1);
+					if(MessageBox.Show("Are you sure you want to delete the selected item(s)? This action cannot be undone.", "Confirm deletion", MessageBoxButtons.YesNo) == DialogResult.Yes)
+					{
+						List<ListViewItem> items = new List<ListViewItem>();
+						foreach(ListViewItem item in binderList.SelectedItems)
+							items.Add(item);
+						await Session.DeleteFilesOnBider(items);
+						var currentDirectory = await Session.GetSiteFilesFolders(Session.currentSelectedSite, currentBinderDir);
+						Session.PopulateListViewFromServer(binderList, currentDirectory.Folders, currentDirectory.Files, contextMenu, imageList1);
+					}
 				}
 			}
 		}
@@ -507,30 +517,35 @@ namespace Binder.Windows.FileExplorer
 
 		private async void toolStripButton8_Click(object sender, EventArgs e)
 		{
-			try
+			if(Equals(currentBinderDir, "/"))
+				MessageBox.Show("Boxes cannot be renamed from this application. Please use the control centre on http://app.binder.works/");
+			else
 			{
-				if (binderList.FocusedItem.ImageIndex == 1)
+				try
 				{
-					string newFilename = Microsoft.VisualBasic.Interaction.InputBox("Enter new file name: ", "Rename file", binderList.FocusedItem.Text);
-					if (newFilename.Length > 0) //VB is still awful
-						await Session.RenameFileOnBinder(binderList.FocusedItem.Name, newFilename);
+					if (binderList.FocusedItem.ImageIndex == 0)
+					{
+						string newFolderName = Microsoft.VisualBasic.Interaction.InputBox("Enter new folder name: ", "Rename folder", binderList.FocusedItem.Text);
+						if (newFolderName.Length > 0)
+							await Session.RenameFolderOnBinder(binderList.FocusedItem.Name, newFolderName);
+					}
+					else
+					{
+						string newFilename = Microsoft.VisualBasic.Interaction.InputBox("Enter new file name: ", "Rename file", binderList.FocusedItem.Text);
+						if (newFilename.Length > 0) //VB is still awful
+							await Session.RenameFileOnBinder(binderList.FocusedItem.Name, newFilename);
+					}
+					var currentDirectory = await Session.GetSiteFilesFolders(Session.currentSelectedSite, currentBinderDir);
+					Session.PopulateListViewFromServer(binderList, currentDirectory.Folders, currentDirectory.Files, contextMenu, imageList1);
 				}
-				else
+				catch (NullReferenceException)
 				{
-					string newFolderName = Microsoft.VisualBasic.Interaction.InputBox("Enter new folder name: ", "Create new folder", binderList.FocusedItem.Text);
-					if (newFolderName.Length > 0)
-						await Session.RenameFolderOnBinder(binderList.FocusedItem.Name, newFolderName);
+					MessageBox.Show("Please select a file or folder to rename.", "No file or folder selected");
 				}
-				var currentDirectory = await Session.GetSiteFilesFolders(Session.currentSelectedSite, currentBinderDir);
-				Session.PopulateListViewFromServer(binderList, currentDirectory.Folders, currentDirectory.Files, contextMenu, imageList1);
-			}
-			catch (NullReferenceException)
-			{
-				MessageBox.Show("Please select a file or folder to rename.", "No file or folder selected");
-			}
-			catch (Exception err)
-			{
-				MessageBox.Show(err.Message);
+				catch (Exception err)
+				{
+					MessageBox.Show(err.Message);
+				}
 			}
 		}
 
@@ -575,6 +590,98 @@ namespace Binder.Windows.FileExplorer
 				if (directoryBox.Text.Length > 3)
 					toolStripButton4.Enabled = true;
 			}
+		}
+
+		private async void binderList_KeyPress(object sender, KeyPressEventArgs e)
+		{
+			if (e.KeyChar == (char)Keys.Return)
+			{
+				if (binderList.FocusedItem.ImageIndex == 0)
+				{
+					if (Equals(currentBinderDir, "/"))
+						toolStripButton3.Enabled = true;
+					currentBinderDir = currentBinderDir.TrimEnd('/') + "/" + binderList.FocusedItem.Text;
+					var currentDirectory = await Session.GetSiteFilesFolders(Session.currentSelectedSite, currentBinderDir);
+					Session.PopulateListViewFromServer(binderList, currentDirectory.Folders, currentDirectory.Files, contextMenu, imageList1);
+					binderBox.Text = currentBinderDir;
+				}
+				Session.IsReadOnly(toolStripLabel1, currentBinderDir);
+			}
+		}
+
+		private void localList_KeyPress(object sender, KeyPressEventArgs e)
+		{
+			if (e.KeyChar == (char)Keys.Return)
+			{
+				string oldLocalDir = currentLocalDir;
+				try
+				{
+					if (localList.FocusedItem.ImageIndex == 0)
+					{
+						currentLocalDir = currentLocalDir.TrimEnd('\\') + "\\" + localList.FocusedItem.Text.ToString() + "\\";
+						Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir), imageList1);
+						directoryBox.Text = currentLocalDir;
+						if (directoryBox.Text.Length > 3)
+							toolStripButton4.Enabled = true;
+					}
+					else
+					{
+						Process.Start(currentLocalDir.TrimEnd('\\') + "\\" + localList.FocusedItem.Text.ToString());
+					}
+				}
+				catch (Exception err)
+				{
+					MessageBox.Show(err.Message);
+					currentLocalDir = oldLocalDir;
+					directoryBox.Text = oldLocalDir;
+					Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir), imageList1);
+				}
+			}
+		}
+
+		private void binderList_DragOver(object sender, DragEventArgs e)
+		{
+			binderList.SelectedItems.Clear();
+			var point = binderList.PointToClient(new Point(e.X, e.Y));
+			var item = binderList.GetItemAt(point.X, point.Y);
+			if (item != null)
+			{
+				if (item.ImageIndex == 0)
+				{
+					item.Focused = true;
+					item.Selected = true;
+					miniLog.Text = "Drop to upload to " + binderList.FocusedItem.Text;
+				}
+				else
+					miniLog.Text = "Drop to upload to " + currentBinderDir.Substring(currentBinderDir.LastIndexOf('/') + 1);
+			}
+			else
+			{
+				if(Equals(currentBinderDir, "/"))
+					miniLog.Text = "Cannot upload files to root directory.";
+				else
+					miniLog.Text = "Drop to upload to " + currentBinderDir.Substring(currentBinderDir.LastIndexOf('/') + 1);
+			}
+		}
+
+		private void localList_DragOver(object sender, DragEventArgs e)
+		{
+			localList.SelectedItems.Clear();
+			var point = localList.PointToClient(new Point(e.X, e.Y));
+			var item = localList.GetItemAt(point.X, point.Y);
+			if (item != null)
+			{
+				if (item.ImageIndex == 0)
+				{
+					item.Focused = true;
+					item.Selected = true;
+					miniLog.Text = "Drop to download to " + localList.FocusedItem.Text;
+				}
+				else
+					miniLog.Text = "Drop to download to " + currentLocalDir.Substring(currentLocalDir.LastIndexOf('\\') + 1);
+			}
+			else
+				miniLog.Text = "Drop to download to " + currentLocalDir.Substring(currentLocalDir.LastIndexOf('\\') + 1);
 		}
 	}
 }
