@@ -426,66 +426,79 @@ namespace Binder.Windows.FileExplorer
 		public async static Task UploadDirectory(string uploadTo, List<string> uploadFrom, ProgressBar progressBar, TextBox log)
 		{
 			isTransferRunning = true;
+			if(Equals(uploadTo, "/"))
+			{
+				MessageBox.Show("Cannot upload to root directory.");
+				return;
+			}
+
 			foreach(string item in uploadFrom)
-			{				
-				FileAttributes attr = File.GetAttributes(item);
-
-				if (attr.HasFlag(FileAttributes.Directory))
+			{		
+				try
 				{
-					DirectoryInfo info = new DirectoryInfo(item);
-					string newUploadTo = uploadTo + "/" + info.Name;
-					DirectoryInfo[] newUploadFromFolders = info.GetDirectories();
-					FileInfo[] newUploadFromFiles = info.GetFiles();
+					FileAttributes attr = File.GetAttributes(item);
 
-					log.Text = "Creating folder " + newUploadTo;
+					if (attr.HasFlag(FileAttributes.Directory))
+					{
+						DirectoryInfo info = new DirectoryInfo(item);
+						string newUploadTo = uploadTo + "/" + info.Name;
+						DirectoryInfo[] newUploadFromFolders = info.GetDirectories();
+						FileInfo[] newUploadFromFiles = info.GetFiles();
 
-					List<string> newUploadFrom = new List<string>();
-					foreach(DirectoryInfo folder in newUploadFromFolders)
-						newUploadFrom.Add(folder.FullName);
-					foreach(FileInfo file in newUploadFromFiles)
-						newUploadFrom.Add(file.FullName);
-					try
-					{ 
-						var folderRequest = new Binder.APIMatic.Client.Models.CreateFolderRequest()
-							{
-								FolderName = info.Name
-							};
-						var createFolder = await new Binder.APIMatic.Client.Controllers.RegionSiteNavigatorController().UpdateSiteNavigatorCreateFolderAsync(folderRequest, uploadTo, currentSelectedSite);
+						log.Text = "Creating folder " + newUploadTo;
+
+						List<string> newUploadFrom = new List<string>();
+						foreach(DirectoryInfo folder in newUploadFromFolders)
+							newUploadFrom.Add(folder.FullName);
+						foreach(FileInfo file in newUploadFromFiles)
+							newUploadFrom.Add(file.FullName);
+						try
+						{ 
+							var folderRequest = new Binder.APIMatic.Client.Models.CreateFolderRequest()
+								{
+									FolderName = info.Name
+								};
+							var createFolder = await new Binder.APIMatic.Client.Controllers.RegionSiteNavigatorController().UpdateSiteNavigatorCreateFolderAsync(folderRequest, uploadTo, currentSelectedSite);
+						}
+						catch(Exception e)
+						{
+							MessageBox.Show("Creation of folder " + item + " failed. " + e.Message);
+						}
+						try
+						{
+							if(cts.Token.IsCancellationRequested)
+								break;
+							await UploadDirectory(newUploadTo, newUploadFrom, progressBar, log);
+						}
+						catch (Exception e)
+						{
+							MessageBox.Show("Uploading of file " + newUploadFrom + " to " + newUploadTo + " failed. " + e.Message);
+						}
 					}
-					catch(Exception e)
+					else
 					{
-						MessageBox.Show("Creation of folder " + item + " failed. " + e.Message);
-					}
-					try
-					{
-						if(cts.Token.IsCancellationRequested)
-							break;
-						await UploadDirectory(newUploadTo, newUploadFrom, progressBar, log);
-					}
-					catch (Exception e)
-					{
-						MessageBox.Show("Uploading of file " + newUploadFrom + " to " + newUploadTo + " failed. " + e.Message);
+						try
+						{
+							if(!cts.Token.IsCancellationRequested)
+								await UploadFiles(uploadTo, item, progressBar, log);
+//							if(cts.Token.IsCancellationRequested)
+//							{
+//								log.Text = "Cancelling...";
+//								Thread.Sleep(2000);
+//								DirectoryInfo info = new DirectoryInfo(item);
+//								await new Binder.APIMatic.Client.Controllers.RegionSiteNavigatorController().DeleteSiteNavigatorDeleteFileAsync(uploadTo + "/" + info.Name, currentSelectedSite);
+//								//This is probably a REALLY BAD idea since it will delete the file even if the user wanted to keep an old version
+//							}
+						}
+						catch (Exception e)
+						{
+							MessageBox.Show("Uploading of file " + item + " to " + uploadTo + " failed. " + e.Message);
+						}
 					}
 				}
-				else
+				catch(Exception err)
 				{
-					try
-					{
-						if(!cts.Token.IsCancellationRequested)
-							await UploadFiles(uploadTo, item, progressBar, log);
-//						if(cts.Token.IsCancellationRequested)
-//						{
-//							log.Text = "Cancelling...";
-//							Thread.Sleep(2000);
-//							DirectoryInfo info = new DirectoryInfo(item);
-//							await new Binder.APIMatic.Client.Controllers.RegionSiteNavigatorController().DeleteSiteNavigatorDeleteFileAsync(uploadTo + "/" + info.Name, currentSelectedSite);
-//							//This is probably a REALLY BAD idea since it will delete the file even if the user wanted to keep an old version
-//						}
-					}
-					catch (Exception e)
-					{
-						MessageBox.Show("Uploading of file " + item + " to " + uploadTo + " failed. " + e.Message);
-					}
+					MessageBox.Show(err.Message);
 				}
 			}
 			isTransferRunning = false;

@@ -388,6 +388,7 @@ namespace Binder.Windows.FileExplorer
 			this.binderList.Sort();
 		}
 
+		//Refresh remote side
 		private async void toolStripButton2_Click(object sender, EventArgs e)
 		{
 			toolStripButton2.Enabled = false;
@@ -397,6 +398,7 @@ namespace Binder.Windows.FileExplorer
 			toolStripButton2.Enabled = true;
 		}
 
+		//Refresh local side
 		private async void toolStripButton1_Click(object sender, EventArgs e)
 		{
 			toolStripButton1.Enabled = false;
@@ -405,6 +407,7 @@ namespace Binder.Windows.FileExplorer
 			toolStripButton1.Enabled = true;
 		}
 
+		//Up on level remote side
 		private async void toolStripButton3_Click(object sender, EventArgs e)
 		{
 			int index = currentBinderDir.LastIndexOf("/");
@@ -421,6 +424,7 @@ namespace Binder.Windows.FileExplorer
 			binderBox.Text = currentBinderDir;
 		}
 
+		//up one level local side
 		private void toolStripButton4_Click(object sender, EventArgs e)
 		{
 			int index = currentLocalDir.TrimEnd('\\').LastIndexOf("\\");
@@ -456,6 +460,7 @@ namespace Binder.Windows.FileExplorer
 			}
 		}
 
+		//delete from remote
 		private async void toolStripButton6_Click(object sender, EventArgs e)
 		{
 			if(Equals(currentBinderDir, "/"))
@@ -503,6 +508,7 @@ namespace Binder.Windows.FileExplorer
 			}
 		}
 
+		//delete from local
 		private async void toolStripButton7_Click(object sender, EventArgs e)
 		{
 			if(MessageBox.Show("Are you sure you want to delete the selected item(s)? The item(s) will be sent to the recycling bin.", "Confirm deletion", MessageBoxButtons.YesNo) == DialogResult.Yes)
@@ -592,56 +598,10 @@ namespace Binder.Windows.FileExplorer
 			}
 		}
 
-		private async void binderList_KeyPress(object sender, KeyPressEventArgs e)
-		{
-			if (e.KeyChar == (char)Keys.Return)
-			{
-				if (binderList.FocusedItem.ImageIndex == 0)
-				{
-					if (Equals(currentBinderDir, "/"))
-						toolStripButton3.Enabled = true;
-					currentBinderDir = currentBinderDir.TrimEnd('/') + "/" + binderList.FocusedItem.Text;
-					var currentDirectory = await Session.GetSiteFilesFolders(Session.currentSelectedSite, currentBinderDir);
-					Session.PopulateListViewFromServer(binderList, currentDirectory.Folders, currentDirectory.Files, contextMenu, imageList1);
-					binderBox.Text = currentBinderDir;
-				}
-				Session.IsReadOnly(toolStripLabel1, currentBinderDir);
-			}
-		}
-
-		private void localList_KeyPress(object sender, KeyPressEventArgs e)
-		{
-			if (e.KeyChar == (char)Keys.Return)
-			{
-				string oldLocalDir = currentLocalDir;
-				try
-				{
-					if (localList.FocusedItem.ImageIndex == 0)
-					{
-						currentLocalDir = currentLocalDir.TrimEnd('\\') + "\\" + localList.FocusedItem.Text.ToString() + "\\";
-						Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir), imageList1);
-						directoryBox.Text = currentLocalDir;
-						if (directoryBox.Text.Length > 3)
-							toolStripButton4.Enabled = true;
-					}
-					else
-					{
-						Process.Start(currentLocalDir.TrimEnd('\\') + "\\" + localList.FocusedItem.Text.ToString());
-					}
-				}
-				catch (Exception err)
-				{
-					MessageBox.Show(err.Message);
-					currentLocalDir = oldLocalDir;
-					directoryBox.Text = oldLocalDir;
-					Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir), imageList1);
-				}
-			}
-		}
-
 		private void binderList_DragOver(object sender, DragEventArgs e)
 		{
 			binderList.SelectedItems.Clear();
+			binderList.FocusedItem = null;
 			var point = binderList.PointToClient(new Point(e.X, e.Y));
 			var item = binderList.GetItemAt(point.X, point.Y);
 			if (item != null)
@@ -653,7 +613,9 @@ namespace Binder.Windows.FileExplorer
 					miniLog.Text = "Drop to upload to " + binderList.FocusedItem.Text;
 				}
 				else
+				{
 					miniLog.Text = "Drop to upload to " + currentBinderDir.Substring(currentBinderDir.LastIndexOf('/') + 1);
+				}
 			}
 			else
 			{
@@ -667,6 +629,7 @@ namespace Binder.Windows.FileExplorer
 		private void localList_DragOver(object sender, DragEventArgs e)
 		{
 			localList.SelectedItems.Clear();
+			localList.FocusedItem = null;
 			var point = localList.PointToClient(new Point(e.X, e.Y));
 			var item = localList.GetItemAt(point.X, point.Y);
 			if (item != null)
@@ -678,10 +641,91 @@ namespace Binder.Windows.FileExplorer
 					miniLog.Text = "Drop to download to " + localList.FocusedItem.Text;
 				}
 				else
+				{
 					miniLog.Text = "Drop to download to " + currentLocalDir.Substring(currentLocalDir.LastIndexOf('\\') + 1);
+				}
 			}
 			else
+			{
 				miniLog.Text = "Drop to download to " + currentLocalDir.Substring(currentLocalDir.LastIndexOf('\\') + 1);
+			}
+		}
+
+		private void localList_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.KeyCode == Keys.Return)
+			{
+				if(localList.FocusedItem != null)
+				{
+					string oldLocalDir = currentLocalDir;
+					try
+					{
+						if (localList.FocusedItem.ImageIndex == 0)
+						{
+							currentLocalDir = currentLocalDir.TrimEnd('\\') + "\\" + localList.FocusedItem.Text.ToString() + "\\";
+							Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir), imageList1);
+							directoryBox.Text = currentLocalDir;
+							if (directoryBox.Text.Length > 3)
+								toolStripButton4.Enabled = true;
+						}
+						else
+						{
+							Process.Start(currentLocalDir.TrimEnd('\\') + "\\" + localList.FocusedItem.Text.ToString());
+						}
+					}
+					catch (Exception err)
+					{
+						MessageBox.Show(err.Message);
+						currentLocalDir = oldLocalDir;
+						directoryBox.Text = oldLocalDir;
+						Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir), imageList1);
+					}
+				}
+			}
+			else if(e.KeyCode == Keys.F5)
+				toolStripButton1_Click(sender, e);
+			else if(e.KeyCode == Keys.Back)
+			{
+				if(currentLocalDir.Length > 3)
+					toolStripButton4_Click(sender, e);
+			}
+			else if(e.KeyCode == Keys.Delete)
+			{
+				if (localList.FocusedItem != null)
+					toolStripButton7_Click(sender, e);
+			}
+		}
+
+		private async void binderList_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.KeyCode == Keys.Return)
+			{
+				if(binderList.FocusedItem != null)
+				{
+					if (binderList.FocusedItem.ImageIndex == 0)
+					{
+						if (Equals(currentBinderDir, "/"))
+							toolStripButton3.Enabled = true;
+						currentBinderDir = currentBinderDir.TrimEnd('/') + "/" + binderList.FocusedItem.Text;
+						var currentDirectory = await Session.GetSiteFilesFolders(Session.currentSelectedSite, currentBinderDir);
+						Session.PopulateListViewFromServer(binderList, currentDirectory.Folders, currentDirectory.Files, contextMenu, imageList1);
+						binderBox.Text = currentBinderDir;
+					}
+					Session.IsReadOnly(toolStripLabel1, currentBinderDir);
+				}
+			}
+			else if(e.KeyCode == Keys.F5)
+				toolStripButton2_Click(sender, e);
+			else if(e.KeyCode == Keys.Back)
+			{
+				if(!Equals(currentBinderDir, "/"))
+					toolStripButton3_Click(sender, e);
+			}
+			else if(e.KeyCode == Keys.Delete)
+			{
+				if(binderList.FocusedItem != null)
+					toolStripButton6_Click(sender, e);
+			}
 		}
 	}
 }

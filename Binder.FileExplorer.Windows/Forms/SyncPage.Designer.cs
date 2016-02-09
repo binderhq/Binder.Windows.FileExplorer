@@ -138,7 +138,7 @@ namespace Binder.Windows.FileExplorer
 			this.localList.DragDrop += new System.Windows.Forms.DragEventHandler(this.localList_DragDrop);
 			this.localList.DragEnter += new System.Windows.Forms.DragEventHandler(this.localList_DragEnter);
 			this.localList.DragOver += new System.Windows.Forms.DragEventHandler(this.localList_DragOver);
-			this.localList.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.localList_KeyPress);
+			this.localList.KeyDown += new System.Windows.Forms.KeyEventHandler(this.localList_KeyDown);
 			this.localList.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.localList_MouseDoubleClick);
 			// 
 			// name
@@ -189,7 +189,7 @@ namespace Binder.Windows.FileExplorer
 			this.binderList.DragDrop += new System.Windows.Forms.DragEventHandler(this.binderList_DragDrop);
 			this.binderList.DragEnter += new System.Windows.Forms.DragEventHandler(this.binderList_DragEnter);
 			this.binderList.DragOver += new System.Windows.Forms.DragEventHandler(this.binderList_DragOver);
-			this.binderList.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.binderList_KeyPress);
+			this.binderList.KeyDown += new System.Windows.Forms.KeyEventHandler(this.binderList_KeyDown);
 			this.binderList.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.binderList_MouseDoubleClick);
 			// 
 			// name1
