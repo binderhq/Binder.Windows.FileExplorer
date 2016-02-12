@@ -39,6 +39,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -180,6 +181,7 @@
   <ItemGroup>
     <Content Include="binder_RGB_glyph_white_aqua_512x512_ico.ico" />
     <Content Include="output.ico" />
+    <None Include="Resources\FolderBrowserDialogControl_678.png" />
     <None Include="Resources\Rename.png" />
     <None Include="Resources\delete.png" />
     <None Include="Resources\Folder%28special%29_5843_16x.png" />

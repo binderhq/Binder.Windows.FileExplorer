@@ -45,13 +45,11 @@ namespace Binder.Windows.FileExplorer
 
 		public async static Task CreateSession(string username, string password)
 		{
-			Cursor.Current = Cursors.WaitCursor;
 			Binder.APIMatic.Client.Configuration.BaseUri = "https://development.edocx.com.au:443/service.api/";
 			var user = await new Binder.APIMatic.Client.Controllers.AuthenticationSessionsController()
 				.CreateSessionsPostAsync(new APIMatic.Client.Models.CreateSessionRequest() { Username = username, ClearTextPassword = password });
 			Binder.APIMatic.Client.Configuration.ApiKey = user.SessionToken;
 			_sessionToken = user.SessionToken;
-			Cursor.Current = Cursors.Default;
 		}
 
 		public async static Task<Binder.APIMatic.Client.Models.CurrentUserModel> GetCurrentUser()
@@ -267,6 +265,7 @@ namespace Binder.Windows.FileExplorer
 		
 		public async static Task GetFile(string path, string savePath, ProgressBar progressBar, TextBox log)
 		{
+			path = WebUtility.UrlEncode(path);
 			long storageZoneId = 1;
 			log.Text = "Preparing download...";
 
@@ -312,7 +311,7 @@ namespace Binder.Windows.FileExplorer
 			{
 				try
 				{
-					var info = await new Binder.APIMatic.Client.Controllers.RegionSiteNavigatorController().GetSiteNavigatorGetFolderAsync(folder, currentSelectedSite);
+					var info = await new Binder.APIMatic.Client.Controllers.RegionSiteNavigatorController().GetSiteNavigatorGetFolderAsync(WebUtility.UrlEncode(folder), currentSelectedSite);
 					string newDownloadTo = downloadTo + "\\" + info.Name;
 					List<Binder.APIMatic.Client.Models.SubFolder> newDownloadFromFolders = info.Folders;
 					List<Binder.APIMatic.Client.Models.SiteFileModel> newDownloadFromFiles = info.Files;
@@ -348,7 +347,7 @@ namespace Binder.Windows.FileExplorer
 			}
 			foreach(string file in downloadFromFiles)
 			{
-				var info = await new Binder.APIMatic.Client.Controllers.RegionSiteNavigatorController().GetSiteNavigatorGetFileAsync(file, currentSelectedSite);
+				var info = await new Binder.APIMatic.Client.Controllers.RegionSiteNavigatorController().GetSiteNavigatorGetFileAsync(WebUtility.UrlEncode(file), currentSelectedSite);
 				string fullPath = downloadTo + "\\" + info.Name;
 				if(!cts.Token.IsCancellationRequested)
 					await GetFile(file, fullPath, progressBar, log);
@@ -364,6 +363,7 @@ namespace Binder.Windows.FileExplorer
 
 		public async static Task UploadFiles(string uploadTo, string uploadFrom, ProgressBar progressBar, TextBox log)
 		{
+			uploadTo = WebUtility.UrlEncode(uploadTo);
 			long storageZoneId = 1;
 			var fileInfo = new FileInfo(uploadFrom);
 			log.Text = "Preparing to upload " + fileInfo.Name;
@@ -425,6 +425,7 @@ namespace Binder.Windows.FileExplorer
 
 		public async static Task UploadDirectory(string uploadTo, List<string> uploadFrom, ProgressBar progressBar, TextBox log)
 		{
+			uploadTo = WebUtility.UrlEncode(uploadTo);
 			isTransferRunning = true;
 			if(Equals(uploadTo, "/"))
 			{
@@ -529,6 +530,7 @@ namespace Binder.Windows.FileExplorer
 
 		public async static Task<Binder.APIMatic.Client.Models.SiteFolderModel> GetSiteFilesFolders(string siteId, string path)
 		{
+			path = WebUtility.UrlEncode(path);
 			var SiteFileFolders = await new Binder.APIMatic.Client.Controllers.RegionSiteNavigatorController()
 				.GetSiteNavigatorGetFolderAsync(path, siteId);
 			return SiteFileFolders;
@@ -536,6 +538,7 @@ namespace Binder.Windows.FileExplorer
 
 		public async static void IsReadOnly(ToolStripLabel label, string path)
 		{
+			path = WebUtility.UrlEncode(path);
 			var folderInfo = await new Binder.APIMatic.Client.Controllers.RegionSiteNavigatorController().GetSiteNavigatorGetFolderAsync(path, currentSelectedSite);
 			var permissions = folderInfo.Privileges;
 
@@ -549,6 +552,7 @@ namespace Binder.Windows.FileExplorer
 
 		public async static Task CreateBinderFolder(string folderName, string path)
 		{
+			path = WebUtility.UrlEncode(path);
 			var request = new Binder.APIMatic.Client.Models.CreateFolderRequest(){ FolderName = folderName };
 			var createFolder = await new Binder.APIMatic.Client.Controllers.RegionSiteNavigatorController().UpdateSiteNavigatorCreateFolderAsync(request, path, currentSelectedSite);
 		}
@@ -562,7 +566,7 @@ namespace Binder.Windows.FileExplorer
 				regionUrl = ".edo.cx/";
 			else if(Equals(currentRegion.EcosystemId, "Production")) //I'm assuming its Production
 				regionUrl = ".binder.com.au/";
-			string url = "https://" + currentSiteDetails.Subdomain + regionUrl;
+			string url = "https://" + currentSiteDetails.Subdomain + regionUrl + "#/Account/PersistSession/" + Binder.APIMatic.Client.Configuration.ApiKey;
 			System.Diagnostics.Process.Start(url);
 		}
 
@@ -625,12 +629,14 @@ namespace Binder.Windows.FileExplorer
 
 		public async static Task RenameFileOnBinder(string path, string newFilename)
 		{
+			path = WebUtility.UrlEncode(path);
 			var request = new Binder.APIMatic.Client.Models.PatchFileRequest(){NewFileName = newFilename};
 			var rename = await new Binder.APIMatic.Client.Controllers.RegionSiteNavigatorController().UpdateSiteNavigatorRenameFileAsync(request, path, currentSelectedSite);
 		}
 
 		public async static Task RenameFolderOnBinder(string path, string newFolderName)
 		{
+			path = WebUtility.UrlEncode(path);
 			var request = new Binder.APIMatic.Client.Models.RenameFolderRequest(){NewFolderName = newFolderName};
 			var rename = await new Binder.APIMatic.Client.Controllers.RegionSiteNavigatorController().UpdateSiteNavigatorRenameFolderAsync(path, request, currentSelectedSite);
 		}

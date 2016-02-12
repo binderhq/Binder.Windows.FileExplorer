@@ -51,6 +51,10 @@ namespace Binder.Windows.FileExplorer
 				{
 					Cursor.Current = Cursors.WaitCursor;
 					submit.Enabled = false;
+					checkBox1.Enabled = false;
+					checkBox2.Enabled = false;
+					username.Enabled = false;
+					password.Enabled = false;
 					await Session.CreateSession(this.username.Text, this.password.Text);
 					Session.sites = await Session.CurrentSites();
 					sitep = new SitePage();
@@ -59,12 +63,20 @@ namespace Binder.Windows.FileExplorer
 					this.Hide();
 				}
 				submit.Enabled = true;
+				checkBox1.Enabled = true;
+				checkBox2.Enabled = true;
+				username.Enabled = true;
+				password.Enabled = true;
 				Cursor.Current = Cursors.Default;
 			}
 			catch
 			{
 				MessageBox.Show("Username or password invalid.");
 				submit.Enabled = true;
+				checkBox1.Enabled = true;
+				checkBox2.Enabled = true;
+				username.Enabled = true;
+				password.Enabled = true;
 			}
 		}
 
