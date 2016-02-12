@@ -19,6 +19,8 @@ namespace Binder.Windows.FileExplorer
 	{
 		private string currentLocalDir;
 		private string currentBinderDir;
+		private string uploadHere;
+		private string downloadHere;
 		private static bool isTransferRunning = false;
 		private static bool isChangingForms = false;
 		private ListViewColumnSorter lvwColumnSorter;
@@ -47,6 +49,8 @@ namespace Binder.Windows.FileExplorer
 			Session.IsReadOnly(toolStripLabel1, currentBinderDir);
 			var user = await Session.GetCurrentUser();
 			loggedInAsLabel.Text = "Logged in as: " + user.Name + " (" + user.Username + ")";
+			uploadHere = currentBinderDir;
+			downloadHere = currentLocalDir;
 		}
 
 		private void backButton_Click(object sender, EventArgs e)
@@ -134,6 +138,9 @@ namespace Binder.Windows.FileExplorer
 
 		private async void localList_DragDrop(object sender, DragEventArgs e)
 		{
+			ListViewItem itemBeingDragged = e.Data.GetData(typeof(ListViewItem)) as ListViewItem;
+			if (itemBeingDragged.ListView == localList)
+				return;
 			if(!Session.isTransferRunning)
 			{
 				isTransferRunning = true;
@@ -148,7 +155,7 @@ namespace Binder.Windows.FileExplorer
 						selectedFiles.Add(item.Name);
 				}
 				cancelTransfer.Enabled = true;
-				Task t = Session.DownloadDirectory(currentLocalDir.TrimEnd('\\'), selectedFolders, selectedFiles, progressBar1, miniLog);
+				Task t = Session.DownloadDirectory(downloadHere.TrimEnd('\\'), selectedFolders, selectedFiles, progressBar1, miniLog);
 				await t;
 				cancelTransfer.Enabled = false;
 				isTransferRunning = false;
@@ -177,7 +184,8 @@ namespace Binder.Windows.FileExplorer
 
 		private void localList_ItemDrag(object sender, ItemDragEventArgs e)
 		{
-			localList.FocusedItem = (ListViewItem)e.Item;
+			if (localList.SelectedItems.Count <= 1)
+				localList.FocusedItem = (ListViewItem)e.Item;
 			DoDragDrop(e.Item, DragDropEffects.Move);
 		}
 
@@ -199,6 +207,9 @@ namespace Binder.Windows.FileExplorer
 
 		private async void binderList_DragDrop(object sender, DragEventArgs e)
 		{
+			ListViewItem itemBeingDragged = e.Data.GetData(typeof(ListViewItem)) as ListViewItem;
+			if (itemBeingDragged.ListView == binderList)
+				return;
 			if(!Session.isTransferRunning)
 			{
 				isTransferRunning = true;
@@ -207,12 +218,7 @@ namespace Binder.Windows.FileExplorer
 				foreach (ListViewItem item in localList.SelectedItems)
 					selectedItems.Add(item.Name);
 				cancelTransfer.Enabled = true;
-				string uploadToDir;
-				if(binderList.FocusedItem != null)
-					uploadToDir = binderList.FocusedItem.Name;
-				else
-					uploadToDir = currentBinderDir;
-				Task t = Session.UploadDirectory(uploadToDir, selectedItems, progressBar1, miniLog);
+				Task t = Session.UploadDirectory(uploadHere, selectedItems, progressBar1, miniLog);
 				await t;
 				cancelTransfer.Enabled = false;
 				isTransferRunning = false;
@@ -600,6 +606,12 @@ namespace Binder.Windows.FileExplorer
 
 		private void binderList_DragOver(object sender, DragEventArgs e)
 		{
+			ListViewItem itemBeingDragged = e.Data.GetData(typeof(ListViewItem)) as ListViewItem;
+			if(itemBeingDragged.ListView == binderList)
+			{
+				miniLog.Text = "Ready.";
+				return;
+			}
 			binderList.SelectedItems.Clear();
 			binderList.FocusedItem = null;
 			var point = binderList.PointToClient(new Point(e.X, e.Y));
@@ -611,10 +623,12 @@ namespace Binder.Windows.FileExplorer
 					item.Focused = true;
 					item.Selected = true;
 					miniLog.Text = "Drop to upload to " + binderList.FocusedItem.Text;
+					uploadHere = binderList.FocusedItem.Name;
 				}
 				else
 				{
 					miniLog.Text = "Drop to upload to " + currentBinderDir.Substring(currentBinderDir.LastIndexOf('/') + 1);
+					uploadHere = currentBinderDir;
 				}
 			}
 			else
@@ -623,11 +637,18 @@ namespace Binder.Windows.FileExplorer
 					miniLog.Text = "Cannot upload files to root directory.";
 				else
 					miniLog.Text = "Drop to upload to " + currentBinderDir.Substring(currentBinderDir.LastIndexOf('/') + 1);
+				uploadHere = currentBinderDir;
 			}
 		}
-
+	
 		private void localList_DragOver(object sender, DragEventArgs e)
 		{
+			ListViewItem itemBeingDragged = e.Data.GetData(typeof(ListViewItem)) as ListViewItem;
+			if (itemBeingDragged.ListView == localList)
+			{
+				miniLog.Text = "Ready.";
+				return;
+			}
 			localList.SelectedItems.Clear();
 			localList.FocusedItem = null;
 			var point = localList.PointToClient(new Point(e.X, e.Y));
@@ -639,15 +660,18 @@ namespace Binder.Windows.FileExplorer
 					item.Focused = true;
 					item.Selected = true;
 					miniLog.Text = "Drop to download to " + localList.FocusedItem.Text;
+					downloadHere = localList.FocusedItem.Name;
 				}
 				else
 				{
-					miniLog.Text = "Drop to download to " + currentLocalDir.Substring(currentLocalDir.LastIndexOf('\\') + 1);
+					miniLog.Text = "Drop to download to " + currentLocalDir.Substring(currentLocalDir.LastIndexOf('\\', currentLocalDir.Length - 2) + 1);
+					downloadHere = currentLocalDir;
 				}
 			}
 			else
 			{
-				miniLog.Text = "Drop to download to " + currentLocalDir.Substring(currentLocalDir.LastIndexOf('\\') + 1);
+				miniLog.Text = "Drop to download to " + currentLocalDir.Substring(currentLocalDir.LastIndexOf('\\', currentLocalDir.Length - 2) + 1);
+				downloadHere = currentLocalDir;
 			}
 		}
 
