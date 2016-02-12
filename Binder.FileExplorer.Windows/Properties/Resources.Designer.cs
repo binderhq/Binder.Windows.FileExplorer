@@ -73,6 +73,16 @@ namespace Binder.Windows.FileExplorer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Close_16xMD {
+            get {
+                object obj = ResourceManager.GetObject("Close_16xMD", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap delete {
             get {
                 object obj = ResourceManager.GetObject("delete", resourceCulture);
@@ -123,6 +133,16 @@ namespace Binder.Windows.FileExplorer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Login_6031 {
+            get {
+                object obj = ResourceManager.GetObject("Login_6031", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap NewSolutionFolder_6289_32 {
             get {
                 object obj = ResourceManager.GetObject("NewSolutionFolder_6289_32", resourceCulture);
@@ -143,6 +163,16 @@ namespace Binder.Windows.FileExplorer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap pageinspector {
+            get {
+                object obj = ResourceManager.GetObject("pageinspector", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap refresh_16xLG {
             get {
                 object obj = ResourceManager.GetObject("refresh_16xLG", resourceCulture);
@@ -156,6 +186,36 @@ namespace Binder.Windows.FileExplorer.Properties {
         internal static System.Drawing.Bitmap Rename {
             get {
                 object obj = ResourceManager.GetObject("Rename", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap WebBrowser_6242 {
+            get {
+                object obj = ResourceManager.GetObject("WebBrowser_6242", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap WebForm_ASPX__815_32x_color {
+            get {
+                object obj = ResourceManager.GetObject("WebForm(ASPX)_815_32x_color", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap WebFormTemplate_11274_16x_color {
+            get {
+                object obj = ResourceManager.GetObject("WebFormTemplate_11274_16x_color", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
