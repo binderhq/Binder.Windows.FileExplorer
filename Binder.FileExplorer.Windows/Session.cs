@@ -370,7 +370,7 @@ namespace Binder.Windows.FileExplorer
 			
 			try
 			{
-				var binderFileInfo = await new Binder.APIMatic.Client.Controllers.RegionSiteNavigatorController().GetSiteNavigatorGetFileAsync(uploadTo + "/" + fileInfo.Name, currentSelectedSite);
+				var binderFileInfo = await new Binder.APIMatic.Client.Controllers.RegionSiteNavigatorController().GetSiteNavigatorGetFileAsync(uploadTo + "%2F" + fileInfo.Name, currentSelectedSite);
 				if(binderFileInfo.CheckedOutInfo != null)
 				{
 					MessageBox.Show("File " + binderFileInfo.Path + " is currently checked out. Please use http://app.binder.works/ to check in the file.");
@@ -413,7 +413,7 @@ namespace Binder.Windows.FileExplorer
 						StorageZoneId = storageZoneId.ToString()
 					};
 					new Binder.APIMatic.Client.Controllers.RegionSiteNavigatorController()
-							.UpdateSiteNavigatorPostAsync(options, uploadTo, currentSelectedSite);
+							.UpdateSiteNavigatorPostAsync(options, WebUtility.UrlDecode(uploadTo), currentSelectedSite);
 				}, cts.Token);
 				
 				await s;

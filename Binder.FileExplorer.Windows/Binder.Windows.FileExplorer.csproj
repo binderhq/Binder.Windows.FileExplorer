@@ -181,6 +181,12 @@
   <ItemGroup>
     <Content Include="binder_RGB_glyph_white_aqua_512x512_ico.ico" />
     <Content Include="output.ico" />
+    <None Include="Resources\Close_16xMD.png" />
+    <None Include="Resources\Login_6031.png" />
+    <None Include="Resources\WebBrowser_6242.png" />
+    <None Include="Resources\pageinspector.png" />
+    <None Include="Resources\WebFormTemplate_11274_16x_color.png" />
+    <None Include="Resources\WebForm%28ASPX%29_815_32x_color.png" />
     <None Include="Resources\FolderBrowserDialogControl_678.png" />
     <None Include="Resources\Rename.png" />
     <None Include="Resources\delete.png" />
