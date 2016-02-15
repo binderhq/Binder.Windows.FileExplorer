@@ -63,12 +63,12 @@ namespace Binder.Windows.FileExplorer
 
 		private void directoryBox_KeyPress(object sender, KeyPressEventArgs e)
 		{
-			directoryBox.Enabled = false;
-			toolStrip2.Enabled = false;
-			toolStrip3.Enabled = false;
-			localList.Enabled = false;
 			if (e.KeyChar == (char)Keys.Return)
 			{
+				directoryBox.Enabled = false;
+				toolStrip2.Enabled = false;
+				toolStrip3.Enabled = false;
+				localList.Enabled = false;
 				string oldLocalDir = currentLocalDir;
 				currentLocalDir = directoryBox.Text;
 				try
@@ -195,6 +195,8 @@ namespace Binder.Windows.FileExplorer
 				Session.PopulateListViewFromServer(binderList, currentDirectory.Folders, currentDirectory.Files, contextMenu, imageList1);
 				binderBox.Text = currentBinderDir;
 			}
+			else
+				await Session.PreviewFile(binderList.FocusedItem.Name);
 			Session.IsReadOnly(toolStripLabel1, currentBinderDir);
 			binderBox.Enabled = true;
 			toolStrip1.Enabled = true;
@@ -537,6 +539,9 @@ namespace Binder.Windows.FileExplorer
 		{
 			if (e.KeyChar == (char)Keys.Return)
 			{
+				binderBox.Enabled = false;
+				toolStrip1.Enabled = false;
+				binderList.Enabled = false;
 				string oldBinderDir = currentBinderDir;
 				currentBinderDir = binderBox.Text;
 				try
@@ -554,6 +559,9 @@ namespace Binder.Windows.FileExplorer
 					currentBinderDir = oldBinderDir;
 					binderBox.Text = oldBinderDir;
 				}
+				binderBox.Enabled = true;
+				toolStrip1.Enabled = true;
+				binderList.Enabled = true;
 			}
 		}
 
@@ -761,6 +769,13 @@ namespace Binder.Windows.FileExplorer
 				if (localList.FocusedItem != null)
 					toolStripButton7_Click(sender, e);
 			}
+			else if (e.KeyCode == Keys.A && e.Modifiers == Keys.Control)
+			{
+				foreach (ListViewItem item in localList.Items)
+				{
+					item.Selected = true;
+				}
+			}
 		}
 
 		private async void binderList_KeyDown(object sender, KeyEventArgs e)
@@ -792,6 +807,13 @@ namespace Binder.Windows.FileExplorer
 			{
 				if(binderList.FocusedItem != null)
 					toolStripButton6_Click(sender, e);
+			}
+			else if(e.KeyCode == Keys.A && e.Modifiers == Keys.Control)
+			{
+				foreach (ListViewItem item in binderList.Items)
+				{
+					item.Selected = true;
+				}
 			}
 		}
 

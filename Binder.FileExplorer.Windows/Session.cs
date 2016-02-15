@@ -138,12 +138,23 @@ namespace Binder.Windows.FileExplorer
 					{
 						// If not, add the image to the image list.
 					//	iconForFile = Icon.ExtractAssociatedIcon(file.FullName);
-						iconForFile = IconTools.GetIconForFile(file.FullName, ShellIconSize.SmallIcon);
-						imageList.Images.Add(file.Extension, iconForFile);
+						if (String.IsNullOrWhiteSpace(file.Extension))
+						{
+							iconForFile = IconTools.GetIconForExtension("unknownfiletype", ShellIconSize.SmallIcon);
+							imageList.Images.Add("unknownfiletype", iconForFile);
+						}
+						else
+						{
+							iconForFile = IconTools.GetIconForFile(file.FullName, ShellIconSize.SmallIcon);
+							imageList.Images.Add(file.Extension, iconForFile);
+						}
 					}
 					catch { }
 				}
-				item.ImageKey = file.Extension;
+				if(String.IsNullOrWhiteSpace(file.Extension))
+					item.ImageKey = "unknownfiletype";
+				else
+					item.ImageKey = file.Extension;
 				item.Name = file.FullName;
 				list.Items.Add(item);
 			}
@@ -280,7 +291,7 @@ namespace Binder.Windows.FileExplorer
 				storageZoneId);
 
 			var fileInfo = await new Binder.APIMatic.Client.Controllers.RegionSiteNavigatorController().GetSiteNavigatorGetFileAsync(path, currentSelectedSite);
-			using(var outputStream = new FileStream(savePath + ".!binder", FileMode.Create, FileAccess.Write))
+			using (var outputStream = new FileStream(savePath + ".!binder", FileMode.Create, FileAccess.Write))
 			{
 
 				Action<long> progress = (n) => {
@@ -312,7 +323,15 @@ namespace Binder.Windows.FileExplorer
 				try
 				{
 					var info = await new Binder.APIMatic.Client.Controllers.RegionSiteNavigatorController().GetSiteNavigatorGetFolderAsync(WebUtility.UrlEncode(folder), currentSelectedSite);
-					string newDownloadTo = downloadTo + "\\" + info.Name;
+					string newDownloadTo = downloadTo + "\\" + info.Name.Replace('<', '_')
+																.Replace('>', '_')
+																.Replace(':', '_')
+																.Replace('"', '_')
+																.Replace('/', '_')
+																.Replace('\\', '_')
+																.Replace('|', '_')
+																.Replace('*', '_')
+																.Replace('?', '_');
 					List<Binder.APIMatic.Client.Models.SubFolder> newDownloadFromFolders = info.Folders;
 					List<Binder.APIMatic.Client.Models.SiteFileModel> newDownloadFromFiles = info.Files;
 
@@ -348,7 +367,15 @@ namespace Binder.Windows.FileExplorer
 			foreach(string file in downloadFromFiles)
 			{
 				var info = await new Binder.APIMatic.Client.Controllers.RegionSiteNavigatorController().GetSiteNavigatorGetFileAsync(WebUtility.UrlEncode(file), currentSelectedSite);
-				string fullPath = downloadTo + "\\" + info.Name;
+				string fullPath = downloadTo + "\\" + info.Name.Replace('<', '_')
+																.Replace('>', '_')
+																.Replace(':', '_')
+																.Replace('"', '_')
+																.Replace('/', '_')
+																.Replace('\\', '_')
+																.Replace('|', '_')
+																.Replace('*', '_')
+																.Replace('?', '_');
 				if(!cts.Token.IsCancellationRequested)
 					await GetFile(file, fullPath, progressBar, log);
 				if(File.Exists(fullPath))
@@ -676,6 +703,13 @@ namespace Binder.Windows.FileExplorer
 				});
 				await t;
 			}
+		}
+		
+		public async static Task PreviewFile(string path)
+		{
+			path = WebUtility.UrlEncode(path);
+			var response = await new Binder.APIMatic.Client.Controllers.RegionSiteNavigatorController().GetSiteNavigatorGetOpenInWebInfoAsync(path, currentSelectedSite);
+			System.Diagnostics.Process.Start(response.Url);
 		}
 
 		public class KonamiSequence

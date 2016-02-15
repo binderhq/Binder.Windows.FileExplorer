@@ -307,6 +307,7 @@ namespace Binder.Windows.FileExplorer
 			// toolStripButton3
 			// 
 			this.toolStripButton3.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.toolStripButton3.Enabled = false;
 			this.toolStripButton3.Image = global::Binder.Windows.FileExplorer.Properties.Resources.OneLevelUp_5834;
 			this.toolStripButton3.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.toolStripButton3.Name = "toolStripButton3";
