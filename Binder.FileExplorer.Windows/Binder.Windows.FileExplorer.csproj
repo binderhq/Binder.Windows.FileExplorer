@@ -181,6 +181,9 @@
   <ItemGroup>
     <Content Include="binder_RGB_glyph_white_aqua_512x512_ico.ico" />
     <Content Include="output.ico" />
+    <None Include="Resources\EraseTool_203.png" />
+    <None Include="Resources\CheckIn_13188.png" />
+    <None Include="Resources\FileUpload_6026.png" />
     <None Include="Resources\Close_16xMD.png" />
     <None Include="Resources\Login_6031.png" />
     <None Include="Resources\WebBrowser_6242.png" />

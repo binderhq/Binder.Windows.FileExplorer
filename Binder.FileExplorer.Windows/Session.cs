@@ -98,6 +98,13 @@ namespace Binder.Windows.FileExplorer
 				}
 				item.ImageKey = fileExtension;
 				item.Name = file.Path;
+				if(file.CheckedOutInfo != null)
+				{
+					item.UseItemStyleForSubItems = true;
+					var checkedOutColor = Color.FromArgb(223, 240, 216);
+					item.BackColor = checkedOutColor;
+					item.ToolTipText = "This item is checked out";
+				}
 				list.Items.Add(item);
 			}
 			list.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
@@ -388,7 +395,7 @@ namespace Binder.Windows.FileExplorer
 			isTransferRunning = false;
 		}
 
-		public async static Task UploadFiles(string uploadTo, string uploadFrom, ProgressBar progressBar, TextBox log)
+		public async static Task<Binder.APIMatic.Client.Models.CreateSiteFileVersionOptions> UploadFiles(string uploadTo, string uploadFrom, ProgressBar progressBar, TextBox log)
 		{
 			uploadTo = WebUtility.UrlEncode(uploadTo);
 			long storageZoneId = 1;
@@ -398,11 +405,6 @@ namespace Binder.Windows.FileExplorer
 			try
 			{
 				var binderFileInfo = await new Binder.APIMatic.Client.Controllers.RegionSiteNavigatorController().GetSiteNavigatorGetFileAsync(uploadTo + "%2F" + fileInfo.Name, currentSelectedSite);
-				if(binderFileInfo.CheckedOutInfo != null)
-				{
-					MessageBox.Show("File " + binderFileInfo.Path + " is currently checked out. Please use http://app.binder.works/ to check in the file.");
-					return;
-				}
 			}
 			catch{}
 
@@ -429,9 +431,11 @@ namespace Binder.Windows.FileExplorer
 						}));
 
 					};
+				Binder.APIMatic.Client.Models.CreateSiteFileVersionOptions options = null;
+				
 				Task s = Task.Run( () => {
 					var storageResponse = storageEngine.StoreFile(fileStream, progress, cts.Token);
-					var options = new Binder.APIMatic.Client.Models.CreateSiteFileVersionOptions()
+					options = new Binder.APIMatic.Client.Models.CreateSiteFileVersionOptions()
 					{
 						Length = fileInfo.Length,
 						FileModifiedTimeUtc = fileInfo.LastWriteTimeUtc,
@@ -444,9 +448,10 @@ namespace Binder.Windows.FileExplorer
 				}, cts.Token);
 				
 				await s;
-
-
 				progressBar.Value = 0;
+
+
+				return options;
 			}
 		}
 
@@ -710,6 +715,34 @@ namespace Binder.Windows.FileExplorer
 			path = WebUtility.UrlEncode(path);
 			var response = await new Binder.APIMatic.Client.Controllers.RegionSiteNavigatorController().GetSiteNavigatorGetOpenInWebInfoAsync(path, currentSelectedSite);
 			System.Diagnostics.Process.Start(response.Url);
+		}
+
+		public async static Task CheckOutFile(string remotePath, string pathOnMachine)
+		{
+			var request = new Binder.APIMatic.Client.Models.CheckOutFileRequest()
+								{
+									SiteIdOrSubdomain = currentSelectedSite,
+									RemotePath = remotePath,
+									PathOnMachine = pathOnMachine,
+									MachineName = System.Environment.MachineName
+								};
+
+			await new Binder.APIMatic.Client.Controllers.RegionCheckedOutFilesController().CreateCheckedOutFiesCheckOutFileAsync(request);
+		}
+
+		public async static Task CheckInFile(Binder.APIMatic.Client.Models.CreateSiteFileVersionOptions uploadResponse, bool clearRequest = false)
+		{
+			var response = await new Binder.APIMatic.Client.Controllers.RegionCheckedOutFilesController().GetCheckedOutFiesFindMatchingAsync(currentSelectedSite);
+			var checkedOutFile = response.Where(x => x.LogicalFileModel.Name == uploadResponse.Name).FirstOrDefault();
+			var request = new Binder.APIMatic.Client.Models.CheckInFileRequest()
+								{
+									Name = uploadResponse.Name,
+									Length = (int) uploadResponse.Length,
+									LastModified = uploadResponse.FileModifiedTimeUtc,
+									HiggsFileId = uploadResponse.HiggsFileId
+								};
+
+			await new Binder.APIMatic.Client.Controllers.RegionCheckedOutFilesController().DeleteCheckedOutFiesCheckInFileAsync(checkedOutFile.Id, request, clearRequest);
 		}
 
 		public class KonamiSequence

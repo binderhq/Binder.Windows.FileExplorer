@@ -73,6 +73,16 @@ namespace Binder.Windows.FileExplorer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap CheckIn_13188 {
+            get {
+                object obj = ResourceManager.GetObject("CheckIn_13188", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Close_16xMD {
             get {
                 object obj = ResourceManager.GetObject("Close_16xMD", resourceCulture);
@@ -86,6 +96,26 @@ namespace Binder.Windows.FileExplorer.Properties {
         internal static System.Drawing.Bitmap delete {
             get {
                 object obj = ResourceManager.GetObject("delete", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap EraseTool_203 {
+            get {
+                object obj = ResourceManager.GetObject("EraseTool_203", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap FileUpload_6026 {
+            get {
+                object obj = ResourceManager.GetObject("FileUpload_6026", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

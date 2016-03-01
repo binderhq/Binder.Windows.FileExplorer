@@ -45,26 +45,13 @@ namespace Binder.Windows.FileExplorer
 			this.lastModified1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
 			this.directoryBox = new System.Windows.Forms.TextBox();
-			this.toolStrip3 = new System.Windows.Forms.ToolStrip();
-			this.toolStripButton11 = new System.Windows.Forms.ToolStripButton();
 			this.binderBox = new System.Windows.Forms.TextBox();
 			this.toolStrip1 = new System.Windows.Forms.ToolStrip();
 			this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-			this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
-			this.toolStripButton3 = new System.Windows.Forms.ToolStripButton();
-			this.toolStripButton8 = new System.Windows.Forms.ToolStripButton();
-			this.toolStripButton5 = new System.Windows.Forms.ToolStripButton();
-			this.toolStripButton6 = new System.Windows.Forms.ToolStripButton();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
 			this.toolStrip2 = new System.Windows.Forms.ToolStrip();
 			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
-			this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
-			this.toolStripButton4 = new System.Windows.Forms.ToolStripButton();
-			this.toolStripButton9 = new System.Windows.Forms.ToolStripButton();
-			this.toolStripButton10 = new System.Windows.Forms.ToolStripButton();
-			this.toolStripButton7 = new System.Windows.Forms.ToolStripButton();
-			this.toolStripButton12 = new System.Windows.Forms.ToolStripButton();
 			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
 			this.progressBar1 = new System.Windows.Forms.ProgressBar();
 			this.contextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -75,21 +62,41 @@ namespace Binder.Windows.FileExplorer
 			this.openFolder = new System.Windows.Forms.FolderBrowserDialog();
 			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
 			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.cancelTransfer = new System.Windows.Forms.Button();
+			this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+			this.loggedInAsLabel = new System.Windows.Forms.ToolStripStatusLabel();
+			this.toolStrip3 = new System.Windows.Forms.ToolStrip();
+			this.drivesComboBox = new System.Windows.Forms.ComboBox();
+			this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
 			this.openSiteInBrowserToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.selectSiteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.signOutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.cancelTransfer = new System.Windows.Forms.Button();
-			this.statusStrip1 = new System.Windows.Forms.StatusStrip();
-			this.loggedInAsLabel = new System.Windows.Forms.ToolStripStatusLabel();
+			this.toolStripButton11 = new System.Windows.Forms.ToolStripButton();
+			this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
+			this.toolStripButton3 = new System.Windows.Forms.ToolStripButton();
+			this.toolStripButton8 = new System.Windows.Forms.ToolStripButton();
+			this.toolStripButton5 = new System.Windows.Forms.ToolStripButton();
+			this.toolStripButton6 = new System.Windows.Forms.ToolStripButton();
+			this.toolStripButton14 = new System.Windows.Forms.ToolStripButton();
+			this.toolStripButton15 = new System.Windows.Forms.ToolStripButton();
+			this.toolStripButton16 = new System.Windows.Forms.ToolStripButton();
+			this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
+			this.toolStripButton4 = new System.Windows.Forms.ToolStripButton();
+			this.toolStripButton9 = new System.Windows.Forms.ToolStripButton();
+			this.toolStripButton10 = new System.Windows.Forms.ToolStripButton();
+			this.toolStripButton7 = new System.Windows.Forms.ToolStripButton();
+			this.toolStripButton12 = new System.Windows.Forms.ToolStripButton();
+			this.toolStripButton13 = new System.Windows.Forms.ToolStripButton();
+			this.openFileForCheckIn = new System.Windows.Forms.OpenFileDialog();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.tableLayoutPanel4.SuspendLayout();
-			this.toolStrip3.SuspendLayout();
 			this.toolStrip1.SuspendLayout();
 			this.toolStrip2.SuspendLayout();
 			this.contextMenu.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
 			this.statusStrip1.SuspendLayout();
+			this.toolStrip3.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// tableLayoutPanel1
@@ -213,11 +220,13 @@ namespace Binder.Windows.FileExplorer
 			// 
 			// tableLayoutPanel4
 			// 
-			this.tableLayoutPanel4.ColumnCount = 2;
+			this.tableLayoutPanel4.ColumnCount = 3;
+			this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 50F));
 			this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
 			this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 25F));
-			this.tableLayoutPanel4.Controls.Add(this.directoryBox, 0, 0);
-			this.tableLayoutPanel4.Controls.Add(this.toolStrip3, 1, 0);
+			this.tableLayoutPanel4.Controls.Add(this.toolStrip3, 2, 0);
+			this.tableLayoutPanel4.Controls.Add(this.directoryBox, 1, 0);
+			this.tableLayoutPanel4.Controls.Add(this.drivesComboBox, 0, 0);
 			this.tableLayoutPanel4.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.tableLayoutPanel4.Location = new System.Drawing.Point(492, 5);
 			this.tableLayoutPanel4.Margin = new System.Windows.Forms.Padding(0);
@@ -231,34 +240,11 @@ namespace Binder.Windows.FileExplorer
 			// 
 			this.directoryBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.directoryBox.Location = new System.Drawing.Point(3, 3);
+			this.directoryBox.Location = new System.Drawing.Point(53, 3);
 			this.directoryBox.Name = "directoryBox";
-			this.directoryBox.Size = new System.Drawing.Size(456, 20);
+			this.directoryBox.Size = new System.Drawing.Size(406, 20);
 			this.directoryBox.TabIndex = 6;
 			this.directoryBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.directoryBox_KeyPress);
-			// 
-			// toolStrip3
-			// 
-			this.toolStrip3.BackColor = System.Drawing.SystemColors.Control;
-			this.toolStrip3.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
-			this.toolStrip3.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripButton11});
-			this.toolStrip3.Location = new System.Drawing.Point(462, 0);
-			this.toolStrip3.Name = "toolStrip3";
-			this.toolStrip3.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-			this.toolStrip3.Size = new System.Drawing.Size(25, 25);
-			this.toolStrip3.TabIndex = 7;
-			this.toolStrip3.Text = "toolStrip3";
-			// 
-			// toolStripButton11
-			// 
-			this.toolStripButton11.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.toolStripButton11.Image = global::Binder.Windows.FileExplorer.Properties.Resources.folder_Open_32xLG;
-			this.toolStripButton11.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.toolStripButton11.Name = "toolStripButton11";
-			this.toolStripButton11.Size = new System.Drawing.Size(23, 22);
-			this.toolStripButton11.Text = "Browse";
-			this.toolStripButton11.Click += new System.EventHandler(this.toolStripButton11_Click);
 			// 
 			// binderBox
 			// 
@@ -280,6 +266,10 @@ namespace Binder.Windows.FileExplorer
             this.toolStripButton8,
             this.toolStripButton5,
             this.toolStripButton6,
+            this.toolStripSeparator5,
+            this.toolStripButton14,
+            this.toolStripButton15,
+            this.toolStripButton16,
             this.toolStripSeparator1,
             this.toolStripLabel1});
 			this.toolStrip1.Location = new System.Drawing.Point(5, 35);
@@ -293,57 +283,6 @@ namespace Binder.Windows.FileExplorer
 			// 
 			this.toolStripSeparator3.Name = "toolStripSeparator3";
 			this.toolStripSeparator3.Size = new System.Drawing.Size(6, 30);
-			// 
-			// toolStripButton2
-			// 
-			this.toolStripButton2.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.toolStripButton2.Image = global::Binder.Windows.FileExplorer.Properties.Resources.refresh_16xLG;
-			this.toolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.toolStripButton2.Name = "toolStripButton2";
-			this.toolStripButton2.Size = new System.Drawing.Size(23, 27);
-			this.toolStripButton2.Text = "Refresh";
-			this.toolStripButton2.Click += new System.EventHandler(this.toolStripButton2_Click);
-			// 
-			// toolStripButton3
-			// 
-			this.toolStripButton3.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.toolStripButton3.Enabled = false;
-			this.toolStripButton3.Image = global::Binder.Windows.FileExplorer.Properties.Resources.OneLevelUp_5834;
-			this.toolStripButton3.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.toolStripButton3.Name = "toolStripButton3";
-			this.toolStripButton3.Size = new System.Drawing.Size(23, 27);
-			this.toolStripButton3.Text = "Up one level";
-			this.toolStripButton3.Click += new System.EventHandler(this.toolStripButton3_Click);
-			// 
-			// toolStripButton8
-			// 
-			this.toolStripButton8.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.toolStripButton8.Image = global::Binder.Windows.FileExplorer.Properties.Resources.Rename;
-			this.toolStripButton8.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.toolStripButton8.Name = "toolStripButton8";
-			this.toolStripButton8.Size = new System.Drawing.Size(23, 27);
-			this.toolStripButton8.Text = "Rename";
-			this.toolStripButton8.Click += new System.EventHandler(this.toolStripButton8_Click);
-			// 
-			// toolStripButton5
-			// 
-			this.toolStripButton5.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.toolStripButton5.Image = global::Binder.Windows.FileExplorer.Properties.Resources.Folder_special__5843_16x;
-			this.toolStripButton5.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.toolStripButton5.Name = "toolStripButton5";
-			this.toolStripButton5.Size = new System.Drawing.Size(23, 27);
-			this.toolStripButton5.Text = "New Folder";
-			this.toolStripButton5.Click += new System.EventHandler(this.toolStripButton5_Click);
-			// 
-			// toolStripButton6
-			// 
-			this.toolStripButton6.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.toolStripButton6.Image = global::Binder.Windows.FileExplorer.Properties.Resources.delete;
-			this.toolStripButton6.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.toolStripButton6.Name = "toolStripButton6";
-			this.toolStripButton6.Size = new System.Drawing.Size(23, 27);
-			this.toolStripButton6.Text = "Delete";
-			this.toolStripButton6.Click += new System.EventHandler(this.toolStripButton6_Click);
 			// 
 			// toolStripSeparator1
 			// 
@@ -370,6 +309,7 @@ namespace Binder.Windows.FileExplorer
             this.toolStripButton10,
             this.toolStripButton7,
             this.toolStripButton12,
+            this.toolStripButton13,
             this.toolStripSeparator2});
 			this.toolStrip2.Location = new System.Drawing.Point(492, 35);
 			this.toolStrip2.Name = "toolStrip2";
@@ -382,66 +322,6 @@ namespace Binder.Windows.FileExplorer
 			// 
 			this.toolStripSeparator4.Name = "toolStripSeparator4";
 			this.toolStripSeparator4.Size = new System.Drawing.Size(6, 30);
-			// 
-			// toolStripButton1
-			// 
-			this.toolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.toolStripButton1.Image = global::Binder.Windows.FileExplorer.Properties.Resources.refresh_16xLG;
-			this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.toolStripButton1.Name = "toolStripButton1";
-			this.toolStripButton1.Size = new System.Drawing.Size(23, 27);
-			this.toolStripButton1.Text = "Refresh";
-			this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click);
-			// 
-			// toolStripButton4
-			// 
-			this.toolStripButton4.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.toolStripButton4.Image = global::Binder.Windows.FileExplorer.Properties.Resources.OneLevelUp_5834;
-			this.toolStripButton4.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.toolStripButton4.Name = "toolStripButton4";
-			this.toolStripButton4.Size = new System.Drawing.Size(23, 27);
-			this.toolStripButton4.Text = "Up one level";
-			this.toolStripButton4.Click += new System.EventHandler(this.toolStripButton4_Click);
-			// 
-			// toolStripButton9
-			// 
-			this.toolStripButton9.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.toolStripButton9.Image = global::Binder.Windows.FileExplorer.Properties.Resources.Rename;
-			this.toolStripButton9.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.toolStripButton9.Name = "toolStripButton9";
-			this.toolStripButton9.Size = new System.Drawing.Size(23, 27);
-			this.toolStripButton9.Text = "Rename";
-			this.toolStripButton9.Click += new System.EventHandler(this.toolStripButton9_Click);
-			// 
-			// toolStripButton10
-			// 
-			this.toolStripButton10.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.toolStripButton10.Image = global::Binder.Windows.FileExplorer.Properties.Resources.Folder_special__5843_16x;
-			this.toolStripButton10.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.toolStripButton10.Name = "toolStripButton10";
-			this.toolStripButton10.Size = new System.Drawing.Size(23, 27);
-			this.toolStripButton10.Text = "New Folder";
-			this.toolStripButton10.Click += new System.EventHandler(this.toolStripButton10_Click);
-			// 
-			// toolStripButton7
-			// 
-			this.toolStripButton7.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.toolStripButton7.Image = global::Binder.Windows.FileExplorer.Properties.Resources.delete;
-			this.toolStripButton7.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.toolStripButton7.Name = "toolStripButton7";
-			this.toolStripButton7.Size = new System.Drawing.Size(23, 27);
-			this.toolStripButton7.Text = "Delete";
-			this.toolStripButton7.Click += new System.EventHandler(this.toolStripButton7_Click);
-			// 
-			// toolStripButton12
-			// 
-			this.toolStripButton12.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.toolStripButton12.Image = global::Binder.Windows.FileExplorer.Properties.Resources.FolderBrowserDialogControl_678;
-			this.toolStripButton12.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.toolStripButton12.Name = "toolStripButton12";
-			this.toolStripButton12.Size = new System.Drawing.Size(23, 27);
-			this.toolStripButton12.Text = "Open in Windows Explorer";
-			this.toolStripButton12.Click += new System.EventHandler(this.toolStripButton12_Click);
 			// 
 			// toolStripSeparator2
 			// 
@@ -516,6 +396,62 @@ namespace Binder.Windows.FileExplorer
 			this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
 			this.fileToolStripMenuItem.Text = "File";
 			// 
+			// cancelTransfer
+			// 
+			this.cancelTransfer.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.cancelTransfer.Enabled = false;
+			this.cancelTransfer.Location = new System.Drawing.Point(852, 506);
+			this.cancelTransfer.Name = "cancelTransfer";
+			this.cancelTransfer.Size = new System.Drawing.Size(120, 23);
+			this.cancelTransfer.TabIndex = 13;
+			this.cancelTransfer.Text = "Cancel";
+			this.cancelTransfer.UseVisualStyleBackColor = true;
+			this.cancelTransfer.Click += new System.EventHandler(this.cancelTransfer_Click);
+			// 
+			// statusStrip1
+			// 
+			this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.loggedInAsLabel});
+			this.statusStrip1.Location = new System.Drawing.Point(0, 562);
+			this.statusStrip1.Name = "statusStrip1";
+			this.statusStrip1.Size = new System.Drawing.Size(984, 22);
+			this.statusStrip1.TabIndex = 14;
+			this.statusStrip1.Text = "statusStrip1";
+			// 
+			// loggedInAsLabel
+			// 
+			this.loggedInAsLabel.Name = "loggedInAsLabel";
+			this.loggedInAsLabel.Size = new System.Drawing.Size(80, 17);
+			this.loggedInAsLabel.Text = "Logged in as: ";
+			// 
+			// toolStrip3
+			// 
+			this.toolStrip3.BackColor = System.Drawing.SystemColors.Control;
+			this.toolStrip3.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.toolStrip3.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
+			this.toolStrip3.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripButton11});
+			this.toolStrip3.Location = new System.Drawing.Point(462, 0);
+			this.toolStrip3.Name = "toolStrip3";
+			this.toolStrip3.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
+			this.toolStrip3.Size = new System.Drawing.Size(25, 30);
+			this.toolStrip3.TabIndex = 7;
+			this.toolStrip3.Text = "toolStrip3";
+			// 
+			// drivesComboBox
+			// 
+			this.drivesComboBox.FormattingEnabled = true;
+			this.drivesComboBox.Location = new System.Drawing.Point(3, 3);
+			this.drivesComboBox.Name = "drivesComboBox";
+			this.drivesComboBox.Size = new System.Drawing.Size(44, 21);
+			this.drivesComboBox.TabIndex = 8;
+			this.drivesComboBox.SelectedIndexChanged += new System.EventHandler(this.drivesComboBox_SelectedIndexChanged);
+			// 
+			// toolStripSeparator5
+			// 
+			this.toolStripSeparator5.Name = "toolStripSeparator5";
+			this.toolStripSeparator5.Size = new System.Drawing.Size(6, 30);
+			// 
 			// openSiteInBrowserToolStripMenuItem
 			// 
 			this.openSiteInBrowserToolStripMenuItem.Image = global::Binder.Windows.FileExplorer.Properties.Resources.WebBrowser_6242;
@@ -548,33 +484,169 @@ namespace Binder.Windows.FileExplorer
 			this.exitToolStripMenuItem.Text = "Exit";
 			this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
 			// 
-			// cancelTransfer
+			// toolStripButton11
 			// 
-			this.cancelTransfer.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.cancelTransfer.Enabled = false;
-			this.cancelTransfer.Location = new System.Drawing.Point(852, 506);
-			this.cancelTransfer.Name = "cancelTransfer";
-			this.cancelTransfer.Size = new System.Drawing.Size(120, 23);
-			this.cancelTransfer.TabIndex = 13;
-			this.cancelTransfer.Text = "Cancel";
-			this.cancelTransfer.UseVisualStyleBackColor = true;
-			this.cancelTransfer.Click += new System.EventHandler(this.cancelTransfer_Click);
+			this.toolStripButton11.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.toolStripButton11.Image = global::Binder.Windows.FileExplorer.Properties.Resources.folder_Open_32xLG;
+			this.toolStripButton11.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.toolStripButton11.Name = "toolStripButton11";
+			this.toolStripButton11.Size = new System.Drawing.Size(23, 27);
+			this.toolStripButton11.Text = "Browse";
+			this.toolStripButton11.Click += new System.EventHandler(this.toolStripButton11_Click);
 			// 
-			// statusStrip1
+			// toolStripButton2
 			// 
-			this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.loggedInAsLabel});
-			this.statusStrip1.Location = new System.Drawing.Point(0, 562);
-			this.statusStrip1.Name = "statusStrip1";
-			this.statusStrip1.Size = new System.Drawing.Size(984, 22);
-			this.statusStrip1.TabIndex = 14;
-			this.statusStrip1.Text = "statusStrip1";
+			this.toolStripButton2.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.toolStripButton2.Image = global::Binder.Windows.FileExplorer.Properties.Resources.refresh_16xLG;
+			this.toolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.toolStripButton2.Name = "toolStripButton2";
+			this.toolStripButton2.Size = new System.Drawing.Size(23, 27);
+			this.toolStripButton2.Text = "Refresh";
+			this.toolStripButton2.Click += new System.EventHandler(this.toolStripButton2_Click);
 			// 
-			// loggedInAsLabel
+			// toolStripButton3
 			// 
-			this.loggedInAsLabel.Name = "loggedInAsLabel";
-			this.loggedInAsLabel.Size = new System.Drawing.Size(80, 17);
-			this.loggedInAsLabel.Text = "Logged in as: ";
+			this.toolStripButton3.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.toolStripButton3.Enabled = false;
+			this.toolStripButton3.Image = global::Binder.Windows.FileExplorer.Properties.Resources.OneLevelUp_5834;
+			this.toolStripButton3.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.toolStripButton3.Name = "toolStripButton3";
+			this.toolStripButton3.Size = new System.Drawing.Size(23, 27);
+			this.toolStripButton3.Text = "Up one level";
+			this.toolStripButton3.Click += new System.EventHandler(this.toolStripButton3_Click);
+			// 
+			// toolStripButton8
+			// 
+			this.toolStripButton8.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.toolStripButton8.Image = global::Binder.Windows.FileExplorer.Properties.Resources.Rename;
+			this.toolStripButton8.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.toolStripButton8.Name = "toolStripButton8";
+			this.toolStripButton8.Size = new System.Drawing.Size(23, 27);
+			this.toolStripButton8.Text = "Rename";
+			this.toolStripButton8.Click += new System.EventHandler(this.toolStripButton8_Click);
+			// 
+			// toolStripButton5
+			// 
+			this.toolStripButton5.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.toolStripButton5.Image = global::Binder.Windows.FileExplorer.Properties.Resources.Folder_special__5843_16x;
+			this.toolStripButton5.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.toolStripButton5.Name = "toolStripButton5";
+			this.toolStripButton5.Size = new System.Drawing.Size(23, 27);
+			this.toolStripButton5.Text = "New Folder";
+			this.toolStripButton5.Click += new System.EventHandler(this.toolStripButton5_Click);
+			// 
+			// toolStripButton6
+			// 
+			this.toolStripButton6.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.toolStripButton6.Image = global::Binder.Windows.FileExplorer.Properties.Resources.delete;
+			this.toolStripButton6.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.toolStripButton6.Name = "toolStripButton6";
+			this.toolStripButton6.Size = new System.Drawing.Size(23, 27);
+			this.toolStripButton6.Text = "Delete";
+			this.toolStripButton6.Click += new System.EventHandler(this.toolStripButton6_Click);
+			// 
+			// toolStripButton14
+			// 
+			this.toolStripButton14.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.toolStripButton14.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton14.Image")));
+			this.toolStripButton14.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.toolStripButton14.Name = "toolStripButton14";
+			this.toolStripButton14.Size = new System.Drawing.Size(23, 27);
+			this.toolStripButton14.Text = "Check out selected file to current local directory";
+			this.toolStripButton14.Click += new System.EventHandler(this.toolStripButton14_Click);
+			// 
+			// toolStripButton15
+			// 
+			this.toolStripButton15.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.toolStripButton15.Image = global::Binder.Windows.FileExplorer.Properties.Resources.CheckIn_13188;
+			this.toolStripButton15.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.toolStripButton15.Name = "toolStripButton15";
+			this.toolStripButton15.Size = new System.Drawing.Size(23, 27);
+			this.toolStripButton15.Text = "Check in selected file";
+			this.toolStripButton15.Click += new System.EventHandler(this.toolStripButton15_Click);
+			// 
+			// toolStripButton16
+			// 
+			this.toolStripButton16.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.toolStripButton16.Image = global::Binder.Windows.FileExplorer.Properties.Resources.EraseTool_203;
+			this.toolStripButton16.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.toolStripButton16.Name = "toolStripButton16";
+			this.toolStripButton16.Size = new System.Drawing.Size(23, 27);
+			this.toolStripButton16.Text = "Clear check out on selected file";
+			// 
+			// toolStripButton1
+			// 
+			this.toolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.toolStripButton1.Image = global::Binder.Windows.FileExplorer.Properties.Resources.refresh_16xLG;
+			this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.toolStripButton1.Name = "toolStripButton1";
+			this.toolStripButton1.Size = new System.Drawing.Size(23, 27);
+			this.toolStripButton1.Text = "Refresh";
+			this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click);
+			// 
+			// toolStripButton4
+			// 
+			this.toolStripButton4.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.toolStripButton4.Image = global::Binder.Windows.FileExplorer.Properties.Resources.OneLevelUp_5834;
+			this.toolStripButton4.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.toolStripButton4.Name = "toolStripButton4";
+			this.toolStripButton4.Size = new System.Drawing.Size(23, 27);
+			this.toolStripButton4.Text = "Up one level";
+			this.toolStripButton4.Click += new System.EventHandler(this.toolStripButton4_Click);
+			// 
+			// toolStripButton9
+			// 
+			this.toolStripButton9.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.toolStripButton9.Image = global::Binder.Windows.FileExplorer.Properties.Resources.Rename;
+			this.toolStripButton9.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.toolStripButton9.Name = "toolStripButton9";
+			this.toolStripButton9.Size = new System.Drawing.Size(23, 27);
+			this.toolStripButton9.Text = "Rename";
+			this.toolStripButton9.Click += new System.EventHandler(this.toolStripButton9_Click);
+			// 
+			// toolStripButton10
+			// 
+			this.toolStripButton10.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.toolStripButton10.Image = global::Binder.Windows.FileExplorer.Properties.Resources.Folder_special__5843_16x;
+			this.toolStripButton10.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.toolStripButton10.Name = "toolStripButton10";
+			this.toolStripButton10.Size = new System.Drawing.Size(23, 27);
+			this.toolStripButton10.Text = "New Folder";
+			this.toolStripButton10.Click += new System.EventHandler(this.toolStripButton10_Click);
+			// 
+			// toolStripButton7
+			// 
+			this.toolStripButton7.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.toolStripButton7.Image = global::Binder.Windows.FileExplorer.Properties.Resources.delete;
+			this.toolStripButton7.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.toolStripButton7.Name = "toolStripButton7";
+			this.toolStripButton7.Size = new System.Drawing.Size(23, 27);
+			this.toolStripButton7.Text = "Delete";
+			this.toolStripButton7.Click += new System.EventHandler(this.toolStripButton7_Click);
+			// 
+			// toolStripButton12
+			// 
+			this.toolStripButton12.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.toolStripButton12.Image = global::Binder.Windows.FileExplorer.Properties.Resources.FolderBrowserDialogControl_678;
+			this.toolStripButton12.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.toolStripButton12.Name = "toolStripButton12";
+			this.toolStripButton12.Size = new System.Drawing.Size(23, 27);
+			this.toolStripButton12.Text = "Open in Windows Explorer";
+			this.toolStripButton12.Click += new System.EventHandler(this.toolStripButton12_Click);
+			// 
+			// toolStripButton13
+			// 
+			this.toolStripButton13.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.toolStripButton13.Image = global::Binder.Windows.FileExplorer.Properties.Resources.FileUpload_6026;
+			this.toolStripButton13.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.toolStripButton13.Name = "toolStripButton13";
+			this.toolStripButton13.Size = new System.Drawing.Size(23, 27);
+			this.toolStripButton13.Text = "Upload selected item(s)";
+			this.toolStripButton13.Click += new System.EventHandler(this.toolStripButton13_Click);
+			// 
+			// openFileForCheckIn
+			// 
+			this.openFileForCheckIn.FileName = "openFileDialog1";
 			// 
 			// SyncPage
 			// 
@@ -598,8 +670,6 @@ namespace Binder.Windows.FileExplorer
 			this.tableLayoutPanel1.PerformLayout();
 			this.tableLayoutPanel4.ResumeLayout(false);
 			this.tableLayoutPanel4.PerformLayout();
-			this.toolStrip3.ResumeLayout(false);
-			this.toolStrip3.PerformLayout();
 			this.toolStrip1.ResumeLayout(false);
 			this.toolStrip1.PerformLayout();
 			this.toolStrip2.ResumeLayout(false);
@@ -609,6 +679,8 @@ namespace Binder.Windows.FileExplorer
 			this.menuStrip1.PerformLayout();
 			this.statusStrip1.ResumeLayout(false);
 			this.statusStrip1.PerformLayout();
+			this.toolStrip3.ResumeLayout(false);
+			this.toolStrip3.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -659,14 +731,21 @@ namespace Binder.Windows.FileExplorer
 		private System.Windows.Forms.ToolStripButton toolStripButton8;
 		private System.Windows.Forms.ToolStripButton toolStripButton9;
 		private System.Windows.Forms.ToolStripButton toolStripButton10;
-		private System.Windows.Forms.ToolStrip toolStrip3;
-		private System.Windows.Forms.ToolStripButton toolStripButton11;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
 		private System.Windows.Forms.StatusStrip statusStrip1;
 		private System.Windows.Forms.ToolStripStatusLabel loggedInAsLabel;
 		private System.Windows.Forms.ToolStripButton toolStripButton12;
+		private System.Windows.Forms.ToolStrip toolStrip3;
+		private System.Windows.Forms.ToolStripButton toolStripButton11;
+		private System.Windows.Forms.ComboBox drivesComboBox;
+		private System.Windows.Forms.ToolStripButton toolStripButton13;
+		private System.Windows.Forms.ToolStripButton toolStripButton14;
+		private System.Windows.Forms.ToolStripButton toolStripButton15;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
+		private System.Windows.Forms.ToolStripButton toolStripButton16;
+		private System.Windows.Forms.OpenFileDialog openFileForCheckIn;
 
 	}
 }

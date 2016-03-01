@@ -39,6 +39,8 @@ namespace Binder.Windows.FileExplorer
 			isChangingForms = false;
 			binderList.AllowDrop = true;
 			localList.AllowDrop = true;
+			drivesComboBox.Items.AddRange(System.IO.DriveInfo.GetDrives());
+			drivesComboBox.SelectedIndex = 0;
 			currentBinderDir = "/";
 			this.Text = Session.currentSelectedSiteName + " - File Management";
 			currentLocalDir = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
@@ -437,6 +439,8 @@ namespace Binder.Windows.FileExplorer
 			toolStrip3.Enabled = false;
 			localList.Enabled = false;
 			var currentDirectory = await Session.GetSiteFilesFolders(Session.currentSelectedSite, currentBinderDir);
+			drivesComboBox.Items.Clear();
+			drivesComboBox.Items.AddRange(System.IO.DriveInfo.GetDrives());
 			Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir), imageList1);
 			directoryBox.Enabled = true;
 			toolStrip2.Enabled = true;
@@ -820,6 +824,132 @@ namespace Binder.Windows.FileExplorer
 		private void toolStripButton12_Click(object sender, EventArgs e)
 		{
 			System.Diagnostics.Process.Start(currentLocalDir);
+		}
+
+		private void drivesComboBox_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			directoryBox.Enabled = false;
+			toolStrip2.Enabled = false;
+			toolStrip3.Enabled = false;
+			localList.Enabled = false;
+			string oldLocalDir = currentLocalDir;
+			currentLocalDir = drivesComboBox.SelectedItem.ToString();
+			try
+			{
+				Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir), imageList1);
+				directoryBox.Text = currentLocalDir;
+			}
+			catch (Exception err)
+			{
+				MessageBox.Show(err.Message);
+				currentLocalDir = oldLocalDir;
+				directoryBox.Text = oldLocalDir;
+				Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir), imageList1);
+			}
+			toolStripButton3.Enabled = false;
+			directoryBox.Enabled = true;
+			toolStrip2.Enabled = true;
+			toolStrip3.Enabled = true;
+			localList.Enabled = true;
+		}
+
+		private async void toolStripButton13_Click(object sender, EventArgs e)
+		{
+			if (!Session.isTransferRunning)
+			{
+				isTransferRunning = true;
+				Session.cts = new CancellationTokenSource();
+				List<string> selectedItems = new List<string>();
+				foreach (ListViewItem item in localList.SelectedItems)
+					selectedItems.Add(item.Name);
+				cancelTransfer.Enabled = true;
+				Task t = Session.UploadDirectory(currentBinderDir, selectedItems, progressBar1, miniLog);
+				await t;
+				cancelTransfer.Enabled = false;
+				isTransferRunning = false;
+				miniLog.Text = "Ready.";
+				Thread.Sleep(1000);
+				var currentDirectory = await Session.GetSiteFilesFolders(Session.currentSelectedSite, currentBinderDir);
+				Session.PopulateListViewFromServer(binderList, currentDirectory.Folders, currentDirectory.Files, contextMenu, imageList1);
+				Session.IsReadOnly(toolStripLabel1, currentBinderDir);
+				progressBar1.Value = 0;
+			}
+			else
+				MessageBox.Show("Please wait until the current file transfer has finished before starting a new one.", "File Transfer in Progress");
+		}
+
+		//Check out file
+		private async void toolStripButton14_Click(object sender, EventArgs e)
+		{
+			if(binderList.FocusedItem.ImageIndex != 0)
+			{
+				if (!Session.isTransferRunning)
+				{
+					try
+					{
+						await Session.CheckOutFile(binderList.FocusedItem.Name, currentLocalDir);
+						isTransferRunning = true;
+						Session.cts = new CancellationTokenSource();
+						List<string> selectedFolders = new List<string>();
+						List<string> selectedFiles = new List<string>();
+						foreach (ListViewItem item in binderList.SelectedItems)
+						{
+							if (item.ImageIndex == 0)
+								selectedFolders.Add(item.Name);
+							else
+								selectedFiles.Add(item.Name);
+						}
+						cancelTransfer.Enabled = true;
+						Task t = Session.DownloadDirectory(downloadHere.TrimEnd('\\'), selectedFolders, selectedFiles, progressBar1, miniLog);
+						await t;
+						cancelTransfer.Enabled = false;
+						isTransferRunning = false;
+						Thread.Sleep(1000);
+						Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir), imageList1);
+						miniLog.Text = "Ready.";
+						progressBar1.Value = 0;
+					}
+					catch(Exception err)
+					{
+						MessageBox.Show(err.Message);
+					}
+				}
+				else
+					MessageBox.Show("Please wait until the current file transfer has finished before starting a new one.", "File Transfer in Progress");
+			}
+			else
+				MessageBox.Show("Folders cannot be checked out.");
+		}
+
+		private async void toolStripButton15_Click(object sender, EventArgs e)
+		{
+			if (!Session.isTransferRunning)
+			{
+				openFileForCheckIn.InitialDirectory = currentLocalDir;
+				if(openFileForCheckIn.ShowDialog() == DialogResult.OK)
+				{
+					isTransferRunning = true;
+					Session.cts = new CancellationTokenSource();
+					List<string> selectedItems = new List<string>();
+					foreach (ListViewItem item in localList.SelectedItems)
+						selectedItems.Add(item.Name);
+					cancelTransfer.Enabled = true;
+					var t = await Session.UploadFiles(currentBinderDir, openFileForCheckIn.FileName, progressBar1, miniLog);
+					cancelTransfer.Enabled = false;
+					isTransferRunning = false;
+					miniLog.Text = "Ready.";
+					Thread.Sleep(1000);
+					var currentDirectory = await Session.GetSiteFilesFolders(Session.currentSelectedSite, currentBinderDir);
+					Session.PopulateListViewFromServer(binderList, currentDirectory.Folders, currentDirectory.Files, contextMenu, imageList1);
+					Session.IsReadOnly(toolStripLabel1, currentBinderDir);
+					progressBar1.Value = 0;
+					await Session.CheckInFile(t);
+				}
+				else
+					return;
+			}
+			else
+				MessageBox.Show("Please wait until the current file transfer has finished before starting a new one.", "File Transfer in Progress");
 		}
 	}
 }
