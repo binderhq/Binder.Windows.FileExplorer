@@ -113,6 +113,16 @@ namespace Binder.Windows.FileExplorer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap FileDownload {
+            get {
+                object obj = ResourceManager.GetObject("FileDownload", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap FileUpload_6026 {
             get {
                 object obj = ResourceManager.GetObject("FileUpload_6026", resourceCulture);

@@ -730,7 +730,7 @@ namespace Binder.Windows.FileExplorer
 			await new Binder.APIMatic.Client.Controllers.RegionCheckedOutFilesController().CreateCheckedOutFiesCheckOutFileAsync(request);
 		}
 
-		public async static Task CheckInFile(Binder.APIMatic.Client.Models.CreateSiteFileVersionOptions uploadResponse, bool clearRequest = false)
+		public async static Task CheckInFile(Binder.APIMatic.Client.Models.CreateSiteFileVersionOptions uploadResponse)
 		{
 			var response = await new Binder.APIMatic.Client.Controllers.RegionCheckedOutFilesController().GetCheckedOutFiesFindMatchingAsync(currentSelectedSite);
 			var checkedOutFile = response.Where(x => x.LogicalFileModel.Name == uploadResponse.Name).FirstOrDefault();
@@ -742,7 +742,41 @@ namespace Binder.Windows.FileExplorer
 									HiggsFileId = uploadResponse.HiggsFileId
 								};
 
-			await new Binder.APIMatic.Client.Controllers.RegionCheckedOutFilesController().DeleteCheckedOutFiesCheckInFileAsync(checkedOutFile.Id, request, clearRequest);
+			await new Binder.APIMatic.Client.Controllers.RegionCheckedOutFilesController().DeleteCheckedOutFiesCheckInFileAsync(checkedOutFile.Id, request, false);
+		}
+
+		public async static Task ClearCheckin(string fileName)
+		{
+			var response = await new Binder.APIMatic.Client.Controllers.RegionCheckedOutFilesController().GetCheckedOutFiesFindMatchingAsync(currentSelectedSite);
+			var checkedOutFile = response.Where(x => x.LogicalFileModel.Name == fileName).FirstOrDefault();
+			var request = new Binder.APIMatic.Client.Models.CheckInFileRequest()
+								{
+									Name = fileName
+								};
+
+			await new Binder.APIMatic.Client.Controllers.RegionCheckedOutFilesController().DeleteCheckedOutFiesCheckInFileAsync(checkedOutFile.Id, request, true);
+		}
+
+		public static void CompareListViewsForCheckIn(ListView remoteList, ListView localList)
+		{
+			List<ListViewItem> remoteListItems = new List<ListViewItem>();
+			List<ListViewItem> localListItems = new List<ListViewItem>();
+			foreach(ListViewItem item in remoteList.Items)
+				remoteListItems.Add(item);
+			foreach(ListViewItem item in localList.Items)
+			{
+				item.BackColor = Color.White;
+				localListItems.Add(item);
+			}
+
+			List<ListViewItem> checkedOutItems = remoteListItems.Where(x => x.BackColor.Name != "Window").ToList();
+			List<ListViewItem> matchedItems = localListItems.Where(x => checkedOutItems.Any(y => y.Text == x.Text)).ToList();
+			var checkedOutColor = Color.FromArgb(223, 240, 216);
+			foreach(ListViewItem item in matchedItems)
+			{
+				item.BackColor = checkedOutColor;
+				item.ToolTipText = "This item is checked out";
+			}
 		}
 
 		public class KonamiSequence

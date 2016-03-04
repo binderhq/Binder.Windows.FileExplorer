@@ -54,6 +54,7 @@ namespace Binder.Windows.FileExplorer
 			loggedInAsLabel.Text = "Logged in as: " + user.Name + " (" + user.Username + ")";
 			uploadHere = currentBinderDir;
 			downloadHere = currentLocalDir;
+			Session.CompareListViewsForCheckIn(binderList, localList);
 		}
 
 		private void backButton_Click(object sender, EventArgs e)
@@ -85,6 +86,7 @@ namespace Binder.Windows.FileExplorer
 						directoryBox.Text = currentLocalDir;
 					}
 					Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir), imageList1);
+					Session.CompareListViewsForCheckIn(binderList, localList);
 				}
 				catch(Exception err)
 				{
@@ -92,6 +94,7 @@ namespace Binder.Windows.FileExplorer
 					currentLocalDir = oldLocalDir;
 					directoryBox.Text = oldLocalDir;
 					Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir), imageList1);
+					Session.CompareListViewsForCheckIn(binderList, localList);
 				}
 				if(directoryBox.Text.Length > 3)
 					toolStripButton4.Enabled = true;
@@ -120,6 +123,7 @@ namespace Binder.Windows.FileExplorer
 					directoryBox.Text = currentLocalDir;
 					if (directoryBox.Text.Length > 3)
 						toolStripButton4.Enabled = true;
+					Session.CompareListViewsForCheckIn(binderList, localList);
 				}
 				else
 				{
@@ -132,6 +136,7 @@ namespace Binder.Windows.FileExplorer
 				currentLocalDir = oldLocalDir;
 				directoryBox.Text = oldLocalDir;
 				Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir), imageList1);
+				Session.CompareListViewsForCheckIn(binderList, localList);
 			}
 			directoryBox.Enabled = true;
 			toolStrip2.Enabled = true;
@@ -176,6 +181,7 @@ namespace Binder.Windows.FileExplorer
 				isTransferRunning = false;
 				Thread.Sleep(1000);
 				Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir), imageList1);
+				Session.CompareListViewsForCheckIn(binderList, localList);
 				miniLog.Text = "Ready.";
 				progressBar1.Value = 0;
 			}
@@ -195,11 +201,14 @@ namespace Binder.Windows.FileExplorer
 				currentBinderDir = currentBinderDir.TrimEnd('/') + "/" + binderList.FocusedItem.Text;
 				var currentDirectory = await Session.GetSiteFilesFolders(Session.currentSelectedSite, currentBinderDir);
 				Session.PopulateListViewFromServer(binderList, currentDirectory.Folders, currentDirectory.Files, contextMenu, imageList1);
+				Session.CompareListViewsForCheckIn(binderList, localList);
+
 				binderBox.Text = currentBinderDir;
 			}
 			else
 				await Session.PreviewFile(binderList.FocusedItem.Name);
 			Session.IsReadOnly(toolStripLabel1, currentBinderDir);
+			Session.CompareListViewsForCheckIn(binderList, localList);
 			binderBox.Enabled = true;
 			toolStrip1.Enabled = true;
 			binderList.Enabled = true;
@@ -250,6 +259,7 @@ namespace Binder.Windows.FileExplorer
 				var currentDirectory = await Session.GetSiteFilesFolders(Session.currentSelectedSite, currentBinderDir);
 				Session.PopulateListViewFromServer(binderList, currentDirectory.Folders, currentDirectory.Files, contextMenu, imageList1);
 				Session.IsReadOnly(toolStripLabel1, currentBinderDir);
+				Session.CompareListViewsForCheckIn(binderList, localList);
 				progressBar1.Value = 0;			
 			}
 			else
@@ -426,6 +436,7 @@ namespace Binder.Windows.FileExplorer
 			var currentDirectory = await Session.GetSiteFilesFolders(Session.currentSelectedSite, currentBinderDir);
 			Session.PopulateListViewFromServer(binderList, currentDirectory.Folders, currentDirectory.Files, contextMenu, imageList1);
 			Session.IsReadOnly(toolStripLabel1, currentBinderDir);
+			Session.CompareListViewsForCheckIn(binderList, localList);
 			binderBox.Enabled = true;
 			toolStrip1.Enabled = true;
 			binderList.Enabled = true;
@@ -442,6 +453,7 @@ namespace Binder.Windows.FileExplorer
 			drivesComboBox.Items.Clear();
 			drivesComboBox.Items.AddRange(System.IO.DriveInfo.GetDrives());
 			Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir), imageList1);
+			Session.CompareListViewsForCheckIn(binderList, localList);
 			directoryBox.Enabled = true;
 			toolStrip2.Enabled = true;
 			toolStrip3.Enabled = true;
@@ -465,6 +477,7 @@ namespace Binder.Windows.FileExplorer
 			var currentDirectory = await Session.GetSiteFilesFolders(Session.currentSelectedSite, currentBinderDir);
 			Session.PopulateListViewFromServer(binderList, currentDirectory.Folders, currentDirectory.Files, contextMenu, imageList1);
 			Session.IsReadOnly(toolStripLabel1, currentBinderDir);
+			Session.CompareListViewsForCheckIn(binderList, localList);
 			binderBox.Text = currentBinderDir;
 			binderBox.Enabled = true;
 			toolStrip1.Enabled = true;
@@ -483,6 +496,7 @@ namespace Binder.Windows.FileExplorer
 			if (currentLocalDir.Length == 3)
 				toolStripButton4.Enabled = false;
 			Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir), imageList1);
+			Session.CompareListViewsForCheckIn(binderList, localList);
 			directoryBox.Text = currentLocalDir;
 			directoryBox.Enabled = true;
 			toolStrip2.Enabled = true;
@@ -508,6 +522,7 @@ namespace Binder.Windows.FileExplorer
 				}
 				var currentDirectory = await Session.GetSiteFilesFolders(Session.currentSelectedSite, currentBinderDir);
 				Session.PopulateListViewFromServer(binderList, currentDirectory.Folders, currentDirectory.Files, contextMenu, imageList1);
+				Session.CompareListViewsForCheckIn(binderList, localList);
 			}
 			catch (Exception err)
 			{
@@ -534,6 +549,7 @@ namespace Binder.Windows.FileExplorer
 						await Session.DeleteFilesOnBider(items);
 						var currentDirectory = await Session.GetSiteFilesFolders(Session.currentSelectedSite, currentBinderDir);
 						Session.PopulateListViewFromServer(binderList, currentDirectory.Folders, currentDirectory.Files, contextMenu, imageList1);
+						Session.CompareListViewsForCheckIn(binderList, localList);
 					}
 				}
 			}
@@ -552,6 +568,7 @@ namespace Binder.Windows.FileExplorer
 				{
 					var currentDirectory = await Session.GetSiteFilesFolders(Session.currentSelectedSite, currentBinderDir);
 					Session.PopulateListViewFromServer(binderList, currentDirectory.Folders, currentDirectory.Files, contextMenu, imageList1);
+					Session.CompareListViewsForCheckIn(binderList, localList);
 					if(directoryBox.Text.Length == 1)
 						toolStripButton3.Enabled = false;
 					else
@@ -579,6 +596,7 @@ namespace Binder.Windows.FileExplorer
 					items.Add(item.Name);
 				await Session.DeleteFilesOnLocal(items);
 				Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir), imageList1);
+				Session.CompareListViewsForCheckIn(binderList, localList);
 			}
 		}
 
@@ -604,6 +622,7 @@ namespace Binder.Windows.FileExplorer
 					}
 					var currentDirectory = await Session.GetSiteFilesFolders(Session.currentSelectedSite, currentBinderDir);
 					Session.PopulateListViewFromServer(binderList, currentDirectory.Folders, currentDirectory.Files, contextMenu, imageList1);
+					Session.CompareListViewsForCheckIn(binderList, localList);
 				}
 				catch (NullReferenceException)
 				{
@@ -624,6 +643,7 @@ namespace Binder.Windows.FileExplorer
 				if(newName.Length > 0)
 					await Session.RenameOnLocal(currentLocalDir, localList.FocusedItem.Text, newName);
 				Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir), imageList1);
+				Session.CompareListViewsForCheckIn(binderList, localList);
 			}
 			catch(NullReferenceException)
 			{
@@ -639,6 +659,7 @@ namespace Binder.Windows.FileExplorer
 				if (folderName.Length > 0)
 					Directory.CreateDirectory(currentLocalDir + "\\" + folderName);
 				Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir), imageList1);
+				Session.CompareListViewsForCheckIn(binderList, localList);
 			}
 			catch(Exception err)
 			{
@@ -654,6 +675,7 @@ namespace Binder.Windows.FileExplorer
 				currentLocalDir = openFolder.SelectedPath;
 				directoryBox.Text = currentLocalDir;
 				Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir), imageList1);
+				Session.CompareListViewsForCheckIn(binderList, localList);
 				if (directoryBox.Text.Length > 3)
 					toolStripButton4.Enabled = true;
 			}
@@ -743,6 +765,7 @@ namespace Binder.Windows.FileExplorer
 						{
 							currentLocalDir = currentLocalDir.TrimEnd('\\') + "\\" + localList.FocusedItem.Text.ToString() + "\\";
 							Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir), imageList1);
+							Session.CompareListViewsForCheckIn(binderList, localList);
 							directoryBox.Text = currentLocalDir;
 							if (directoryBox.Text.Length > 3)
 								toolStripButton4.Enabled = true;
@@ -758,6 +781,7 @@ namespace Binder.Windows.FileExplorer
 						currentLocalDir = oldLocalDir;
 						directoryBox.Text = oldLocalDir;
 						Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir), imageList1);
+						Session.CompareListViewsForCheckIn(binderList, localList);
 					}
 				}
 			}
@@ -795,6 +819,7 @@ namespace Binder.Windows.FileExplorer
 						currentBinderDir = currentBinderDir.TrimEnd('/') + "/" + binderList.FocusedItem.Text;
 						var currentDirectory = await Session.GetSiteFilesFolders(Session.currentSelectedSite, currentBinderDir);
 						Session.PopulateListViewFromServer(binderList, currentDirectory.Folders, currentDirectory.Files, contextMenu, imageList1);
+						Session.CompareListViewsForCheckIn(binderList, localList);
 						binderBox.Text = currentBinderDir;
 					}
 					Session.IsReadOnly(toolStripLabel1, currentBinderDir);
@@ -846,6 +871,7 @@ namespace Binder.Windows.FileExplorer
 				directoryBox.Text = oldLocalDir;
 				Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir), imageList1);
 			}
+			Session.CompareListViewsForCheckIn(binderList, localList);
 			toolStripButton3.Enabled = false;
 			directoryBox.Enabled = true;
 			toolStrip2.Enabled = true;
@@ -872,6 +898,7 @@ namespace Binder.Windows.FileExplorer
 				var currentDirectory = await Session.GetSiteFilesFolders(Session.currentSelectedSite, currentBinderDir);
 				Session.PopulateListViewFromServer(binderList, currentDirectory.Folders, currentDirectory.Files, contextMenu, imageList1);
 				Session.IsReadOnly(toolStripLabel1, currentBinderDir);
+				Session.CompareListViewsForCheckIn(binderList, localList);
 				progressBar1.Value = 0;
 			}
 			else
@@ -906,6 +933,7 @@ namespace Binder.Windows.FileExplorer
 						isTransferRunning = false;
 						Thread.Sleep(1000);
 						Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir), imageList1);
+						Session.CompareListViewsForCheckIn(binderList, localList);
 						miniLog.Text = "Ready.";
 						progressBar1.Value = 0;
 					}
@@ -925,31 +953,137 @@ namespace Binder.Windows.FileExplorer
 		{
 			if (!Session.isTransferRunning)
 			{
-				openFileForCheckIn.InitialDirectory = currentLocalDir;
-				if(openFileForCheckIn.ShowDialog() == DialogResult.OK)
+				isTransferRunning = true;
+				Session.cts = new CancellationTokenSource();
+				cancelTransfer.Enabled = true;
+				Binder.APIMatic.Client.Models.CreateSiteFileVersionOptions t = await Session.UploadFiles(currentBinderDir, localList.FocusedItem.Name, progressBar1, miniLog);
+				try
 				{
-					isTransferRunning = true;
-					Session.cts = new CancellationTokenSource();
-					List<string> selectedItems = new List<string>();
-					foreach (ListViewItem item in localList.SelectedItems)
-						selectedItems.Add(item.Name);
-					cancelTransfer.Enabled = true;
-					var t = await Session.UploadFiles(currentBinderDir, openFileForCheckIn.FileName, progressBar1, miniLog);
-					cancelTransfer.Enabled = false;
-					isTransferRunning = false;
-					miniLog.Text = "Ready.";
-					Thread.Sleep(1000);
-					var currentDirectory = await Session.GetSiteFilesFolders(Session.currentSelectedSite, currentBinderDir);
-					Session.PopulateListViewFromServer(binderList, currentDirectory.Folders, currentDirectory.Files, contextMenu, imageList1);
-					Session.IsReadOnly(toolStripLabel1, currentBinderDir);
-					progressBar1.Value = 0;
 					await Session.CheckInFile(t);
 				}
-				else
-					return;
+				catch(Exception err)
+				{
+					MessageBox.Show(err.Message);
+				}
+				cancelTransfer.Enabled = false;
+				isTransferRunning = false;
+				miniLog.Text = "Ready.";
+				Thread.Sleep(1000);
+				var currentDirectory = await Session.GetSiteFilesFolders(Session.currentSelectedSite, currentBinderDir);
+				Session.PopulateListViewFromServer(binderList, currentDirectory.Folders, currentDirectory.Files, contextMenu, imageList1);
+				Session.IsReadOnly(toolStripLabel1, currentBinderDir);
+				Session.CompareListViewsForCheckIn(binderList, localList);
+				progressBar1.Value = 0;
 			}
 			else
 				MessageBox.Show("Please wait until the current file transfer has finished before starting a new one.", "File Transfer in Progress");
+		}
+
+		private async void toolStripButton16_Click(object sender, EventArgs e)
+		{
+			await Session.ClearCheckin(binderList.FocusedItem.Text);
+			var currentDirectory = await Session.GetSiteFilesFolders(Session.currentSelectedSite, currentBinderDir);
+			Session.PopulateListViewFromServer(binderList, currentDirectory.Folders, currentDirectory.Files, contextMenu, imageList1);
+			Session.IsReadOnly(toolStripLabel1, currentBinderDir);
+			Session.CompareListViewsForCheckIn(binderList, localList);
+			
+		}
+
+		private async void toolStripButton17_Click(object sender, EventArgs e)
+		{
+			if (!Session.isTransferRunning)
+			{
+				isTransferRunning = true;
+				Session.cts = new CancellationTokenSource();
+				List<string> selectedFolders = new List<string>();
+				List<string> selectedFiles = new List<string>();
+				foreach (ListViewItem item in binderList.SelectedItems)
+				{
+					if (item.ImageIndex == 0)
+						selectedFolders.Add(item.Name);
+					else
+						selectedFiles.Add(item.Name);
+				}
+				cancelTransfer.Enabled = true;
+				Task t = Session.DownloadDirectory(currentLocalDir.TrimEnd('\\'), selectedFolders, selectedFiles, progressBar1, miniLog);
+				await t;
+				cancelTransfer.Enabled = false;
+				isTransferRunning = false;
+				Thread.Sleep(1000);
+				Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir), imageList1);
+				Session.CompareListViewsForCheckIn(binderList, localList);
+				miniLog.Text = "Ready.";
+				progressBar1.Value = 0;
+			}
+			else
+				MessageBox.Show("Please wait until the current file transfer has finished before starting a new one.", "File Transfer in Progress");
+		}
+
+		private void binderList_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
+		{
+			if (binderList.SelectedItems.Count == 0)
+			{
+				toolStripButton6.Enabled = false;
+				toolStripButton8.Enabled = false;
+				toolStripButton14.Enabled = false;
+				toolStripButton16.Enabled = false;
+				toolStripButton17.Enabled = false;
+				toolStripButton18.Enabled = false;
+			}
+			else
+			{
+				toolStripButton6.Enabled = true;
+				toolStripButton8.Enabled = true;
+				toolStripButton16.Enabled = true;
+				toolStripButton17.Enabled = true;
+				if(binderList.FocusedItem.ImageIndex != 0)
+				{
+					toolStripButton18.Enabled = true;
+					toolStripButton14.Enabled = true;
+				}
+			}
+		}
+
+		private void localList_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			if(localList.SelectedItems.Count == 0)
+			{
+				toolStripButton7.Enabled = false;
+				toolStripButton9.Enabled = false;
+				toolStripButton13.Enabled = false;
+				toolStripButton15.Enabled = false;
+			}
+			else
+			{
+				toolStripButton7.Enabled =  true;
+				toolStripButton9.Enabled =  true;
+				toolStripButton13.Enabled = true;
+				if (localList.FocusedItem.BackColor != Color.White)
+					toolStripButton15.Enabled = true;
+			}
+		}
+
+		private async void toolStripButton18_Click(object sender, EventArgs e)
+		{
+			await Session.PreviewFile(binderList.FocusedItem.Name);
+		}
+
+		private void binderList_EnabledChanged(object sender, EventArgs e)
+		{
+			toolStripButton6.Enabled = false;
+			toolStripButton8.Enabled = false;
+			toolStripButton14.Enabled = false;
+			toolStripButton16.Enabled = false;
+			toolStripButton17.Enabled = false;
+			toolStripButton18.Enabled = false;
+		}
+
+		private void localList_EnabledChanged(object sender, EventArgs e)
+		{
+			toolStripButton7.Enabled = false;
+			toolStripButton9.Enabled = false;
+			toolStripButton13.Enabled = false;
+			toolStripButton15.Enabled = false;
 		}
 	}
 }
