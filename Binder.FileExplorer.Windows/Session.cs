@@ -60,6 +60,8 @@ namespace Binder.Windows.FileExplorer
 		
 		public static void PopulateListViewFromServer(ListView list, List<Binder.APIMatic.Client.Models.SubFolder> folders, List<Binder.APIMatic.Client.Models.SiteFileModel> files, ContextMenuStrip menu, ImageList imageList)
 		{
+			if(folders == null && files == null)
+				return;
 			Cursor.Current = Cursors.WaitCursor;
 			list.Items.Clear();
 			ListViewItem.ListViewSubItem[] subItems;
@@ -296,30 +298,41 @@ namespace Binder.Windows.FileExplorer
 				region.FileCompositionEndpoint,
 				region.FileRegistrationEndpoint,
 				storageZoneId);
-
-			var fileInfo = await new Binder.APIMatic.Client.Controllers.RegionSiteNavigatorController().GetSiteNavigatorGetFileAsync(path, currentSelectedSite);
-			using (var outputStream = new FileStream(savePath + ".!binder", FileMode.Create, FileAccess.Write))
+			try
 			{
-
-				Action<long> progress = (n) => {
-					Console.WriteLine(100*(n/fileInfo.Length));
-					progressBar.Invoke(new Action(() =>
+				var fileInfo = await new Binder.APIMatic.Client.Controllers.RegionSiteNavigatorController().GetSiteNavigatorGetFileAsync(path, currentSelectedSite);
+				using (var outputStream = new FileStream(savePath + ".!binder", FileMode.Create, FileAccess.Write))
+				{
+					try
 					{ 
-						progressBar.Maximum = 100;
-						progressBar.Value = Convert.ToInt32((100*n)/fileInfo.Length);
-						log.Text = "Downloading " + fileInfo.Name + " " + GetSizeReadable(n) + "/" + GetSizeReadable(((long) fileInfo.Length));
-					}));
-				};
+						Action<long> progress = (n) => {
+							Console.WriteLine(100*(n/fileInfo.Length));
+							progressBar.Invoke(new Action(() =>
+							{ 
+								progressBar.Maximum = 100;
+								progressBar.Value = Convert.ToInt32((100*n)/fileInfo.Length);
+								log.Text = "Downloading " + fileInfo.Name + " " + GetSizeReadable(n) + "/" + GetSizeReadable(((long) fileInfo.Length));
+							}));
+						};
 
-				Task t = Task.Run( () => {
-					storageEngine.GetFile(request.HiggsFileId, progress, outputStream, cts.Token);
-				}, cts.Token);
+						Task t = Task.Run( () => {
+							storageEngine.GetFile(request.HiggsFileId, progress, outputStream, cts.Token);
+						}, cts.Token);
 
-				await t;
+						await t;
+					}
+					catch(Exception err)
+					{
+						MessageBox.Show(err.Message);
+					}
 
-
-			//	var downloadFile = await new Binder.APIMatic.Client.Controllers.RegionStorageZonesController().GetStorageZonesGetNamedHiggsFileAsync(filename, request.HiggsFileId, storageZoneId.ToString());
+				//	var downloadFile = await new Binder.APIMatic.Client.Controllers.RegionStorageZonesController().GetStorageZonesGetNamedHiggsFileAsync(filename, request.HiggsFileId, storageZoneId.ToString());
+				}
 			}
+			catch(Exception err)
+			{
+				MessageBox.Show(err.Message);
+			}	
 		}
 
 		public async static Task DownloadDirectory(string downloadTo, List<string> downloadFromFolders, List<string> downloadFromFiles, ProgressBar progressBar, TextBox log)
@@ -563,9 +576,17 @@ namespace Binder.Windows.FileExplorer
 		public async static Task<Binder.APIMatic.Client.Models.SiteFolderModel> GetSiteFilesFolders(string siteId, string path)
 		{
 			path = WebUtility.UrlEncode(path);
-			var SiteFileFolders = await new Binder.APIMatic.Client.Controllers.RegionSiteNavigatorController()
-				.GetSiteNavigatorGetFolderAsync(path, siteId);
-			return SiteFileFolders;
+			try
+			{
+				var SiteFileFolders = await new Binder.APIMatic.Client.Controllers.RegionSiteNavigatorController()
+					.GetSiteNavigatorGetFolderAsync(path, siteId);
+				return SiteFileFolders;
+			}
+			catch(Exception err)
+			{
+				MessageBox.Show(err.Message);
+				return null;
+			}
 		}
 
 		public async static void IsReadOnly(ToolStripLabel label, string path)

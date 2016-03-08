@@ -40,7 +40,33 @@ namespace Binder.Windows.FileExplorer
 		private async void button1_Click(object sender, EventArgs e)
 		{
 			try
-			{	
+			{
+				if (checkBox1.Checked)
+				{
+					checkBox2.Enabled = true;
+					Properties.Settings.Default.username = username.Text;
+					Properties.Settings.Default.Save();
+				}
+				else if (!checkBox1.Checked)
+				{
+					checkBox2.Checked = false;
+					checkBox2.Enabled = false;
+
+					Properties.Settings.Default.username = "";
+					Properties.Settings.Default.password = "";
+					Properties.Settings.Default.Save();
+				}
+				if (checkBox2.Checked)
+				{
+					Properties.Settings.Default.password = password.Text;
+					Properties.Settings.Default.Save();
+				}
+				else if (!checkBox2.Checked)
+				{
+					Properties.Settings.Default.password = "";
+					Properties.Settings.Default.Save();
+				}
+
 				if(String.IsNullOrWhiteSpace(username.Text) && String.IsNullOrWhiteSpace(password.Text))
 					MessageBox.Show("Please enter your login details.");
 				else if(String.IsNullOrWhiteSpace(username.Text))

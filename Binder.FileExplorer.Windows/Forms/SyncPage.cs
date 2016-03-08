@@ -175,8 +175,13 @@ namespace Binder.Windows.FileExplorer
 						selectedFiles.Add(item.Name);
 				}
 				cancelTransfer.Enabled = true;
-				Task t = Session.DownloadDirectory(downloadHere.TrimEnd('\\'), selectedFolders, selectedFiles, progressBar1, miniLog);
-				await t;
+				try
+				{
+					Task t = Session.DownloadDirectory(downloadHere.TrimEnd('\\'), selectedFolders, selectedFiles, progressBar1, miniLog);
+					await t;
+				}
+				catch(FileNotFoundException)
+				{}
 				cancelTransfer.Enabled = false;
 				isTransferRunning = false;
 				Thread.Sleep(1000);
@@ -559,6 +564,8 @@ namespace Binder.Windows.FileExplorer
 		{
 			if (e.KeyChar == (char)Keys.Return)
 			{
+				if(String.IsNullOrWhiteSpace(binderBox.Text))
+					binderBox.Text = "/";
 				binderBox.Enabled = false;
 				toolStrip1.Enabled = false;
 				binderList.Enabled = false;
