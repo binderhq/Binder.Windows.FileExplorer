@@ -54,7 +54,7 @@
     <StartupObject>Binder.Windows.FileExplorer.Program</StartupObject>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>output.ico</ApplicationIcon>
+    <ApplicationIcon>binder_package.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestCertificateThumbprint>9FC4DE9AD953B68A78D32E974282D57407427208</ManifestCertificateThumbprint>
@@ -179,6 +179,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="binder_package.ico" />
     <Content Include="binder_RGB_glyph_white_aqua_512x512_ico.ico" />
     <Content Include="output.ico" />
     <None Include="Resources\FileDownload.png" />
