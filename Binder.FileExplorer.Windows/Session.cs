@@ -410,7 +410,6 @@ namespace Binder.Windows.FileExplorer
 
 		public async static Task<Binder.APIMatic.Client.Models.CreateSiteFileVersionOptions> UploadFiles(string uploadTo, string uploadFrom, ProgressBar progressBar, TextBox log)
 		{
-			uploadTo = WebUtility.UrlEncode(uploadTo);
 			long storageZoneId = 1;
 			var fileInfo = new FileInfo(uploadFrom);
 			log.Text = "Preparing to upload " + fileInfo.Name;
