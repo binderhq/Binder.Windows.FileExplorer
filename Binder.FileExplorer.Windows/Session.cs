@@ -45,7 +45,7 @@ namespace Binder.Windows.FileExplorer
 
 		public async static Task CreateSession(string username, string password)
 		{
-			Binder.APIMatic.Client.Configuration.BaseUri = "https://development.edocx.com.au:443/service.api/";
+			Binder.APIMatic.Client.Configuration.BaseUri = Properties.Settings.Default.baseUri;
 			var user = await new Binder.APIMatic.Client.Controllers.AuthenticationSessionsController()
 				.CreateSessionsPostAsync(new APIMatic.Client.Models.CreateSessionRequest() { Username = username, ClearTextPassword = password });
 			Binder.APIMatic.Client.Configuration.ApiKey = user.SessionToken;

@@ -46,5 +46,17 @@ namespace Binder.Windows.FileExplorer.Properties {
                 this["password"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("https://development.edocx.com.au:443/service.api/")]
+        public string baseUri {
+            get {
+                return ((string)(this["baseUri"]));
+            }
+            set {
+                this["baseUri"] = value;
+            }
+        }
     }
 }

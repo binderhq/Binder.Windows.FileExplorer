@@ -939,8 +939,11 @@ namespace Binder.Windows.FileExplorer
 						cancelTransfer.Enabled = false;
 						isTransferRunning = false;
 						Thread.Sleep(1000);
+						var currentDirectory = await Session.GetSiteFilesFolders(Session.currentSelectedSite, currentBinderDir);
+						Session.PopulateListViewFromServer(binderList, currentDirectory.Folders, currentDirectory.Files, contextMenu, imageList1);
 						Session.PopulateListViewFromLocal(localList, new DirectoryInfo(currentLocalDir), imageList1);
 						Session.CompareListViewsForCheckIn(binderList, localList);
+						Session.IsReadOnly(toolStripLabel1, currentBinderDir);
 						miniLog.Text = "Ready.";
 						progressBar1.Value = 0;
 					}
@@ -1043,11 +1046,16 @@ namespace Binder.Windows.FileExplorer
 				toolStripButton8.Enabled = true;
 				toolStripButton16.Enabled = true;
 				toolStripButton17.Enabled = true;
-				if(binderList.FocusedItem.ImageIndex != 0)
+				try
 				{
-					toolStripButton18.Enabled = true;
-					toolStripButton14.Enabled = true;
+					if(binderList.FocusedItem.ImageIndex != 0)
+					{
+						toolStripButton18.Enabled = true;
+						toolStripButton14.Enabled = true;
+					}
 				}
+				catch(NullReferenceException)
+				{ }
 			}
 		}
 
@@ -1065,8 +1073,13 @@ namespace Binder.Windows.FileExplorer
 				toolStripButton7.Enabled =  true;
 				toolStripButton9.Enabled =  true;
 				toolStripButton13.Enabled = true;
-				if (localList.FocusedItem.BackColor != Color.White)
-					toolStripButton15.Enabled = true;
+				try
+				{
+					if (localList.FocusedItem.BackColor != Color.White)
+						toolStripButton15.Enabled = true;
+				}
+				catch(NullReferenceException)
+				{ }
 			}
 		}
 
