@@ -253,6 +253,8 @@ namespace Binder.Windows.FileExplorer
 
 		private async void binderList_DragDrop(object sender, DragEventArgs e)
 		{
+			if(toolStripLabel1.Enabled == true)
+				return;
 			ListViewItem itemBeingDragged = e.Data.GetData(typeof(ListViewItem)) as ListViewItem;
 			if (itemBeingDragged.ListView == binderList)
 				return;
@@ -699,6 +701,8 @@ namespace Binder.Windows.FileExplorer
 
 		private void binderList_DragOver(object sender, DragEventArgs e)
 		{
+			if (toolStripLabel1.Enabled == true)
+				return;
 			ListViewItem itemBeingDragged = e.Data.GetData(typeof(ListViewItem)) as ListViewItem;
 			if(itemBeingDragged.ListView == binderList)
 			{
@@ -897,6 +901,8 @@ namespace Binder.Windows.FileExplorer
 
 		private async void toolStripButton13_Click(object sender, EventArgs e)
 		{
+			if(toolStripLabel1.Enabled == true)
+				return;
 			if (!Session.isTransferRunning)
 			{
 				isTransferRunning = true;
@@ -970,6 +976,8 @@ namespace Binder.Windows.FileExplorer
 
 		private async void toolStripButton15_Click(object sender, EventArgs e)
 		{
+			if (toolStripLabel1.Enabled == true)
+				return;
 			if (!Session.isTransferRunning)
 			{
 				isTransferRunning = true;
@@ -1081,7 +1089,8 @@ namespace Binder.Windows.FileExplorer
 			{
 				toolStripButton7.Enabled =  true;
 				toolStripButton9.Enabled =  true;
-				toolStripButton13.Enabled = true;
+				if(!toolStripLabel1.Enabled)
+					toolStripButton13.Enabled = true;
 				try
 				{
 					if (localList.FocusedItem.BackColor != Color.White)
