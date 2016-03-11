@@ -13,6 +13,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Threading;
+using System.Collections;
 
 namespace Binder.Windows.FileExplorer
 {
@@ -32,6 +33,10 @@ namespace Binder.Windows.FileExplorer
 			lvwColumnSorter = new ListViewColumnSorter();
 			this.localList.ListViewItemSorter = lvwColumnSorter;
 			this.binderList.ListViewItemSorter = lvwColumnSorter;
+			this.binderList.Groups.Add(new ListViewGroup("Folders", HorizontalAlignment.Left));
+			this.binderList.Groups.Add(new ListViewGroup("Files", HorizontalAlignment.Left));
+			this.localList.Groups.Add(new ListViewGroup("Folders", HorizontalAlignment.Left));
+			this.localList.Groups.Add(new ListViewGroup("Files", HorizontalAlignment.Left));
 		}
 
 		private async void SyncPage_Load(object sender, EventArgs e)
@@ -55,6 +60,10 @@ namespace Binder.Windows.FileExplorer
 			uploadHere = currentBinderDir;
 			downloadHere = currentLocalDir;
 			Session.CompareListViewsForCheckIn(binderList, localList);
+
+			lvwColumnSorter.SortColumn = 0;
+			lvwColumnSorter.Order = SortOrder.Ascending;
+			this.binderList.Sort();
 		}
 
 		private void backButton_Click(object sender, EventArgs e)
@@ -1104,6 +1113,6 @@ namespace Binder.Windows.FileExplorer
 			toolStripButton9.Enabled = false;
 			toolStripButton13.Enabled = false;
 			toolStripButton15.Enabled = false;
-		}
+		}	
 	}
 }

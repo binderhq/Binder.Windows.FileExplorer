@@ -76,6 +76,7 @@ namespace Binder.Windows.FileExplorer
 
 				item.Name = folder.Path;
 				item.SubItems.AddRange(subItems);
+				item.Group = list.Groups[0];
 				list.Items.Add(item);
 			}
 			foreach (Binder.APIMatic.Client.Models.SiteFileModel file in files)
@@ -100,6 +101,7 @@ namespace Binder.Windows.FileExplorer
 				}
 				item.ImageKey = fileExtension;
 				item.Name = file.Path;
+				item.Group = list.Groups[1];
 				if(file.CheckedOutInfo != null)
 				{
 					item.UseItemStyleForSubItems = true;
@@ -129,6 +131,7 @@ namespace Binder.Windows.FileExplorer
 				
 				item.Name = dir.FullName;
 				item.SubItems.AddRange(subItems);
+				item.Group = list.Groups[0];
 				list.Items.Add(item);
 			}
 			foreach (FileInfo file in directory.GetFiles())
@@ -165,6 +168,7 @@ namespace Binder.Windows.FileExplorer
 				else
 					item.ImageKey = file.Extension;
 				item.Name = file.FullName;
+				item.Group = list.Groups[1];
 				list.Items.Add(item);
 			}
 			list.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
@@ -469,7 +473,6 @@ namespace Binder.Windows.FileExplorer
 
 		public async static Task UploadDirectory(string uploadTo, List<string> uploadFrom, ProgressBar progressBar, TextBox log)
 		{
-			uploadTo = WebUtility.UrlEncode(uploadTo);
 			isTransferRunning = true;
 			if(Equals(uploadTo, "/"))
 			{
@@ -503,7 +506,14 @@ namespace Binder.Windows.FileExplorer
 								{
 									FolderName = info.Name
 								};
-							var createFolder = await new Binder.APIMatic.Client.Controllers.RegionSiteNavigatorController().UpdateSiteNavigatorCreateFolderAsync(folderRequest, uploadTo, currentSelectedSite);
+							var createFolder = await new Binder.APIMatic.Client.Controllers.RegionSiteNavigatorController().UpdateSiteNavigatorCreateFolderAsync(folderRequest, WebUtility.UrlEncode(uploadTo), currentSelectedSite);
+						}
+						catch(APIException e)
+						{
+							if(e.ResponseCode == 409)
+								log.Text = "Folder " + item + " already exists.";
+							else
+								MessageBox.Show("Creation of folder " + item + " failed. " + e.Message);
 						}
 						catch(Exception e)
 						{
