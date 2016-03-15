@@ -460,7 +460,7 @@ namespace Binder.Windows.FileExplorer
 						StorageZoneId = storageZoneId.ToString()
 					};
 					new Binder.APIMatic.Client.Controllers.RegionSiteNavigatorController()
-							.UpdateSiteNavigatorPostAsync(options, WebUtility.UrlDecode(uploadTo), currentSelectedSite);
+							.UpdateSiteNavigatorPostAsync(options, WebUtility.UrlEncode(uploadTo), currentSelectedSite);
 				}, cts.Token);
 				
 				await s;

@@ -253,7 +253,7 @@ namespace Binder.Windows.FileExplorer
 
 		private async void binderList_DragDrop(object sender, DragEventArgs e)
 		{
-			if(toolStripLabel1.Enabled == true)
+			if(toolStripLabel1.Visible == true)
 				return;
 			ListViewItem itemBeingDragged = e.Data.GetData(typeof(ListViewItem)) as ListViewItem;
 			if (itemBeingDragged.ListView == binderList)
@@ -276,7 +276,7 @@ namespace Binder.Windows.FileExplorer
 				Session.PopulateListViewFromServer(binderList, currentDirectory.Folders, currentDirectory.Files, contextMenu, imageList1);
 				Session.IsReadOnly(toolStripLabel1, currentBinderDir);
 				Session.CompareListViewsForCheckIn(binderList, localList);
-				progressBar1.Value = 0;			
+				progressBar1.Value = 0;
 			}
 			else
 				MessageBox.Show("Please wait until the current file transfer has finished before starting a new one.", "File Transfer in Progress");
@@ -701,7 +701,7 @@ namespace Binder.Windows.FileExplorer
 
 		private void binderList_DragOver(object sender, DragEventArgs e)
 		{
-			if (toolStripLabel1.Enabled == true)
+			if (toolStripLabel1.Visible == true)
 				return;
 			ListViewItem itemBeingDragged = e.Data.GetData(typeof(ListViewItem)) as ListViewItem;
 			if(itemBeingDragged.ListView == binderList)
@@ -901,7 +901,7 @@ namespace Binder.Windows.FileExplorer
 
 		private async void toolStripButton13_Click(object sender, EventArgs e)
 		{
-			if(toolStripLabel1.Enabled == true)
+			if(toolStripLabel1.Visible == true)
 				return;
 			if (!Session.isTransferRunning)
 			{
@@ -976,7 +976,7 @@ namespace Binder.Windows.FileExplorer
 
 		private async void toolStripButton15_Click(object sender, EventArgs e)
 		{
-			if (toolStripLabel1.Enabled == true)
+			if (toolStripLabel1.Visible == true)
 				return;
 			if (!Session.isTransferRunning)
 			{
@@ -1089,7 +1089,7 @@ namespace Binder.Windows.FileExplorer
 			{
 				toolStripButton7.Enabled =  true;
 				toolStripButton9.Enabled =  true;
-				if(!toolStripLabel1.Enabled)
+				if(!toolStripLabel1.Visible)
 					toolStripButton13.Enabled = true;
 				try
 				{
