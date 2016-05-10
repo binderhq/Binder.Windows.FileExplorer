@@ -9,7 +9,7 @@
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="baseUri" Type="System.String" Scope="User">
-      <Value Profile="(Default)">https://development.edocx.com.au:443/service.api/</Value>
+      <Value Profile="(Default)">https://api.binder.works</Value>
     </Setting>
   </Settings>
 </SettingsFile>
