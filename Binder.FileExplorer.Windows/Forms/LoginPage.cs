@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using Binder.Windows.FileExplorer;
 using System.IO;
 using Binder.Windows.FileExplorer.Forms;
+using Microsoft.ApplicationInsights;
 
 namespace Binder.Windows.FileExplorer
 {
@@ -83,6 +84,9 @@ namespace Binder.Windows.FileExplorer
 					password.Enabled = false;
 					await Session.CreateSession(this.username.Text, this.password.Text);
 					Session.sites = await Session.CurrentSites();
+				    Program.TelemetryClient.Context.User.AccountId = this.username.Text;
+				    Program.TelemetryClient.Context.Session.Id = Session.SessionToken;
+                    Program.TelemetryClient.TrackEvent("LogIn " + this.username.Text);
 					sitep = new SitePage();
 					syncp = new SyncPage();
 					sitep.Show();
@@ -108,6 +112,9 @@ namespace Binder.Windows.FileExplorer
 
 		private void signOut_Click(object sender, EventArgs e)
 		{
+            Program.TelemetryClient.TrackEvent("SignOutAndExit");
+		    Program.TelemetryClient.Flush();
+
 			Application.Exit();
 		}
 
